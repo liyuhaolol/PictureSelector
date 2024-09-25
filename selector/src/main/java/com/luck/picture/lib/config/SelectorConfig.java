@@ -85,6 +85,7 @@ public final class SelectorConfig {
     public boolean isGif;
     public boolean isWebp;
     public boolean isBmp;
+    public boolean isHeic;
     public boolean isEnablePreviewImage;
     public boolean isEnablePreviewVideo;
     public boolean isEnablePreviewAudio;
@@ -94,7 +95,9 @@ public final class SelectorConfig {
     public boolean isEmptyResultReturn;
     public boolean isHidePreviewDownload;
     public boolean isWithVideoImage;
-    public List<String> queryOnlyList;
+    public List<String> queryOnlyImageList;
+    public List<String> queryOnlyVideoList;
+    public List<String> queryOnlyAudioList;
     public List<String> skipCropList;
     public boolean isCheckOriginalImage;
     public String outPutCameraImageFileName;
@@ -140,6 +143,7 @@ public final class SelectorConfig {
     public boolean isOriginalSkipCompress;
     public boolean isPreloadFirst;
     public boolean isUseSystemVideoPlayer;
+    public boolean isNewKeyBackMode;
     public PictureSelectorStyle selectorStyle;
 
     public SelectorConfig() {
@@ -176,6 +180,7 @@ public final class SelectorConfig {
         isGif = false;
         isWebp = true;
         isBmp = true;
+        isHeic = true;
         isCheckOriginalImage = false;
         isDirectReturnSingle = false;
         isEnablePreviewImage = true;
@@ -191,7 +196,9 @@ public final class SelectorConfig {
         outPutCameraImageFileName = "";
         outPutCameraVideoFileName = "";
         outPutAudioFileName = "";
-        queryOnlyList = new ArrayList<>();
+        queryOnlyImageList = new ArrayList<>();
+        queryOnlyVideoList = new ArrayList<>();
+        queryOnlyAudioList = new ArrayList<>();
         outPutCameraDir = "";
         outPutAudioDir = "";
         sandboxDir = "";
@@ -235,6 +242,7 @@ public final class SelectorConfig {
         isSyncWidthAndHeight = true;
         isOriginalSkipCompress = false;
         isPreloadFirst = true;
+        isNewKeyBackMode = true;
         isUseSystemVideoPlayer = false;
     }
 

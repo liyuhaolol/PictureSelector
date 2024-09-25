@@ -23,6 +23,7 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -72,7 +73,6 @@ import com.luck.picture.lib.utils.MediaStoreUtils;
 import com.luck.picture.lib.utils.MediaUtils;
 import com.luck.picture.lib.utils.PictureFileUtils;
 import com.luck.picture.lib.utils.SdkVersionUtils;
-import com.luck.picture.lib.utils.SpUtils;
 import com.luck.picture.lib.utils.ToastUtils;
 
 import org.json.JSONArray;
@@ -255,11 +255,8 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
     @Override
     public void handlePermissionDenied(String[] permissionArray) {
         PermissionConfig.CURRENT_REQUEST_PERMISSION = permissionArray;
-        if (permissionArray != null && permissionArray.length > 0) {
-            SpUtils.putBoolean(getAppContext(), permissionArray[0], true);
-        }
         if (selectorConfig.onPermissionDeniedListener != null) {
-            onPermissionExplainEvent(false, null);
+            onPermissionExplainEvent(false, permissionArray);
             selectorConfig.onPermissionDeniedListener
                     .onDenied(this, permissionArray, PictureConfig.REQUEST_GO_SETTING,
                             new OnCallbackListener<Boolean>() {
@@ -332,18 +329,27 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
      * @param view
      */
     public void setRootViewKeyListener(View view) {
-        view.setFocusableInTouchMode(true);
-        view.requestFocus();
-        view.setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == ACTION_UP) {
+        if (selectorConfig.isNewKeyBackMode) {
+            requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
+                @Override
+                public void handleOnBackPressed() {
                     onKeyBackFragmentFinish();
-                    return true;
                 }
-                return false;
-            }
-        });
+            });
+        } else {
+            view.setFocusableInTouchMode(true);
+            view.requestFocus();
+            view.setOnKeyListener(new View.OnKeyListener() {
+                @Override
+                public boolean onKey(View v, int keyCode, KeyEvent event) {
+                    if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == ACTION_UP) {
+                        onKeyBackFragmentFinish();
+                        return true;
+                    }
+                    return false;
+                }
+            });
+        }
     }
 
     @Override
@@ -383,8 +389,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
 
 
     public long getEnterAnimationDuration() {
-        final long DIFFERENCE = 50;
-        long duration = enterAnimDuration > DIFFERENCE ? enterAnimDuration - DIFFERENCE : enterAnimDuration;
+        long duration = enterAnimDuration > 50 ? enterAnimDuration - 50 : enterAnimDuration;
         return duration >= 0 ? duration : 0;
     }
 
@@ -1019,16 +1024,17 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
     @Override
     public void onPermissionExplainEvent(boolean isDisplayExplain, String[] permissionArray) {
         if (selectorConfig.onPermissionDescriptionListener != null) {
-            if (isDisplayExplain) {
-                if (PermissionChecker.isCheckSelfPermission(getAppContext(), permissionArray)) {
-                    SpUtils.putBoolean(getAppContext(), permissionArray[0], false);
-                } else {
-                    if (!SpUtils.getBoolean(getAppContext(), permissionArray[0], false)) {
+            if (PermissionChecker.isCheckSelfPermission(getAppContext(), permissionArray)) {
+                selectorConfig.onPermissionDescriptionListener.onDismiss(this);
+            } else {
+                if (isDisplayExplain) {
+                    int permissionStatus = PermissionUtil.getPermissionStatus(requireActivity(), permissionArray[0]);
+                    if (permissionStatus != PermissionUtil.REFUSE_PERMANENT) {
                         selectorConfig.onPermissionDescriptionListener.onPermissionDescription(this, permissionArray);
                     }
+                } else {
+                    selectorConfig.onPermissionDescriptionListener.onDismiss(this);
                 }
-            } else {
-                selectorConfig.onPermissionDescriptionListener.onDismiss(this);
             }
         }
     }
@@ -1059,7 +1065,6 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        ForegroundService.stopService(getAppContext());
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == PictureConfig.REQUEST_CAMERA) {
                 dispatchHandleCamera(data);
@@ -1132,6 +1137,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
                 handlePermissionSettingResult(PermissionConfig.CURRENT_REQUEST_PERMISSION);
             }
         }
+        ForegroundService.stopService(getAppContext());
     }
 
     /**
