@@ -1,0 +1,16 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="BaseNoActionBarTheme">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/app_color_grey</item>
+        <item name="colorPrimaryDark">@color/app_color_grey</item>
+        <item name="colorAccent">@color/app_color_grey</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:enforceStatusBarContrast">false</item>
+        <item name="android:fitsSystemWindows">true</item>
+    </style>
+
+    <style name="BaseNoActionBarTheme" parent="Theme.AppCompat.Light.NoActionBar" />
+
+</resources>

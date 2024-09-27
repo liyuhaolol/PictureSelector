@@ -16,9 +16,11 @@ public class SimpleActivity extends AppCompatActivity implements View.OnClickLis
         Button btn_activity = findViewById(R.id.btn_activity);
         Button btn_inject_fragment = findViewById(R.id.btn_inject_fragment);
         Button btn_only_query_data = findViewById(R.id.btn_only_query_data);
+        Button btn_test = findViewById(R.id.btn_test);
         btn_activity.setOnClickListener(this);
         btn_inject_fragment.setOnClickListener(this);
         btn_only_query_data.setOnClickListener(this);
+        btn_test.setOnClickListener(this);
     }
 
     @Override
@@ -29,6 +31,8 @@ public class SimpleActivity extends AppCompatActivity implements View.OnClickLis
             startActivity(new Intent(SimpleActivity.this, InjectFragmentActivity.class));
         } else if (v.getId() == R.id.btn_only_query_data){
             startActivity(new Intent(SimpleActivity.this, OnlyQueryDataActivity.class));
+        } else if (v.getId() == R.id.btn_test){
+            startActivity(new Intent(SimpleActivity.this, TestActivity.class));
         }
     }
 }

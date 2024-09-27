@@ -80,4 +80,5 @@ dependencies {
     implementation("io.coil-kt:coil:${cfgs.coil_version}")
     implementation("io.coil-kt:coil-gif:${cfgs.coil_version}")
     implementation("io.coil-kt:coil-video:${cfgs.coil_version}")
+    implementation "io.github.liyuhaolol:Permission:1.2.6"
 }

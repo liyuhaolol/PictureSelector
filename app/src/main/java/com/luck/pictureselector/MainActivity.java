@@ -1298,7 +1298,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
     /**
      * 拦截自定义提示
      */
-    private static class MeOnSelectLimitTipsListener implements OnSelectLimitTipsListener {
+    public static class MeOnSelectLimitTipsListener implements OnSelectLimitTipsListener {
 
         @Override
         public boolean onSelectLimitTips(Context context, @Nullable LocalMedia media, SelectorConfig config, int limitType) {
@@ -1523,7 +1523,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
     /**
      * 自定义沙盒文件处理
      */
-    private static class MeSandboxFileEngine implements UriToFileTransformEngine {
+    public static class MeSandboxFileEngine implements UriToFileTransformEngine {
 
         @Override
         public void onUriToFileAsyncTransform(Context context, String srcPath, String mineType, OnKeyValueResultCallbackListener call) {
