@@ -1,22 +1,24 @@
 package com.luck.pictureselector
 
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import androidx.activity.result.ActivityResultCallback
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
-import com.luck.picture.lib.basic.PictureSelectionSystemModel
+import com.luck.picture.lib.basic.PictureSelectionModel
 import com.luck.picture.lib.basic.PictureSelector
-import com.luck.picture.lib.config.PictureMimeType
 import com.luck.picture.lib.config.SelectMimeType
 import com.luck.picture.lib.config.SelectModeConfig
+import com.luck.picture.lib.engine.OpenGalleryEngine
 import com.luck.picture.lib.entity.LocalMedia
 import com.luck.picture.lib.interfaces.OnPermissionsInterceptListener
 import com.luck.picture.lib.interfaces.OnRequestPermissionListener
 import com.luck.picture.lib.interfaces.OnResultCallbackListener
-import com.luck.picture.lib.utils.MediaUtils
 import com.luck.picture.lib.utils.PictureFileUtils
-import com.luck.pictureselector.MainActivity.MeOnSelectLimitTipsListener
-import com.luck.pictureselector.MainActivity.MeSandboxFileEngine
 import com.luck.pictureselector.databinding.ActivityTestBinding
 import com.luck.pictureselector.test.ImageFileCompressEngine
 import com.luck.pictureselector.test.ImageFileCropEngine
@@ -28,6 +30,8 @@ import spa.lyh.cn.peractivity.PermissionActivity
 class TestActivity :PermissionActivity(){
     lateinit var b:ActivityTestBinding
     var mark = 1
+    lateinit var psm: PictureSelectionModel
+    //lateinit var pickMedia: ActivityResultLauncher<PickVisualMediaRequest>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,23 +49,15 @@ class TestActivity :PermissionActivity(){
                 mark = 1
             }
         }
-    }
 
-    override fun permissionAllowed() {
-        super.permissionAllowed()
-        if (mark == 1){
-            openPhoto()
-        }
-    }
-
-    fun openPhoto(){
-/*        PictureSelector.create(this)
+        psm = PictureSelector.create(this)
             .openGallery(SelectMimeType.ofImage())
             .setSelectorUIStyle(UpPictureSelectorStyle())
             .setImageEngine(GlideEngine.createGlideEngine())
             .isDisplayCamera(false)
             .setCropEngine(ImageFileCropEngine())
             .setCompressEngine(ImageFileCompressEngine())
+            .setOpenGalleryEngine(OpenGalleryEngine(this))
             .setSelectionMode(SelectModeConfig.SINGLE)
             .isDirectReturnSingle(true)
             .setCameraInterceptListener(MeOnCameraInterceptListener())
@@ -82,7 +78,30 @@ class TestActivity :PermissionActivity(){
                     return true
                 }
             })
-            .forResult(object : OnResultCallbackListener<LocalMedia?> {
+
+/*        pickMedia =
+            registerForActivityResult<PickVisualMediaRequest, Uri>(
+                ActivityResultContracts.PickVisualMedia(),
+                ActivityResultCallback<Uri> { uri: Uri? ->
+                    // Callback is invoked after the user selects a media item or closes the
+                    // photo picker.
+                    if (uri != null) {
+                        Log.e("qwer", "Selected URI: $uri")
+                    } else {
+                        Log.e("qwer", "No media selected")
+                    }
+                })*/
+    }
+
+    override fun permissionAllowed() {
+        super.permissionAllowed()
+        if (mark == 1){
+            openPhoto()
+        }
+    }
+
+    fun openPhoto(){
+            psm.forResult(object : OnResultCallbackListener<LocalMedia?> {
                 override fun onResult(result: ArrayList<LocalMedia?>?) {
                     if (result != null){
                         b.show.text = "选择了${result.size}个图片或视频"
@@ -93,11 +112,11 @@ class TestActivity :PermissionActivity(){
 
                 }
 
-            })*/
+            })
 
         //////////////////////
 
-        val systemGalleryMode: PictureSelectionSystemModel = PictureSelector.create(this)
+/*        val systemGalleryMode: PictureSelectionSystemModel = PictureSelector.create(this)
             .openSystemGallery(SelectMimeType.ofImage())
             .setSelectionMode(SelectModeConfig.MULTIPLE)
             .setCompressEngine(ImageFileCompressEngine())
@@ -126,7 +145,7 @@ class TestActivity :PermissionActivity(){
             })
             //.setPermissionDescriptionListener(getPermissionDescriptionListener())
             .setSandboxFileEngine(MeSandboxFileEngine())
-        systemGalleryMode.forSystemResult(MeOnResultCallbackListener())
+        systemGalleryMode.forSystemResult(MeOnResultCallbackListener())*/
     }
 
     private class MeOnResultCallbackListener : OnResultCallbackListener<LocalMedia> {

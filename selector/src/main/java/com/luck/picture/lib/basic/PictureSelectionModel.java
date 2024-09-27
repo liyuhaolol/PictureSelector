@@ -2,12 +2,17 @@ package com.luck.picture.lib.basic;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Build;
 import android.provider.MediaStore;
 import android.text.TextUtils;
+import android.util.Log;
 
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.PickVisualMediaRequest;
 import androidx.activity.result.contract.ActivityResultContract;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
@@ -29,6 +34,7 @@ import com.luck.picture.lib.engine.CropEngine;
 import com.luck.picture.lib.engine.CropFileEngine;
 import com.luck.picture.lib.engine.ExtendLoaderEngine;
 import com.luck.picture.lib.engine.ImageEngine;
+import com.luck.picture.lib.engine.OpenGalleryEngine;
 import com.luck.picture.lib.engine.SandboxFileEngine;
 import com.luck.picture.lib.engine.UriToFileTransformEngine;
 import com.luck.picture.lib.engine.VideoPlayerEngine;
@@ -197,6 +203,11 @@ public final class PictureSelectionModel {
      */
     public PictureSelectionModel setCropEngine(CropFileEngine engine) {
         selectionConfig.cropFileEngine = engine;
+        return this;
+    }
+
+    public PictureSelectionModel setOpenGalleryEngine(OpenGalleryEngine engine) {
+        selectionConfig.openGalleryEngine = engine;
         return this;
     }
 
@@ -1404,7 +1415,7 @@ public final class PictureSelectionModel {
      */
     public void forResult(OnResultCallbackListener<LocalMedia> call) {
         if (!DoubleUtils.isFastDoubleClick()) {
-            Activity activity = selector.getActivity();
+            AppCompatActivity activity = (AppCompatActivity) selector.getActivity();
             if (activity == null) {
                 throw new NullPointerException("Activity cannot be null");
             }
@@ -1418,10 +1429,18 @@ public final class PictureSelectionModel {
             if (selectionConfig.imageEngine == null && selectionConfig.chooseMode != SelectMimeType.ofAudio()) {
                 throw new NullPointerException("imageEngine is null,Please implement ImageEngine");
             }
-            Intent intent = new Intent(activity, PictureSelectorSupporterActivity.class);
-            activity.startActivity(intent);
-            PictureWindowAnimationStyle windowAnimationStyle = selectionConfig.selectorStyle.getWindowAnimationStyle();
-            activity.overridePendingTransition(windowAnimationStyle.activityEnterAnimation, R.anim.ps_anim_fade_in);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                if (selectionConfig.openGalleryEngine.pickMedia != null){
+                    selectionConfig.openGalleryEngine.pickMedia.launch(new PickVisualMediaRequest.Builder()
+                            .setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE)
+                            .build());
+                }
+            }else{
+                Intent intent = new Intent(activity, PictureSelectorSupporterActivity.class);
+                activity.startActivity(intent);
+                PictureWindowAnimationStyle windowAnimationStyle = selectionConfig.selectorStyle.getWindowAnimationStyle();
+                activity.overridePendingTransition(windowAnimationStyle.activityEnterAnimation, R.anim.ps_anim_fade_in);
+            }
         }
     }
 

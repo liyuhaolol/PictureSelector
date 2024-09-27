@@ -11,6 +11,7 @@ import com.luck.picture.lib.engine.CropEngine;
 import com.luck.picture.lib.engine.CropFileEngine;
 import com.luck.picture.lib.engine.ExtendLoaderEngine;
 import com.luck.picture.lib.engine.ImageEngine;
+import com.luck.picture.lib.engine.OpenGalleryEngine;
 import com.luck.picture.lib.engine.SandboxFileEngine;
 import com.luck.picture.lib.engine.UriToFileTransformEngine;
 import com.luck.picture.lib.engine.VideoPlayerEngine;
@@ -145,6 +146,7 @@ public final class SelectorConfig {
     public boolean isUseSystemVideoPlayer;
     public boolean isNewKeyBackMode;
     public PictureSelectorStyle selectorStyle;
+    public OpenGalleryEngine openGalleryEngine;
 
     public SelectorConfig() {
         initDefaultValue();
