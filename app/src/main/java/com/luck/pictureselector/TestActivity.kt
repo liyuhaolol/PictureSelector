@@ -52,16 +52,16 @@ class TestActivity :PermissionActivity(){
 
         psm = PictureSelector.create(this)
             .openGallery(SelectMimeType.ofImage())
+            .isGif(false)
+            .setSelectionMode(SelectModeConfig.SINGLE)
             .setSelectorUIStyle(UpPictureSelectorStyle())
             .setImageEngine(GlideEngine.createGlideEngine())
             .isDisplayCamera(false)
             .setCropEngine(ImageFileCropEngine())
             .setCompressEngine(ImageFileCompressEngine())
-            .setOpenGalleryEngine(OpenGalleryEngine(this))
-            .setSelectionMode(SelectModeConfig.SINGLE)
             .isDirectReturnSingle(true)
             .setCameraInterceptListener(MeOnCameraInterceptListener())
-            .isGif(false)
+            .setOpenGalleryEngine(OpenGalleryEngine(this))
             .setPermissionsInterceptListener(object : OnPermissionsInterceptListener {
                 override fun requestPermission(
                     fragment: Fragment,
