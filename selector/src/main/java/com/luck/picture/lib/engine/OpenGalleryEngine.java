@@ -24,4 +24,6 @@ public class OpenGalleryEngine {
             }
         });
     }
+
+    protected void dispatchTransformResult(){}
 }
