@@ -5,31 +5,31 @@ ext {
 
             //open version control
             androidSupportVersion         : "27.0.2",
-            version_recyclerview          : "1.2.1",
-            version_appcompat             : "1.3.1",
+            version_recyclerview          : "1.3.2",
+            version_appcompat             : "1.7.0",
             activity_version              : "1.3.1",
             fragment_version              : "1.3.1",
-            viewpage2                     : "1.0.0",
+            viewpage2                     : "1.1.0",
             constraintlayout              : "2.1.4",
-            exoplayer                     : "2.18.0",
-            transition                    : "1.4.1",
-            okhttp                        : "3.12.13",
-            gson                          : "2.8.6",
-            futures                       : "1.1.0",
+            exoplayer                     : "2.19.1",
+            transition                    : "1.5.1",
+            okhttp                        : "4.12.0",
+            gson                          : "2.10.1",
+            futures                       : "1.2.0",
 
             experimental_version          : "1.1.0",
             futures_version               : "1.1.0",
 
-            exifinterface_version         : "1.3.3",
+            exifinterface_version         : "1.3.7",
 
             // glide
-            glide_version                 : "4.15.1",
+            glide_version                 : "4.16.0",
 
             // picasso
             picasso_version               : "2.71828",
 
             // coil
-            coil_version                  : "2.1.0"
+            coil_version                  : "2.7.0"
 
     ]
 }

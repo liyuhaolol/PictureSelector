@@ -1,18 +1,13 @@
 apply plugin: 'com.android.application'
 apply plugin: 'org.jetbrains.kotlin.android'
 
-static def releaseTime() {
-    def date = new Date()
-    return date.format("yyyy-MM-dd") + "_" + date.format("hhmmss")
-}
-
 android {
-    compileSdk 34
+    compileSdk 35
 
     defaultConfig {
         applicationId "com.luck.pictureselector"
         minSdk 21
-        targetSdk 34
+        targetSdk 35
         versionCode cfgs.versionCode
         versionName cfgs.versionName
     }
@@ -38,19 +33,6 @@ android {
             signingConfig signingConfigs.pictureSelectorKey
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
-
-        applicationVariants.all { variant ->
-            variant.outputs.all { output ->
-                if ('release' == variant.buildType.name) {
-                    def outputFile = output.outputFile
-                    if (outputFile != null && outputFile.name.endsWith('.apk')) {
-                        def time = releaseTime()
-                        def fileName = "demo_${time}${"_" + versionName}.apk"
-                        outputFileName = fileName
-                    }
-                }
-            }
-        }
     }
 
     sourceSets {
@@ -59,19 +41,23 @@ android {
         }
     }
 
-    dexOptions {
-        javaMaxHeapSize "4g"
-    }
-
     lintOptions {
         checkReleaseBuilds false
         abortOnError false
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
     }
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+    buildFeatures {
+        viewBinding = true
+        buildConfig = true
+    }
+    namespace 'com.luck.pictureselector'
 }
 
 dependencies {
@@ -80,11 +66,11 @@ dependencies {
     implementation project(':ucrop')
     implementation project(":camerax")
     implementation project(":ijkplayer-java")
-    implementation 'androidx.navigation:navigation-fragment-ktx:2.3.5'
-    implementation 'androidx.navigation:navigation-ui-ktx:2.3.5'
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.8.1'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.8.1'
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.8'
     implementation 'com.davemorrissey.labs:subsampling-scale-image-view-androidx:3.10.0'
-    implementation "androidx.appcompat:appcompat:1.4.2"
+    implementation "androidx.appcompat:appcompat:1.7.0"
     implementation "com.google.android.exoplayer:exoplayer:${cfgs.exoplayer}"
     implementation "androidx.constraintlayout:constraintlayout:${cfgs.constraintlayout}"
     implementation "androidx.recyclerview:recyclerview:${cfgs.version_recyclerview}"

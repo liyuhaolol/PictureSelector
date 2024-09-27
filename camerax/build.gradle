@@ -3,11 +3,11 @@ plugins {
 }
 
 android {
-    compileSdkVersion 31
+    compileSdkVersion 35
 
     defaultConfig {
         minSdkVersion 21
-        targetSdkVersion 31
+        targetSdkVersion 35
 
         consumerProguardFiles "consumer-rules.pro"
     }
@@ -19,16 +19,19 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
     }
+    buildFeatures {
+        viewBinding = true
+        buildConfig = true
+    }
+    namespace 'com.luck.lib.camerax'
 }
 
 ext {
     PUBLISH_ARTIFACT_ID = "camerax"
 }
-
-apply from: '../publish.gradle'
 
 dependencies {
     def camerax_version = "1.2.1"

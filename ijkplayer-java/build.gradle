@@ -3,16 +3,15 @@ apply plugin: 'com.android.library'
 android {
     // http://tools.android.com/tech-docs/new-build-system/tips
     //noinspection GroovyAssignabilityCheck
-    compileSdkVersion 30
+    compileSdkVersion 35
     //noinspection GroovyAssignabilityCheck
-    buildToolsVersion "30.0.3"
 
     lintOptions {
         abortOnError false
     }
     defaultConfig {
         minSdkVersion 9
-        targetSdkVersion 30
+        targetSdkVersion 35
     }
     buildTypes {
         release {
@@ -20,6 +19,16 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
+
+    buildFeatures {
+        viewBinding = true
+        buildConfig = true
+    }
+    namespace 'tv.danmaku.ijk.media.player'
 }
 
 dependencies {
