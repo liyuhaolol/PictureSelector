@@ -1423,14 +1423,10 @@ public final class PictureSelectionModel {
             if (selectionConfig.imageEngine == null && selectionConfig.chooseMode != SelectMimeType.ofAudio()) {
                 throw new NullPointerException("imageEngine is null,Please implement ImageEngine");
             }
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-
-            }else{
-                Intent intent = new Intent(activity, PictureSelectorSupporterActivity.class);
-                activity.startActivity(intent);
-                PictureWindowAnimationStyle windowAnimationStyle = selectionConfig.selectorStyle.getWindowAnimationStyle();
-                activity.overridePendingTransition(windowAnimationStyle.activityEnterAnimation, R.anim.ps_anim_fade_in);
-            }
+            Intent intent = new Intent(activity, PictureSelectorSupporterActivity.class);
+            activity.startActivity(intent);
+            PictureWindowAnimationStyle windowAnimationStyle = selectionConfig.selectorStyle.getWindowAnimationStyle();
+            activity.overridePendingTransition(windowAnimationStyle.activityEnterAnimation, R.anim.ps_anim_fade_in);
         }
     }
 
