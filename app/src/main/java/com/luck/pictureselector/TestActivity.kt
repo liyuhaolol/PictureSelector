@@ -1,26 +1,19 @@
 package com.luck.pictureselector
 
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
-import androidx.activity.result.ActivityResultCallback
-import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.PickVisualMediaRequest
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import com.luck.picture.lib.basic.PictureSelectionModel
 import com.luck.picture.lib.basic.PictureSelector
 import com.luck.picture.lib.config.SelectMimeType
 import com.luck.picture.lib.config.SelectModeConfig
-import com.luck.picture.lib.engine.OpenGalleryEngine
 import com.luck.picture.lib.entity.LocalMedia
 import com.luck.picture.lib.interfaces.OnPermissionsInterceptListener
 import com.luck.picture.lib.interfaces.OnRequestPermissionListener
 import com.luck.picture.lib.interfaces.OnResultCallbackListener
 import com.luck.picture.lib.utils.PictureFileUtils
 import com.luck.pictureselector.databinding.ActivityTestBinding
-import com.luck.pictureselector.test.ImageFileCompressEngine
 import com.luck.pictureselector.test.ImageFileCropEngine
 import com.luck.pictureselector.test.MeOnCameraInterceptListener
 import com.luck.pictureselector.test.UpPictureSelectorStyle
@@ -54,15 +47,15 @@ class TestActivity :PermissionActivity(){
         psm = PictureSelector.create(this)
             .openGallery(SelectMimeType.ofImage())
             .isGif(false)
-            .setSelectionMode(SelectModeConfig.SINGLE)
+            .setSelectionMode(SelectModeConfig.MULTIPLE)
+            .setSelectMaxFileSize(5)
             .setSelectorUIStyle(UpPictureSelectorStyle())
             .setImageEngine(GlideEngine.createGlideEngine())
             .isDisplayCamera(false)
-            .setCropEngine(ImageFileCropEngine())
+            .setCropEngine(ImageFileCropEngine(this))
             //.setCompressEngine(ImageFileCompressEngine())
-            .isDirectReturnSingle(true)
+            //.isDirectReturnSingle(true)
             .setCameraInterceptListener(MeOnCameraInterceptListener())
-            .setOpenGalleryEngine(OpenGalleryEngine(this))
             .setPermissionsInterceptListener(object : OnPermissionsInterceptListener {
                 override fun requestPermission(
                     fragment: Fragment,

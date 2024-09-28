@@ -17,7 +17,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.yalantis.ucrop.listener.OnResultListener;
 import com.yalantis.ucrop.model.AspectRatio;
 
 import java.util.ArrayList;
@@ -56,11 +55,6 @@ public class UCrop {
     private Intent mCropIntent;
     private Bundle mCropOptionsBundle;
 
-    private OnResultListener listener;
-
-    public void setOnResultListener(OnResultListener listener){
-        this.listener = listener;
-    }
 
     private static UCrop instance;
 

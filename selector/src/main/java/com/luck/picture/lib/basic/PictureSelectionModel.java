@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Build;
 import android.provider.MediaStore;
 import android.text.TextUtils;
-import android.util.Log;
 
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
@@ -34,7 +33,6 @@ import com.luck.picture.lib.engine.CropEngine;
 import com.luck.picture.lib.engine.CropFileEngine;
 import com.luck.picture.lib.engine.ExtendLoaderEngine;
 import com.luck.picture.lib.engine.ImageEngine;
-import com.luck.picture.lib.engine.OpenGalleryEngine;
 import com.luck.picture.lib.engine.SandboxFileEngine;
 import com.luck.picture.lib.engine.UriToFileTransformEngine;
 import com.luck.picture.lib.engine.VideoPlayerEngine;
@@ -206,10 +204,6 @@ public final class PictureSelectionModel {
         return this;
     }
 
-    public PictureSelectionModel setOpenGalleryEngine(OpenGalleryEngine engine) {
-        selectionConfig.openGalleryEngine = engine;
-        return this;
-    }
 
     /**
      * App Sandbox file path transform
@@ -1430,11 +1424,7 @@ public final class PictureSelectionModel {
                 throw new NullPointerException("imageEngine is null,Please implement ImageEngine");
             }
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                if (selectionConfig.openGalleryEngine.pickMedia != null){
-                    selectionConfig.openGalleryEngine.pickMedia.launch(new PickVisualMediaRequest.Builder()
-                            .setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE)
-                            .build());
-                }
+
             }else{
                 Intent intent = new Intent(activity, PictureSelectorSupporterActivity.class);
                 activity.startActivity(intent);

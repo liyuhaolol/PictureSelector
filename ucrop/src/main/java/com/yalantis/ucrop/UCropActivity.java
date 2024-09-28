@@ -730,18 +730,6 @@ public class UCropActivity extends AppCompatActivity {
                 .putExtra(UCrop.EXTRA_OUTPUT_OFFSET_X, offsetX)
                 .putExtra(UCrop.EXTRA_OUTPUT_OFFSET_Y, offsetY)
                 .putExtra(UCrop.EXTRA_CROP_INPUT_ORIGINAL, FileUtils.getInputPath(inputUri));
-        ListenerContainer listener = ListenerContainer.getInstance();
-        if (listener != null) {
-            Log.e("qwer","listener不为空");
-            if (listener.getOnResultListener() != null){
-                Log.e("qwer","监听不为空");
-                listener.getOnResultListener().onResult(intent);
-            }else{
-                Log.e("qwer","监听为空");
-            }
-        }else{
-            Log.e("qwer","listener为空");
-        }
         setResult(RESULT_OK, intent);
     }
 

@@ -1574,41 +1574,6 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
             uCrop.start(fragment.requireActivity(), fragment, requestCode);
         }
 
-        @Override
-        public void onStartCrop(Activity activity, Uri srcUri, Uri destinationUri, ArrayList<String> dataSource, int requestCode) {
-            UCrop.Options options = buildOptions();
-            UCrop uCrop = UCrop.of(srcUri, destinationUri, dataSource);
-            uCrop.withOptions(options);
-            uCrop.setImageEngine(new UCropImageEngine() {
-                @Override
-                public void loadImage(Context context, String url, ImageView imageView) {
-                    if (!ImageLoaderUtils.assertValidRequest(context)) {
-                        return;
-                    }
-                    Glide.with(context).load(url).override(180, 180).into(imageView);
-                }
-
-                @Override
-                public void loadImage(Context context, Uri url, int maxWidth, int maxHeight, OnCallbackListener<Bitmap> call) {
-                    Glide.with(context).asBitmap().load(url).override(maxWidth, maxHeight).into(new CustomTarget<Bitmap>() {
-                        @Override
-                        public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
-                            if (call != null) {
-                                call.onCall(resource);
-                            }
-                        }
-
-                        @Override
-                        public void onLoadCleared(@Nullable Drawable placeholder) {
-                            if (call != null) {
-                                call.onCall(null);
-                            }
-                        }
-                    });
-                }
-            });
-            activity.startActivityForResult(uCrop.getIntent(activity),requestCode);
-        }
     }
 
     /**
