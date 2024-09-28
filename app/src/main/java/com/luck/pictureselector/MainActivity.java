@@ -1573,6 +1573,42 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
             });
             uCrop.start(fragment.requireActivity(), fragment, requestCode);
         }
+
+        @Override
+        public void onStartCrop(Activity activity, Uri srcUri, Uri destinationUri, ArrayList<String> dataSource, int requestCode) {
+            UCrop.Options options = buildOptions();
+            UCrop uCrop = UCrop.of(srcUri, destinationUri, dataSource);
+            uCrop.withOptions(options);
+            uCrop.setImageEngine(new UCropImageEngine() {
+                @Override
+                public void loadImage(Context context, String url, ImageView imageView) {
+                    if (!ImageLoaderUtils.assertValidRequest(context)) {
+                        return;
+                    }
+                    Glide.with(context).load(url).override(180, 180).into(imageView);
+                }
+
+                @Override
+                public void loadImage(Context context, Uri url, int maxWidth, int maxHeight, OnCallbackListener<Bitmap> call) {
+                    Glide.with(context).asBitmap().load(url).override(maxWidth, maxHeight).into(new CustomTarget<Bitmap>() {
+                        @Override
+                        public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                            if (call != null) {
+                                call.onCall(resource);
+                            }
+                        }
+
+                        @Override
+                        public void onLoadCleared(@Nullable Drawable placeholder) {
+                            if (call != null) {
+                                call.onCall(null);
+                            }
+                        }
+                    });
+                }
+            });
+            activity.startActivityForResult(uCrop.getIntent(activity),requestCode);
+        }
     }
 
     /**
@@ -1615,6 +1651,42 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
                 }
             });
             uCrop.start(fragment.requireActivity(), fragment, requestCode);
+        }
+
+        @Override
+        public void onStartCrop(Activity activity, LocalMedia currentLocalMedia, ArrayList<LocalMedia> dataSource, int requestCode) {
+            String currentCropPath = currentLocalMedia.getAvailablePath();
+            Uri inputUri;
+            if (PictureMimeType.isContent(currentCropPath) || PictureMimeType.isHasHttp(currentCropPath)) {
+                inputUri = Uri.parse(currentCropPath);
+            } else {
+                inputUri = Uri.fromFile(new File(currentCropPath));
+            }
+            String fileName = DateUtils.getCreateFileName("CROP_") + ".jpg";
+            Uri destinationUri = Uri.fromFile(new File(getSandboxPath(), fileName));
+            UCrop.Options options = buildOptions();
+            ArrayList<String> dataCropSource = new ArrayList<>();
+            for (int i = 0; i < dataSource.size(); i++) {
+                LocalMedia media = dataSource.get(i);
+                dataCropSource.add(media.getAvailablePath());
+            }
+            UCrop uCrop = UCrop.of(inputUri, destinationUri, dataCropSource);
+            //options.setMultipleCropAspectRatio(buildAspectRatios(dataSource.size()));
+            uCrop.withOptions(options);
+            uCrop.setImageEngine(new UCropImageEngine() {
+                @Override
+                public void loadImage(Context context, String url, ImageView imageView) {
+                    if (!ImageLoaderUtils.assertValidRequest(context)) {
+                        return;
+                    }
+                    Glide.with(context).load(url).override(180, 180).into(imageView);
+                }
+
+                @Override
+                public void loadImage(Context context, Uri url, int maxWidth, int maxHeight, OnCallbackListener<Bitmap> call) {
+                }
+            });
+            activity.startActivityForResult(uCrop.getIntent(activity),requestCode);
         }
     }
 

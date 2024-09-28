@@ -24,6 +24,7 @@ import com.luck.pictureselector.test.ImageFileCompressEngine
 import com.luck.pictureselector.test.ImageFileCropEngine
 import com.luck.pictureselector.test.MeOnCameraInterceptListener
 import com.luck.pictureselector.test.UpPictureSelectorStyle
+import spa.lyh.cn.lib_image.app.ImageLoadUtil
 import spa.lyh.cn.peractivity.ManifestPro
 import spa.lyh.cn.peractivity.PermissionActivity
 
@@ -58,7 +59,7 @@ class TestActivity :PermissionActivity(){
             .setImageEngine(GlideEngine.createGlideEngine())
             .isDisplayCamera(false)
             .setCropEngine(ImageFileCropEngine())
-            .setCompressEngine(ImageFileCompressEngine())
+            //.setCompressEngine(ImageFileCompressEngine())
             .isDirectReturnSingle(true)
             .setCameraInterceptListener(MeOnCameraInterceptListener())
             .setOpenGalleryEngine(OpenGalleryEngine(this))
@@ -79,18 +80,6 @@ class TestActivity :PermissionActivity(){
                 }
             })
 
-/*        pickMedia =
-            registerForActivityResult<PickVisualMediaRequest, Uri>(
-                ActivityResultContracts.PickVisualMedia(),
-                ActivityResultCallback<Uri> { uri: Uri? ->
-                    // Callback is invoked after the user selects a media item or closes the
-                    // photo picker.
-                    if (uri != null) {
-                        Log.e("qwer", "Selected URI: $uri")
-                    } else {
-                        Log.e("qwer", "No media selected")
-                    }
-                })*/
     }
 
     override fun permissionAllowed() {
@@ -104,7 +93,7 @@ class TestActivity :PermissionActivity(){
             psm.forResult(object : OnResultCallbackListener<LocalMedia?> {
                 override fun onResult(result: ArrayList<LocalMedia?>?) {
                     if (result != null){
-                        b.show.text = "选择了${result.size}个图片或视频"
+                        ImageLoadUtil.displayImage(this@TestActivity,result[0]!!.cutPath,b.img)
                     }
                 }
 

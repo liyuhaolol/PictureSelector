@@ -1,6 +1,8 @@
 package com.luck.picture.lib.engine;
 
 
+import android.app.Activity;
+
 import androidx.fragment.app.Fragment;
 
 import com.luck.picture.lib.config.Crop;
@@ -40,5 +42,7 @@ public interface CropEngine {
      * @param requestCode       Activity result code or fragment result code
      */
     void onStartCrop(Fragment fragment, LocalMedia currentLocalMedia, ArrayList<LocalMedia> dataSource, int requestCode);
+
+    void onStartCrop(Activity activity, LocalMedia currentLocalMedia, ArrayList<LocalMedia> dataSource, int requestCode);
 
 }

@@ -722,15 +722,27 @@ public class UCropActivity extends AppCompatActivity {
 
     protected void setResultUri(Uri uri, float resultAspectRatio, int offsetX, int offsetY, int imageWidth, int imageHeight) {
         Uri inputUri = getIntent().getParcelableExtra(UCrop.EXTRA_INPUT_URI);
-        setResult(RESULT_OK, new Intent()
+        Intent intent = new Intent()
                 .putExtra(UCrop.EXTRA_OUTPUT_URI, uri)
                 .putExtra(UCrop.EXTRA_OUTPUT_CROP_ASPECT_RATIO, resultAspectRatio)
                 .putExtra(UCrop.EXTRA_OUTPUT_IMAGE_WIDTH, imageWidth)
                 .putExtra(UCrop.EXTRA_OUTPUT_IMAGE_HEIGHT, imageHeight)
                 .putExtra(UCrop.EXTRA_OUTPUT_OFFSET_X, offsetX)
                 .putExtra(UCrop.EXTRA_OUTPUT_OFFSET_Y, offsetY)
-                .putExtra(UCrop.EXTRA_CROP_INPUT_ORIGINAL, FileUtils.getInputPath(inputUri))
-        );
+                .putExtra(UCrop.EXTRA_CROP_INPUT_ORIGINAL, FileUtils.getInputPath(inputUri));
+        ListenerContainer listener = ListenerContainer.getInstance();
+        if (listener != null) {
+            Log.e("qwer","listener不为空");
+            if (listener.getOnResultListener() != null){
+                Log.e("qwer","监听不为空");
+                listener.getOnResultListener().onResult(intent);
+            }else{
+                Log.e("qwer","监听为空");
+            }
+        }else{
+            Log.e("qwer","listener为空");
+        }
+        setResult(RESULT_OK, intent);
     }
 
     protected void setResultError(Throwable throwable) {
