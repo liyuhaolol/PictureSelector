@@ -1,4 +1,4 @@
-package com.luck.pictureselector.test;
+package com.luck.pictureselector.newlib;
 
 import android.content.Context;
 import android.widget.ImageView;

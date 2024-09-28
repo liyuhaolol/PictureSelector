@@ -2,7 +2,6 @@ package com.luck.pictureselector
 
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import com.luck.picture.lib.basic.PictureSelectionModel
 import com.luck.picture.lib.basic.PictureSelector
@@ -12,11 +11,12 @@ import com.luck.picture.lib.entity.LocalMedia
 import com.luck.picture.lib.interfaces.OnPermissionsInterceptListener
 import com.luck.picture.lib.interfaces.OnRequestPermissionListener
 import com.luck.picture.lib.interfaces.OnResultCallbackListener
-import com.luck.picture.lib.utils.PictureFileUtils
 import com.luck.pictureselector.databinding.ActivityTestBinding
-import com.luck.pictureselector.test.ImageFileCropEngine
-import com.luck.pictureselector.test.MeOnCameraInterceptListener
-import com.luck.pictureselector.test.UpPictureSelectorStyle
+import com.luck.pictureselector.newlib.ImageFileCompressEngine
+import com.luck.pictureselector.newlib.ImageFileCropEngine
+import com.luck.pictureselector.newlib.MeOnCameraInterceptListener
+import com.luck.pictureselector.newlib.out.PicChooser
+import com.luck.pictureselector.newlib.out.style.UpPictureSelectorStyle
 import spa.lyh.cn.lib_image.app.ImageLoadUtil
 import spa.lyh.cn.peractivity.ManifestPro
 import spa.lyh.cn.peractivity.PermissionActivity
@@ -26,6 +26,7 @@ class TestActivity :PermissionActivity(){
     var mark = 1
     lateinit var psm: PictureSelectionModel
     //lateinit var pickMedia: ActivityResultLauncher<PickVisualMediaRequest>
+    lateinit var pc:PicChooser
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,18 +44,18 @@ class TestActivity :PermissionActivity(){
                 mark = 1
             }
         }
-
-        psm = PictureSelector.create(this)
+//if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+/*        psm = PictureSelector.create(this)
             .openGallery(SelectMimeType.ofImage())
             .isGif(false)
             .setSelectionMode(SelectModeConfig.MULTIPLE)
-            .setSelectMaxFileSize(5)
+            .setMaxSelectNum(5)
             .setSelectorUIStyle(UpPictureSelectorStyle())
             .setImageEngine(GlideEngine.createGlideEngine())
             .isDisplayCamera(false)
             .setCropEngine(ImageFileCropEngine(this))
             //.setCompressEngine(ImageFileCompressEngine())
-            //.isDirectReturnSingle(true)
+            .isDirectReturnSingle(true)
             .setCameraInterceptListener(MeOnCameraInterceptListener())
             .setPermissionsInterceptListener(object : OnPermissionsInterceptListener {
                 override fun requestPermission(
@@ -71,7 +72,16 @@ class TestActivity :PermissionActivity(){
                 ): Boolean {
                     return true
                 }
-            })
+            })*/
+        pc = PicChooser.create(this)
+            .openGallery(SelectMimeType.ofImage())
+            .isGif(false)
+            .setSelectionMode(SelectModeConfig.MULTIPLE)
+            .setMaxSelectNum(5)
+            .setSelectorUIStyle(UpPictureSelectorStyle())
+            .setCropEngine(ImageFileCropEngine(this))
+            //.setCompressEngine(ImageFileCompressEngine())
+            .build()
 
     }
 
@@ -83,7 +93,7 @@ class TestActivity :PermissionActivity(){
     }
 
     fun openPhoto(){
-            psm.forResult(object : OnResultCallbackListener<LocalMedia?> {
+/*            psm.forResult(object : OnResultCallbackListener<LocalMedia?> {
                 override fun onResult(result: ArrayList<LocalMedia?>?) {
                     if (result != null){
                         ImageLoadUtil.displayImage(this@TestActivity,result[0]!!.cutPath,b.img)
@@ -94,86 +104,22 @@ class TestActivity :PermissionActivity(){
 
                 }
 
-            })
+            })*/
 
-        //////////////////////
-
-/*        val systemGalleryMode: PictureSelectionSystemModel = PictureSelector.create(this)
-            .openSystemGallery(SelectMimeType.ofImage())
-            .setSelectionMode(SelectModeConfig.MULTIPLE)
-            .setCompressEngine(ImageFileCompressEngine())
-            .setCropEngine(ImageFileCropEngine())
-            //.setSkipCropMimeType(*getNotSupportCrop())
-            .setSelectLimitTipsListener(MeOnSelectLimitTipsListener())
-            //.setAddBitmapWatermarkListener(getAddBitmapWatermarkListener())
-            //.setVideoThumbnailListener(getVideoThumbnailEventListener())
-            //.setCustomLoadingListener(getCustomLoadingListener())
-            .isOriginalControl(true)
-            .setPermissionsInterceptListener(object : OnPermissionsInterceptListener {
-                override fun requestPermission(
-                    fragment: Fragment,
-                    permissionArray: Array<String>,
-                    call: OnRequestPermissionListener
-                ) {
-                    call.onCall(permissionArray, true)
+        pc.forResult(object : OnResultCallbackListener<LocalMedia?> {
+            override fun onResult(result: ArrayList<LocalMedia?>?) {
+                if (result != null){
+                    ImageLoadUtil.displayImage(this@TestActivity,result[0]!!.cutPath,b.img)
                 }
-
-                override fun hasPermissions(
-                    fragment: Fragment,
-                    permissionArray: Array<String>
-                ): Boolean {
-                    return true
-                }
-            })
-            //.setPermissionDescriptionListener(getPermissionDescriptionListener())
-            .setSandboxFileEngine(MeSandboxFileEngine())
-        systemGalleryMode.forSystemResult(MeOnResultCallbackListener())*/
-    }
-
-    private class MeOnResultCallbackListener : OnResultCallbackListener<LocalMedia> {
-        override fun onResult(result: java.util.ArrayList<LocalMedia>) {
-            analyticalSelectResults(result)
-        }
-
-        override fun onCancel() {
-            Log.e("qwer", "PictureSelector Cancel")
-        }
-
-        private fun analyticalSelectResults(result: java.util.ArrayList<LocalMedia>) {
-            for (media in result) {
-                /*if (media.width == 0 || media.height == 0) {
-                    if (PictureMimeType.isHasImage(media.mimeType)) {
-                        val imageExtraInfo = MediaUtils.getImageSize(getContext(), media.path)
-                        media.width = imageExtraInfo.width
-                        media.height = imageExtraInfo.height
-                    } else if (PictureMimeType.isHasVideo(media.mimeType)) {
-                        val videoExtraInfo = MediaUtils.getVideoSize(getContext(), media.path)
-                        media.width = videoExtraInfo.width
-                        media.height = videoExtraInfo.height
-                    }
-                }*/
-                Log.e("qwer", "文件名: " + media.fileName)
-                Log.e("qwer", "是否压缩:" + media.isCompressed)
-                Log.e("qwer", "压缩:" + media.compressPath)
-                Log.e("qwer", "初始路径:" + media.path)
-                Log.e("qwer", "绝对路径:" + media.realPath)
-                Log.e("qwer", "是否裁剪:" + media.isCut)
-                Log.e("qwer", "裁剪路径:" + media.cutPath)
-                Log.e("qwer", "是否开启原图:" + media.isOriginal)
-                Log.e("qwer", "原图路径:" + media.originalPath)
-                Log.e("qwer", "沙盒路径:" + media.sandboxPath)
-                Log.e("qwer", "水印路径:" + media.watermarkPath)
-                Log.e("qwer", "视频缩略图:" + media.videoThumbnailPath)
-                Log.e("qwer", "原始宽高: " + media.width + "x" + media.height)
-                Log.e("qwer",
-                    "裁剪宽高: " + media.cropImageWidth + "x" + media.cropImageHeight
-                )
-                Log.e("qwer",
-                    "文件大小: " + PictureFileUtils.formatAccurateUnitFileSize(media.size)
-                )
-                Log.e("qwer", "文件时长: " + media.duration)
             }
-        }
+
+            override fun onCancel() {
+
+            }
+
+        })
     }
+
+
 
 }

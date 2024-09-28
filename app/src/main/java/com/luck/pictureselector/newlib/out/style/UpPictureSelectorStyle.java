@@ -1,4 +1,4 @@
-package com.luck.pictureselector.test;
+package com.luck.pictureselector.newlib.out.style;
 
 
 import com.luck.picture.lib.style.PictureSelectorStyle;
