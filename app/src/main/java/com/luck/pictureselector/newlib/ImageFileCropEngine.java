@@ -33,6 +33,7 @@ import com.luck.picture.lib.utils.BitmapUtils;
 import com.luck.picture.lib.utils.DateUtils;
 import com.luck.picture.lib.utils.FileDirMap;
 import com.luck.picture.lib.utils.SdkVersionUtils;
+import com.luck.pictureselector.newlib.out.PicChooser;
 import com.yalantis.ucrop.UCrop;
 import com.yalantis.ucrop.UCropImageEngine;
 
@@ -81,7 +82,7 @@ public class ImageFileCropEngine implements CropFileEngine {
         Uri destinationUri = null;
         ArrayList<String> dataCropSource = new ArrayList<>();
         for (int i = 0; i < Uris.size(); i++) {
-            LocalMedia media = buildLocalMedia(activity,Uris.get(i).toString());
+            LocalMedia media = PicChooser.getInstance(activity).buildLocalMedia(activity,Uris.get(i).toString());
             dataCropSource.add(media.getAvailablePath());
             if (srcUri == null && PictureMimeType.isHasImage(media.getMimeType())) {
                 String currentCropPath = media.getAvailablePath();
@@ -135,20 +136,7 @@ public class ImageFileCropEngine implements CropFileEngine {
         return uCrop;
     }
 
-    protected LocalMedia buildLocalMedia(Activity activity,String absolutePath) {
-        SelectorConfig selectorConfig = SelectorProviders.getInstance().getSelectorConfig();
-        LocalMedia media = LocalMedia.generateLocalMedia(activity, absolutePath);
-        media.setChooseModel(selectorConfig.chooseMode);
-        if (SdkVersionUtils.isQ() && !PictureMimeType.isContent(absolutePath)) {
-            media.setSandboxPath(absolutePath);
-        } else {
-            media.setSandboxPath(null);
-        }
-        if (selectorConfig.isCameraRotateImage && PictureMimeType.isHasImage(media.getMimeType())) {
-            BitmapUtils.rotateImage(activity, absolutePath);
-        }
-        return media;
-    }
+
 
 
     /**

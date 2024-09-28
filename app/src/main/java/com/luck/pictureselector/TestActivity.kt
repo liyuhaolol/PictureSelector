@@ -2,21 +2,16 @@ package com.luck.pictureselector
 
 import android.os.Build
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import com.luck.picture.lib.basic.PictureSelectionModel
-import com.luck.picture.lib.basic.PictureSelector
 import com.luck.picture.lib.config.SelectMimeType
 import com.luck.picture.lib.config.SelectModeConfig
 import com.luck.picture.lib.entity.LocalMedia
-import com.luck.picture.lib.interfaces.OnPermissionsInterceptListener
-import com.luck.picture.lib.interfaces.OnRequestPermissionListener
 import com.luck.picture.lib.interfaces.OnResultCallbackListener
 import com.luck.pictureselector.databinding.ActivityTestBinding
-import com.luck.pictureselector.newlib.ImageFileCompressEngine
+import com.luck.pictureselector.newlib.AndroidGalleryEngine
 import com.luck.pictureselector.newlib.ImageFileCropEngine
-import com.luck.pictureselector.newlib.MeOnCameraInterceptListener
 import com.luck.pictureselector.newlib.out.PicChooser
-import com.luck.pictureselector.newlib.out.style.UpPictureSelectorStyle
+import com.luck.pictureselector.newlib.UpPictureSelectorStyle
 import spa.lyh.cn.lib_image.app.ImageLoadUtil
 import spa.lyh.cn.peractivity.ManifestPro
 import spa.lyh.cn.peractivity.PermissionActivity
@@ -73,15 +68,16 @@ class TestActivity :PermissionActivity(){
                     return true
                 }
             })*/
-        pc = PicChooser.create(this)
+        pc = PicChooser.getInstance(this)
             .openGallery(SelectMimeType.ofImage())
             .isGif(false)
-            .setSelectionMode(SelectModeConfig.MULTIPLE)
+            .setSelectionMode(SelectModeConfig.SINGLE)
             .setMaxSelectNum(5)
             .setSelectorUIStyle(UpPictureSelectorStyle())
+            .setOpenGalleryEngine(AndroidGalleryEngine(this))
             .setCropEngine(ImageFileCropEngine(this))
             //.setCompressEngine(ImageFileCompressEngine())
-            .build()
+
 
     }
 
@@ -109,7 +105,7 @@ class TestActivity :PermissionActivity(){
         pc.forResult(object : OnResultCallbackListener<LocalMedia?> {
             override fun onResult(result: ArrayList<LocalMedia?>?) {
                 if (result != null){
-                    ImageLoadUtil.displayImage(this@TestActivity,result[0]!!.cutPath,b.img)
+                    ImageLoadUtil.displayImage(this@TestActivity,result[0]!!.realPath,b.img)
                 }
             }
 
