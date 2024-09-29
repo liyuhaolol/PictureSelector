@@ -11,6 +11,7 @@ import com.luck.picture.lib.config.CustomIntentKey;
 import com.luck.picture.lib.entity.LocalMedia;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author：luck
@@ -43,6 +44,8 @@ public interface CropFileEngine {
      * @param requestCode    Activity result code or fragment result code
      */
     void onStartCrop(Fragment fragment, Uri srcUri, Uri destinationUri, ArrayList<String> dataSource, int requestCode);
+
+    void onStartCrop(Activity activity, List<Uri> Uris);
 
 
 }

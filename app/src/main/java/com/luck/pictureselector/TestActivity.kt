@@ -2,11 +2,14 @@ package com.luck.pictureselector
 
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.luck.picture.lib.basic.PictureSelectionModel
 import com.luck.picture.lib.config.SelectMimeType
 import com.luck.picture.lib.config.SelectModeConfig
 import com.luck.picture.lib.entity.LocalMedia
 import com.luck.picture.lib.interfaces.OnResultCallbackListener
+import com.luck.pictureselector.adapter.TestAdapter
 import com.luck.pictureselector.databinding.ActivityTestBinding
 import com.luck.pictureselector.newlib.AndroidGalleryEngine
 import com.luck.pictureselector.newlib.ImageFileCropEngine
@@ -20,8 +23,11 @@ class TestActivity :PermissionActivity(){
     lateinit var b:ActivityTestBinding
     var mark = 1
     lateinit var psm: PictureSelectionModel
-    //lateinit var pickMedia: ActivityResultLauncher<PickVisualMediaRequest>
     lateinit var pc:PicChooser
+
+    lateinit var testAdapter: TestAdapter
+    var list:ArrayList<String> = arrayListOf()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,6 +37,9 @@ class TestActivity :PermissionActivity(){
     }
 
     fun initView(){
+        testAdapter = TestAdapter(this,list)
+        b.recy.layoutManager = LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false)
+        b.recy.adapter = testAdapter
         b.btnOpenGalley.setOnClickListener{
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 openPhoto()
@@ -39,35 +48,6 @@ class TestActivity :PermissionActivity(){
                 mark = 1
             }
         }
-//if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-/*        psm = PictureSelector.create(this)
-            .openGallery(SelectMimeType.ofImage())
-            .isGif(false)
-            .setSelectionMode(SelectModeConfig.MULTIPLE)
-            .setMaxSelectNum(5)
-            .setSelectorUIStyle(UpPictureSelectorStyle())
-            .setImageEngine(GlideEngine.createGlideEngine())
-            .isDisplayCamera(false)
-            .setCropEngine(ImageFileCropEngine(this))
-            //.setCompressEngine(ImageFileCompressEngine())
-            .isDirectReturnSingle(true)
-            .setCameraInterceptListener(MeOnCameraInterceptListener())
-            .setPermissionsInterceptListener(object : OnPermissionsInterceptListener {
-                override fun requestPermission(
-                    fragment: Fragment,
-                    permissionArray: Array<String>,
-                    call: OnRequestPermissionListener
-                ) {
-                    call.onCall(permissionArray, true)
-                }
-
-                override fun hasPermissions(
-                    fragment: Fragment,
-                    permissionArray: Array<String>
-                ): Boolean {
-                    return true
-                }
-            })*/
         pc = PicChooser.getInstance(this)
             .openGallery(SelectMimeType.ofImage())
             .isGif(false)
@@ -89,28 +69,21 @@ class TestActivity :PermissionActivity(){
     }
 
     fun openPhoto(){
-/*            psm.forResult(object : OnResultCallbackListener<LocalMedia?> {
-                override fun onResult(result: ArrayList<LocalMedia?>?) {
-                    if (result != null){
-                        ImageLoadUtil.displayImage(this@TestActivity,result[0]!!.cutPath,b.img)
-                    }
-                }
-
-                override fun onCancel() {
-
-                }
-
-            })*/
-
-        pc.forResult(object : OnResultCallbackListener<LocalMedia?> {
+        val no = 5-list.size
+        pc.setMaxSelectNum(no)
+        pc.forResult(this,object : OnResultCallbackListener<LocalMedia?> {
             override fun onResult(result: ArrayList<LocalMedia?>?) {
                 if (result != null){
-                    ImageLoadUtil.displayImage(this@TestActivity,result[0]!!.realPath,b.img)
+                    list.clear()
+                    for (localMedia in result){
+                        list.add(localMedia!!.cutPath)
+                    }
+                    testAdapter.notifyDataSetChanged()
                 }
             }
 
             override fun onCancel() {
-
+                Log.e("qwer","整体被取消了")
             }
 
         })

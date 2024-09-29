@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.provider.MediaStore;
+import android.text.TextUtils;
 import android.util.Log;
 import android.widget.ImageView;
 
@@ -23,6 +25,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.luck.picture.lib.config.Crop;
+import com.luck.picture.lib.config.CustomIntentKey;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.SelectMimeType;
 import com.luck.picture.lib.config.SelectorConfig;
@@ -37,6 +40,9 @@ import com.luck.pictureselector.newlib.out.PicChooser;
 import com.yalantis.ucrop.UCrop;
 import com.yalantis.ucrop.UCropImageEngine;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -50,15 +56,61 @@ public class ImageFileCropEngine implements CropFileEngine {
                 new ActivityResultCallback<ActivityResult>() {
                     @Override
                     public void onActivityResult(ActivityResult result) {
+                        PicChooser picChooser = PicChooser.getInstance(activity);
                         if (result.getResultCode() == Activity.RESULT_OK){
-                            Log.e("qwer","成功");
-                            //Uri output = Crop.getOutput(result.getData());
-                            //Log.e("qwer",output.toString());
+                            if (picChooser.mediaList.size() == 1){
+                                LocalMedia media = picChooser.mediaList.get(0);
+                                assert result.getData() != null;
+                                Uri output = Crop.getOutput(result.getData());
+                                media.setCutPath(output != null ? output.getPath() : "");
+                                media.setCut(!TextUtils.isEmpty(media.getCutPath()));
+                                media.setCropImageWidth(Crop.getOutputImageWidth(result.getData()));
+                                media.setCropImageHeight(Crop.getOutputImageHeight(result.getData()));
+                                media.setCropOffsetX(Crop.getOutputImageOffsetX(result.getData()));
+                                media.setCropOffsetY(Crop.getOutputImageOffsetY(result.getData()));
+                                media.setCropResultAspectRatio(Crop.getOutputCropAspectRatio(result.getData()));
+                                media.setCustomData(Crop.getOutputCustomExtraData(result.getData()));
+                                media.setSandboxPath(media.getCutPath());
+                            }else{
+                                assert result.getData() != null;
+                                String extra = result.getData().getStringExtra(MediaStore.EXTRA_OUTPUT);
+                                if (TextUtils.isEmpty(extra)) {
+                                    extra = result.getData().getStringExtra(CustomIntentKey.EXTRA_OUTPUT_URI);
+                                }
+                                try {
+                                    JSONArray array = new JSONArray(extra);
+                                    if (array.length() == picChooser.mediaList.size()) {
+                                        for (int i = 0; i < picChooser.mediaList.size(); i++) {
+                                            LocalMedia media = picChooser.mediaList.get(i);
+                                            JSONObject item = array.optJSONObject(i);
+                                            media.setCutPath(item.optString(CustomIntentKey.EXTRA_OUT_PUT_PATH));
+                                            media.setCut(!TextUtils.isEmpty(media.getCutPath()));
+                                            media.setCropImageWidth(item.optInt(CustomIntentKey.EXTRA_IMAGE_WIDTH));
+                                            media.setCropImageHeight(item.optInt(CustomIntentKey.EXTRA_IMAGE_HEIGHT));
+                                            media.setCropOffsetX(item.optInt(CustomIntentKey.EXTRA_OFFSET_X));
+                                            media.setCropOffsetY(item.optInt(CustomIntentKey.EXTRA_OFFSET_Y));
+                                            media.setCropResultAspectRatio((float) item.optDouble(CustomIntentKey.EXTRA_ASPECT_RATIO));
+                                            media.setCustomData(item.optString(CustomIntentKey.EXTRA_CUSTOM_EXTRA_DATA));
+                                            media.setSandboxPath(media.getCutPath());
+                                        }
+                                    }
+                                }catch (Exception e){
+                                    e.printStackTrace();
+                                }
+                            }
+                            if(picChooser.compressFileEngine != null){
 
+                            }else{
+                                if (picChooser.callback != null){
+                                    picChooser.callback.onResult(picChooser.mediaList);
+                                }
+                            }
                         }else if(result.getResultCode() == Crop.RESULT_CROP_ERROR){
-                            Log.e("qwer","错误");
+                            Log.e("ImageFileCropEngine","图片裁剪出现错误");
                         }else if(result.getResultCode() == Activity.RESULT_CANCELED){
-                            Log.e("qwer","取消");
+                           if (picChooser.callback != null){
+                               picChooser.callback.onCancel();
+                           }
                         }
                     }
                 }
@@ -71,12 +123,8 @@ public class ImageFileCropEngine implements CropFileEngine {
         uCrop.start(fragment.requireActivity(), fragment, requestCode);
     }
 
-    public void onStartCrop(Activity activity, Uri srcUri) {
-        ArrayList<Uri> uris = new ArrayList<>();
-        uris.add(srcUri);
-        onStartCrop(activity,uris);
-    }
 
+    @Override
     public void onStartCrop(Activity activity, List<Uri> Uris) {
         Uri srcUri = null;
         Uri destinationUri = null;

@@ -1574,6 +1574,11 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
             uCrop.start(fragment.requireActivity(), fragment, requestCode);
         }
 
+        @Override
+        public void onStartCrop(Activity activity, List<Uri> Uris) {
+
+        }
+
     }
 
     /**

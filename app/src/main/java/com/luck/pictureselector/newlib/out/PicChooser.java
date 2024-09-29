@@ -34,13 +34,14 @@ public class PicChooser {
     public int chooseMode = SelectMimeType.ofAll();
     public boolean isGif = true;
     public int selectionMode = SelectModeConfig.MULTIPLE;
-    public int maxSelectNum = 2;
+    public int maxSelectNum = 1;
     public CropFileEngine cropFileEngine = null;
     public CompressFileEngine compressFileEngine = null;
     private PictureSelectionModel model = null;
     private PictureSelectorStyle uiStyle = null;
-    private AndroidGalleryEngine androidGalleryEngine = null;
+    public AndroidGalleryEngine androidGalleryEngine = null;
     public OnResultCallbackListener<LocalMedia> callback = null;
+    public ArrayList<LocalMedia> mediaList;
 
     private static PicChooser instance;
 
@@ -56,6 +57,7 @@ public class PicChooser {
 
     private PicChooser(Activity activity){
         this.activity = activity;
+        mediaList = new ArrayList<>();
     }
 /*    public static PicChooser create(Activity activity) {
         return new PicChooser(activity);
@@ -78,6 +80,9 @@ public class PicChooser {
 
     public PicChooser setMaxSelectNum(int maxSelectNum) {
         this.maxSelectNum = maxSelectNum;
+        if (androidGalleryEngine != null && androidGalleryEngine.pickMultipleRequest != null){
+            androidGalleryEngine.pickMultipleRequest.updateMaxItems(maxSelectNum >0?maxSelectNum:1);
+        }
         return this;
     }
 
@@ -142,12 +147,16 @@ public class PicChooser {
                 });
     }
 
-    public void forResult(OnResultCallbackListener<LocalMedia> callback){
+    public void forResult(Activity activity,OnResultCallbackListener<LocalMedia> callback){
         this.callback = callback;
+        if (maxSelectNum == 1){
+            setSelectionMode(SelectModeConfig.SINGLE);
+        }
         build12();
+        mediaList.clear();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (androidGalleryEngine != null){
-                androidGalleryEngine.launch();
+                androidGalleryEngine.launch(activity);
             }else {
                 forResult12();
             }
