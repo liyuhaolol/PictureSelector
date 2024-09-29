@@ -22,7 +22,6 @@ import spa.lyh.cn.peractivity.PermissionActivity
 class TestActivity :PermissionActivity(){
     lateinit var b:ActivityTestBinding
     var mark = 1
-    lateinit var psm: PictureSelectionModel
     lateinit var pc: PicChooser
 
     lateinit var testAdapter: TestAdapter
@@ -52,11 +51,11 @@ class TestActivity :PermissionActivity(){
             .setImageEngine(GlideEngine.createGlideEngine())
             .openGallery(SelectMimeType.ofImage())
             .isGif(false)
-            .setSelectionMode(SelectModeConfig.MULTIPLE)
+            .setSelectionMode(SelectModeConfig.SINGLE)
             .setMaxSelectNum(5)
             .setSelectorUIStyle(UpPictureSelectorStyle())
             .setOpenGalleryEngine(AndroidGalleryEngine(this))
-            .setCropEngine(ImageFileCropEngine(this))
+            //.setCropEngine(ImageFileCropEngine(this))
             //.setCompressEngine(ImageFileCompressEngine())
 
 
@@ -77,7 +76,7 @@ class TestActivity :PermissionActivity(){
                 if (result != null){
                     list.clear()
                     for (localMedia in result){
-                        list.add(localMedia!!.cutPath)
+                        list.add(localMedia!!.realPath)
                     }
                     testAdapter.notifyDataSetChanged()
                 }

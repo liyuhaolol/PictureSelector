@@ -10,6 +10,7 @@ import androidx.activity.result.PickVisualMediaRequest;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.luck.picture.lib.config.SelectMimeType;
 import com.luck.picture.lib.config.SelectModeConfig;
 import com.luck.picture.lib.entity.LocalMedia;
 import spa.lyh.cn.chooser.PicChooser;
@@ -23,11 +24,13 @@ public class AndroidGalleryEngine implements OpenGalleryEngine {
     ActivityResultLauncher<PickVisualMediaRequest> pickMedia;
     ActivityResultLauncher<PickVisualMediaRequest> pickMultipleMedia;
     public PickMultipleRequest pickMultipleRequest;
+    private PickRequest pickRequest;
 
     public AndroidGalleryEngine(AppCompatActivity activity){
         PicChooser picChooser = PicChooser.getInstance(activity);
         if (pickMedia == null){
-            pickMedia = activity.registerForActivityResult(new PickRequest(), uri -> {
+            pickRequest = new PickRequest(FileMimeType.getImageMimeType(),FileMimeType.getImageAndVideoMimeType());
+            pickMedia = activity.registerForActivityResult(pickRequest, uri -> {
                 if (uri != null) {
                     LocalMedia media = PicChooser.getInstance(activity).buildLocalMedia(activity,uri.toString());
                     picChooser.mediaList.add(media);
@@ -79,13 +82,36 @@ public class AndroidGalleryEngine implements OpenGalleryEngine {
     @Override
     public void launch(Activity activity){
         PicChooser picChooser = PicChooser.getInstance(activity);
+        ActivityResultContracts.PickVisualMedia.VisualMediaType type;
+        if (picChooser.chooseMode == SelectMimeType.ofVideo()){
+            pickRequest.setChooseMode(SelectMimeType.ofVideo());
+            type = ActivityResultContracts.PickVisualMedia.VideoOnly.INSTANCE;
+        }else {
+            pickRequest.setGif(picChooser.isGif);
+            if (picChooser.isGif){
+                //show gif
+                if (picChooser.chooseMode == SelectMimeType.ofImage()){
+                    type = ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE;
+                }else {
+                    type = ActivityResultContracts.PickVisualMedia.ImageAndVideo.INSTANCE;
+                }
+            }else{
+                if (picChooser.chooseMode == SelectMimeType.ofImage()){
+                    pickRequest.setChooseMode(SelectMimeType.ofImage());
+                }else {
+                    pickRequest.setChooseMode(SelectMimeType.ofAll());
+                }
+                type = new ActivityResultContracts.PickVisualMedia.SingleMimeType("*/*");
+            }
+        }
+
         if (picChooser.selectionMode == SelectModeConfig.MULTIPLE){
             pickMultipleMedia.launch(new PickVisualMediaRequest.Builder()
-                    .setMediaType(ActivityResultContracts.PickVisualMedia.ImageAndVideo.INSTANCE)
+                    .setMediaType(type)
                     .build());
         }else {
             pickMedia.launch(new PickVisualMediaRequest.Builder()
-                    .setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE)
+                    .setMediaType(type)
                     .build());
         }
     }
