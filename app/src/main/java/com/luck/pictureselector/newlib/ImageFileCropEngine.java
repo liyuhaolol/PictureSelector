@@ -28,15 +28,12 @@ import com.luck.picture.lib.config.Crop;
 import com.luck.picture.lib.config.CustomIntentKey;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.SelectMimeType;
-import com.luck.picture.lib.config.SelectorConfig;
-import com.luck.picture.lib.config.SelectorProviders;
 import com.luck.picture.lib.engine.CropFileEngine;
 import com.luck.picture.lib.entity.LocalMedia;
-import com.luck.picture.lib.utils.BitmapUtils;
 import com.luck.picture.lib.utils.DateUtils;
 import com.luck.picture.lib.utils.FileDirMap;
-import com.luck.picture.lib.utils.SdkVersionUtils;
-import com.luck.pictureselector.newlib.out.PicChooser;
+
+import spa.lyh.cn.chooser.PicChooser;
 import com.yalantis.ucrop.UCrop;
 import com.yalantis.ucrop.UCropImageEngine;
 

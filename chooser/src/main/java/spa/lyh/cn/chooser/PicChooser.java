@@ -1,11 +1,10 @@
-package com.luck.pictureselector.newlib.out;
+package spa.lyh.cn.chooser;
 
 
 import android.app.Activity;
 import android.os.Build;
 import android.util.Log;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import com.luck.picture.lib.basic.PictureSelectionModel;
@@ -17,6 +16,7 @@ import com.luck.picture.lib.config.SelectorConfig;
 import com.luck.picture.lib.config.SelectorProviders;
 import com.luck.picture.lib.engine.CompressFileEngine;
 import com.luck.picture.lib.engine.CropFileEngine;
+import com.luck.picture.lib.engine.ImageEngine;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.interfaces.OnPermissionsInterceptListener;
 import com.luck.picture.lib.interfaces.OnRequestPermissionListener;
@@ -24,10 +24,10 @@ import com.luck.picture.lib.interfaces.OnResultCallbackListener;
 import com.luck.picture.lib.style.PictureSelectorStyle;
 import com.luck.picture.lib.utils.BitmapUtils;
 import com.luck.picture.lib.utils.SdkVersionUtils;
-import com.luck.pictureselector.GlideEngine;
-import com.luck.pictureselector.newlib.AndroidGalleryEngine;
 
 import java.util.ArrayList;
+
+import spa.lyh.cn.chooser.engine.OpenGalleryEngine;
 
 public class PicChooser {
     private Activity activity;
@@ -39,9 +39,10 @@ public class PicChooser {
     public CompressFileEngine compressFileEngine = null;
     private PictureSelectionModel model = null;
     private PictureSelectorStyle uiStyle = null;
-    public AndroidGalleryEngine androidGalleryEngine = null;
+    public OpenGalleryEngine openGalleryEngine = null;
     public OnResultCallbackListener<LocalMedia> callback = null;
     public ArrayList<LocalMedia> mediaList;
+    private ImageEngine imageEngine = null;
 
     private static PicChooser instance;
 
@@ -80,8 +81,8 @@ public class PicChooser {
 
     public PicChooser setMaxSelectNum(int maxSelectNum) {
         this.maxSelectNum = maxSelectNum;
-        if (androidGalleryEngine != null && androidGalleryEngine.pickMultipleRequest != null){
-            androidGalleryEngine.pickMultipleRequest.updateMaxItems(maxSelectNum >0?maxSelectNum:1);
+        if (openGalleryEngine != null){
+            openGalleryEngine.updateMaxItems(maxSelectNum);
         }
         return this;
     }
@@ -101,8 +102,13 @@ public class PicChooser {
         return this;
     }
 
-    public PicChooser setOpenGalleryEngine(AndroidGalleryEngine androidGalleryEngine) {
-        this.androidGalleryEngine = androidGalleryEngine;
+    public PicChooser setOpenGalleryEngine(OpenGalleryEngine openGalleryEngine) {
+        this.openGalleryEngine = openGalleryEngine;
+        return this;
+    }
+
+    public PicChooser setImageEngine(ImageEngine engine) {
+        this.imageEngine = engine;
         return this;
     }
 
@@ -128,7 +134,7 @@ public class PicChooser {
             model.setMaxSelectNum(maxSelectNum);
         }
         model.setSelectorUIStyle(uiStyle)
-                .setImageEngine(GlideEngine.createGlideEngine())
+                .setImageEngine(imageEngine)
                 .isDisplayCamera(false)
                 .setCropEngine(cropFileEngine)
                 .setCompressEngine(compressFileEngine)
@@ -155,8 +161,8 @@ public class PicChooser {
         build12();
         mediaList.clear();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            if (androidGalleryEngine != null){
-                androidGalleryEngine.launch(activity);
+            if (openGalleryEngine != null){
+                openGalleryEngine.launch(activity);
             }else {
                 forResult12();
             }

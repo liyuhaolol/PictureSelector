@@ -4,7 +4,6 @@ import static androidx.activity.result.ActivityResultCallerKt.registerForActivit
 
 import android.app.Activity;
 import android.net.Uri;
-import android.util.Log;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.PickVisualMediaRequest;
@@ -13,13 +12,14 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.luck.picture.lib.config.SelectModeConfig;
 import com.luck.picture.lib.entity.LocalMedia;
-import com.luck.pictureselector.newlib.out.PicChooser;
-import com.luck.pictureselector.newlib.out.PickMultipleRequest;
-import com.luck.pictureselector.newlib.out.PickRequest;
+import spa.lyh.cn.chooser.PicChooser;
+import spa.lyh.cn.chooser.engine.OpenGalleryEngine;
+import spa.lyh.cn.chooser.request.PickMultipleRequest;
+import spa.lyh.cn.chooser.request.PickRequest;
 
 import java.util.ArrayList;
 
-public class AndroidGalleryEngine {
+public class AndroidGalleryEngine implements OpenGalleryEngine {
     ActivityResultLauncher<PickVisualMediaRequest> pickMedia;
     ActivityResultLauncher<PickVisualMediaRequest> pickMultipleMedia;
     public PickMultipleRequest pickMultipleRequest;
@@ -76,6 +76,7 @@ public class AndroidGalleryEngine {
         }
     }
 
+    @Override
     public void launch(Activity activity){
         PicChooser picChooser = PicChooser.getInstance(activity);
         if (picChooser.selectionMode == SelectModeConfig.MULTIPLE){
@@ -86,6 +87,13 @@ public class AndroidGalleryEngine {
             pickMedia.launch(new PickVisualMediaRequest.Builder()
                     .setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE)
                     .build());
+        }
+    }
+
+    @Override
+    public void updateMaxItems(int maxSelectNum){
+        if (pickMultipleRequest != null){
+            pickMultipleRequest.updateMaxItems(maxSelectNum >0?maxSelectNum:1);
         }
     }
 

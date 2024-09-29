@@ -12,10 +12,10 @@ import com.luck.picture.lib.interfaces.OnResultCallbackListener
 import com.luck.pictureselector.adapter.TestAdapter
 import com.luck.pictureselector.databinding.ActivityTestBinding
 import com.luck.pictureselector.newlib.AndroidGalleryEngine
+import com.luck.pictureselector.newlib.GlideEngine
 import com.luck.pictureselector.newlib.ImageFileCropEngine
-import com.luck.pictureselector.newlib.out.PicChooser
+import spa.lyh.cn.chooser.PicChooser
 import com.luck.pictureselector.newlib.UpPictureSelectorStyle
-import spa.lyh.cn.lib_image.app.ImageLoadUtil
 import spa.lyh.cn.peractivity.ManifestPro
 import spa.lyh.cn.peractivity.PermissionActivity
 
@@ -23,7 +23,7 @@ class TestActivity :PermissionActivity(){
     lateinit var b:ActivityTestBinding
     var mark = 1
     lateinit var psm: PictureSelectionModel
-    lateinit var pc:PicChooser
+    lateinit var pc: PicChooser
 
     lateinit var testAdapter: TestAdapter
     var list:ArrayList<String> = arrayListOf()
@@ -49,9 +49,10 @@ class TestActivity :PermissionActivity(){
             }
         }
         pc = PicChooser.getInstance(this)
+            .setImageEngine(GlideEngine.createGlideEngine())
             .openGallery(SelectMimeType.ofImage())
             .isGif(false)
-            .setSelectionMode(SelectModeConfig.SINGLE)
+            .setSelectionMode(SelectModeConfig.MULTIPLE)
             .setMaxSelectNum(5)
             .setSelectorUIStyle(UpPictureSelectorStyle())
             .setOpenGalleryEngine(AndroidGalleryEngine(this))

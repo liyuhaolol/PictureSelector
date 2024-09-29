@@ -1,4 +1,4 @@
-package com.luck.pictureselector.newlib.out
+package spa.lyh.cn.chooser.request
 
 import android.content.Context
 import android.content.Intent
