@@ -13,6 +13,7 @@ import com.luck.pictureselector.adapter.TestAdapter
 import com.luck.pictureselector.databinding.ActivityTestBinding
 import com.luck.pictureselector.newlib.AndroidGalleryEngine
 import com.luck.pictureselector.newlib.GlideEngine
+import com.luck.pictureselector.newlib.ImageFileCompressEngine
 import com.luck.pictureselector.newlib.ImageFileCropEngine
 import spa.lyh.cn.chooser.PicChooser
 import com.luck.pictureselector.newlib.UpPictureSelectorStyle
@@ -51,12 +52,12 @@ class TestActivity :PermissionActivity(){
             .setImageEngine(GlideEngine.createGlideEngine())
             .openGallery(SelectMimeType.ofImage())
             .isGif(false)
-            .setSelectionMode(SelectModeConfig.SINGLE)
+            .setSelectionMode(SelectModeConfig.MULTIPLE)
             .setMaxSelectNum(5)
             .setSelectorUIStyle(UpPictureSelectorStyle())
             .setOpenGalleryEngine(AndroidGalleryEngine(this))
             //.setCropEngine(ImageFileCropEngine(this))
-            //.setCompressEngine(ImageFileCompressEngine())
+            .setCompressEngine(ImageFileCompressEngine())
 
 
     }
@@ -76,7 +77,7 @@ class TestActivity :PermissionActivity(){
                 if (result != null){
                     list.clear()
                     for (localMedia in result){
-                        list.add(localMedia!!.realPath)
+                        list.add(localMedia!!.compressPath)
                     }
                     testAdapter.notifyDataSetChanged()
                 }
