@@ -62,7 +62,8 @@ android {
 
 dependencies {
     implementation project(':compress')
-    implementation project(':ucrop')
+    //implementation project(':ucrop')
+    implementation("io.github.liyuhaolol:ucrop:v3.11.3")
     implementation project(":camerax")
     implementation project(":ijkplayer-java")
     implementation project(":chooser")
