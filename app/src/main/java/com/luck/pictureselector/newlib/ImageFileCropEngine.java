@@ -51,7 +51,9 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ImageFileCropEngine implements CropFileEngine {
     private ActivityResultLauncher<Intent> resultLauncher;
 
-    public ImageFileCropEngine(AppCompatActivity activity){
+
+    //这是给Andriod13以上原生图片选择器初始化ForActivityResult用的，需要在onCreate里调用。相机，或者三方相册不需要调用这个方法
+    public ImageFileCropEngine initResultLauncher(AppCompatActivity activity){
         resultLauncher = activity.registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 new ActivityResultCallback<ActivityResult>() {
@@ -109,13 +111,14 @@ public class ImageFileCropEngine implements CropFileEngine {
                         }else if(result.getResultCode() == Crop.RESULT_CROP_ERROR){
                             Log.e("ImageFileCropEngine","图片裁剪出现错误");
                         }else if(result.getResultCode() == Activity.RESULT_CANCELED){
-                           if (picChooser.callback != null){
-                               picChooser.callback.onCancel();
-                           }
+                            if (picChooser.callback != null){
+                                picChooser.callback.onCancel();
+                            }
                         }
                     }
                 }
         );
+        return this;
     }
 
     @Override
