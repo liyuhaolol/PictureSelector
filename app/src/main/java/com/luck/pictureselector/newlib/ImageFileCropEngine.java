@@ -30,10 +30,13 @@ import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.SelectMimeType;
 import com.luck.picture.lib.engine.CropFileEngine;
 import com.luck.picture.lib.entity.LocalMedia;
+import com.luck.picture.lib.interfaces.OnKeyValueResultCallbackListener;
 import com.luck.picture.lib.utils.DateUtils;
 import com.luck.picture.lib.utils.FileDirMap;
 
 import spa.lyh.cn.chooser.PicChooser;
+
+import com.luck.picture.lib.utils.SdkVersionUtils;
 import com.yalantis.ucrop.UCrop;
 import com.yalantis.ucrop.UCropImageEngine;
 
@@ -43,6 +46,7 @@ import org.json.JSONObject;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class ImageFileCropEngine implements CropFileEngine {
     private ActivityResultLauncher<Intent> resultLauncher;
@@ -96,7 +100,7 @@ public class ImageFileCropEngine implements CropFileEngine {
                                 }
                             }
                             if(picChooser.compressFileEngine != null){
-
+                                goCompress(activity,picChooser);
                             }else{
                                 if (picChooser.callback != null){
                                     picChooser.callback.onResult(picChooser.mediaList);
@@ -222,5 +226,57 @@ public class ImageFileCropEngine implements CropFileEngine {
         options.setToolbarColor(ContextCompat.getColor(context, com.luck.picture.lib.R.color.ps_color_grey));
         options.setToolbarWidgetColor(ContextCompat.getColor(context, com.luck.picture.lib.R.color.ps_color_white));
         return options;
+    }
+
+
+    private void goCompress(Activity activity,PicChooser picChooser){
+        ArrayList<Uri> uris = new ArrayList<>();
+        ConcurrentHashMap<String, LocalMedia> queue = new ConcurrentHashMap<>();
+        for (int i = 0; i < picChooser.mediaList.size(); i++) {
+            LocalMedia mediaC = picChooser.mediaList.get(i);
+            String availablePath = mediaC.getAvailablePath();
+            if (PictureMimeType.isHasImage(mediaC.getMimeType())) {
+                Uri a = PictureMimeType.isContent(availablePath) ? Uri.parse(availablePath) : Uri.fromFile(new File(availablePath));
+                uris.add(a);
+                queue.put(availablePath, mediaC);
+            }
+        }
+        if (queue.size() == 0) {
+            if (picChooser.callback != null){
+                picChooser.callback.onResult(picChooser.mediaList);
+            }
+        }else{
+            picChooser.compressFileEngine.onStartCompress(activity, uris, new OnKeyValueResultCallbackListener() {
+                @Override
+                public void onCallback(String srcPath, String compressPath) {
+                    if (TextUtils.isEmpty(srcPath)) {
+                        if (picChooser.callback != null){
+                            picChooser.callback.onResult(picChooser.mediaList);
+                        }
+                    } else {
+                        LocalMedia media = queue.get(srcPath);
+                        if (media != null) {
+                            if (SdkVersionUtils.isQ()){
+                                if (!TextUtils.isEmpty(compressPath) && (compressPath.contains("Android/data/")
+                                        || compressPath.contains("data/user/"))) {
+                                    media.setCompressPath(compressPath);
+                                    media.setCompressed(!TextUtils.isEmpty(compressPath));
+                                    media.setSandboxPath(media.getCompressPath());
+                                }
+                            } else {
+                                media.setCompressPath(compressPath);
+                                media.setCompressed(!TextUtils.isEmpty(compressPath));
+                            }
+                            queue.remove(srcPath);
+                        }
+                        if (queue.size() == 0) {
+                            if (picChooser.callback != null){
+                                picChooser.callback.onResult(picChooser.mediaList);
+                            }
+                        }
+                    }
+                }
+            });
+        }
     }
 }

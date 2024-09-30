@@ -56,7 +56,7 @@ class TestActivity :PermissionActivity(){
             .setMaxSelectNum(5)
             .setSelectorUIStyle(UpPictureSelectorStyle())
             .setOpenGalleryEngine(AndroidGalleryEngine(this))
-            //.setCropEngine(ImageFileCropEngine(this))
+            .setCropEngine(ImageFileCropEngine(this))
             .setCompressEngine(ImageFileCompressEngine())
 
 
