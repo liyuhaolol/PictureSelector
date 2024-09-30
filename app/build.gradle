@@ -66,7 +66,8 @@ dependencies {
     implementation("io.github.liyuhaolol:ucrop:v3.11.3")
     implementation project(":camerax")
     implementation project(":ijkplayer-java")
-    implementation project(":chooser")
+    //implementation project(":chooser")
+    implementation("io.github.liyuhaolol:PictureChooser:1.0.0")
     implementation 'androidx.navigation:navigation-fragment-ktx:2.8.1'
     implementation 'androidx.navigation:navigation-ui-ktx:2.8.1'
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.8'
