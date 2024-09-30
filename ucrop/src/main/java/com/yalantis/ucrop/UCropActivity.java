@@ -3,6 +3,7 @@ package com.yalantis.ucrop;
 import android.annotation.TargetApi;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.ColorFilter;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Animatable;
@@ -135,6 +136,8 @@ public class UCropActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         immersive();
         setContentView(R.layout.ucrop_activity_photobox);
+        RelativeLayout relativeLayout  = findViewById(R.id.ucrop_photobox);
+        relativeLayout.setBackgroundColor(mStatusBarColor);
         Intent intent = getIntent();
         setupViews(intent);
         setImageData(intent);

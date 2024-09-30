@@ -18,6 +18,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -93,6 +94,8 @@ public class UCropMultipleActivity extends AppCompatActivity implements UCropFra
         super.onCreate(savedInstanceState);
         immersive();
         setContentView(R.layout.ucrop_activity_multiple);
+        RelativeLayout relativeLayout = findViewById(R.id.ucrop_multiple);
+        relativeLayout.setBackgroundColor(mStatusBarColor);
         setupViews(getIntent());
         initCropFragments(getIntent());
     }
