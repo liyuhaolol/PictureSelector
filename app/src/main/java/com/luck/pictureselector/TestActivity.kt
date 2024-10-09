@@ -1,5 +1,6 @@
 package com.luck.pictureselector
 
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -19,6 +20,7 @@ import com.luck.pictureselector.newlib.UpPictureSelectorStyle
 import spa.lyh.cn.chooser.PicChooser
 import spa.lyh.cn.peractivity.ManifestPro
 import spa.lyh.cn.peractivity.PermissionActivity
+import spa.lyh.cn.utils_io.IOUtils
 
 
 class TestActivity :PermissionActivity(){
@@ -27,7 +29,7 @@ class TestActivity :PermissionActivity(){
     lateinit var pc: PicChooser
 
     lateinit var testAdapter: TestAdapter
-    var list:ArrayList<String> = arrayListOf()
+    var list:ArrayList<Uri> = arrayListOf()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -51,14 +53,14 @@ class TestActivity :PermissionActivity(){
         }
         pc = PicChooser.getInstance(this)
             .setImageEngine(GlideEngine.createGlideEngine())
-            .openGallery(SelectMimeType.ofImage())
+            .openGallery(SelectMimeType.ofAll())
             .isGif(false)
-            .setSelectionMode(SelectModeConfig.MULTIPLE)
-            .setMaxSelectNum(5)
+            .setSelectionMode(SelectModeConfig.SINGLE)
+            //.setMaxSelectNum(5)
             .setSelectorUIStyle(UpPictureSelectorStyle())
             .setOpenGalleryEngine(AndroidGalleryEngine(this))
-            .setCropEngine(ImageFileCropEngine().initResultLauncher(this))
-            .setCompressEngine(ImageFileCompressEngine())
+            //.setCropEngine(ImageFileCropEngine().initResultLauncher(this))
+            //.setCompressEngine(ImageFileCompressEngine())
 
 
     }
@@ -73,14 +75,15 @@ class TestActivity :PermissionActivity(){
     }
 
     fun openPhoto(){
-        val no = 5-list.size
-        pc.setMaxSelectNum(no)
+        //val no = 5-list.size
+        //pc.setMaxSelectNum(no)
         pc.forResult(this,object : OnResultCallbackListener<LocalMedia?> {
             override fun onResult(result: ArrayList<LocalMedia?>?) {
                 if (result != null){
                     list.clear()
                     for (localMedia in result){
-                        list.add(localMedia!!.compressPath)
+                        list.add(localMedia!!.uri)
+                        Log.e("qwer",localMedia.realPath)
                     }
                     testAdapter.notifyDataSetChanged()
                 }
@@ -97,14 +100,15 @@ class TestActivity :PermissionActivity(){
         PictureSelector.create(this)
             .openCamera(SelectMimeType.ofImage())
             .setCameraInterceptListener(MeOnCameraInterceptListener())
-            .setCropEngine(ImageFileCropEngine())
-            .setCompressEngine(ImageFileCompressEngine())
+            //.setCropEngine(ImageFileCropEngine())
+            //.setCompressEngine(ImageFileCompressEngine())
             .forResult(object : OnResultCallbackListener<LocalMedia?> {
                 override fun onResult(result: java.util.ArrayList<LocalMedia?>?) {
                     if (result != null){
                         list.clear()
                         for (localMedia in result){
-                            list.add(localMedia!!.compressPath)
+                            list.add(IOUtils.getFileUri(this@TestActivity,localMedia!!.realPath))
+                            Log.e("qwer",localMedia.realPath)
                         }
                         testAdapter.notifyDataSetChanged()
                     }

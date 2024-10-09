@@ -2,8 +2,12 @@ package com.luck.pictureselector.newlib;
 
 
 import android.app.Activity;
+import android.content.Context;
+import android.database.Cursor;
 import android.net.Uri;
+import android.provider.MediaStore;
 import android.text.TextUtils;
+import android.util.Log;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.PickVisualMediaRequest;
@@ -21,6 +25,7 @@ import spa.lyh.cn.chooser.PicChooser;
 import spa.lyh.cn.chooser.engine.OpenGalleryEngine;
 import spa.lyh.cn.chooser.request.PickMultipleRequest;
 import spa.lyh.cn.chooser.request.PickRequest;
+import spa.lyh.cn.utils_io.IOUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -39,6 +44,7 @@ public class AndroidGalleryEngine implements OpenGalleryEngine {
             pickMedia = activity.registerForActivityResult(pickRequest, uri -> {
                 if (uri != null) {
                     LocalMedia media = PicChooser.getInstance(activity).buildLocalMedia(activity,uri.toString());
+                    media.setUri(uri);
                     picChooser.mediaList.add(media);
                     if (picChooser.cropFileEngine != null){
                         ArrayList<Uri> uris = new ArrayList<>();
@@ -65,6 +71,7 @@ public class AndroidGalleryEngine implements OpenGalleryEngine {
                 if (!uris.isEmpty()) {
                     for (Uri uri : uris){
                         LocalMedia media = PicChooser.getInstance(activity).buildLocalMedia(activity,uri.toString());
+                        media.setUri(uri);
                         picChooser.mediaList.add(media);
                     }
                     if (picChooser.cropFileEngine != null){
