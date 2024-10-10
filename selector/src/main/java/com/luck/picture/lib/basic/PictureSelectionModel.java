@@ -2,16 +2,12 @@ package com.luck.picture.lib.basic;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.os.Build;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.PickVisualMediaRequest;
 import androidx.activity.result.contract.ActivityResultContract;
-import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
@@ -1409,7 +1405,7 @@ public final class PictureSelectionModel {
      */
     public void forResult(OnResultCallbackListener<LocalMedia> call) {
         if (!DoubleUtils.isFastDoubleClick()) {
-            AppCompatActivity activity = (AppCompatActivity) selector.getActivity();
+            Activity activity = selector.getActivity();
             if (activity == null) {
                 throw new NullPointerException("Activity cannot be null");
             }

@@ -25,7 +25,6 @@ import spa.lyh.cn.chooser.PicChooser;
 import spa.lyh.cn.chooser.engine.OpenGalleryEngine;
 import spa.lyh.cn.chooser.request.PickMultipleRequest;
 import spa.lyh.cn.chooser.request.PickRequest;
-import spa.lyh.cn.utils_io.IOUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -66,7 +65,7 @@ public class AndroidGalleryEngine implements OpenGalleryEngine {
         }
 
         if (pickMultipleMedia == null){
-            pickMultipleRequest = new PickMultipleRequest(2,FileMimeType.getImageMimeType(),FileMimeType.getImageAndVideoMimeType());
+            pickMultipleRequest = new PickMultipleRequest(picChooser.maxSelectNum>1?picChooser.maxSelectNum:2,FileMimeType.getImageMimeType(),FileMimeType.getImageAndVideoMimeType());
             pickMultipleMedia = activity.registerForActivityResult(pickMultipleRequest, uris -> {
                 if (!uris.isEmpty()) {
                     for (Uri uri : uris){

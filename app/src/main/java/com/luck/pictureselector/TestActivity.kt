@@ -21,6 +21,9 @@ import spa.lyh.cn.chooser.PicChooser
 import spa.lyh.cn.peractivity.ManifestPro
 import spa.lyh.cn.peractivity.PermissionActivity
 import spa.lyh.cn.utils_io.IOUtils
+import java.io.File
+import java.io.FileInputStream
+import java.io.FileNotFoundException
 
 
 class TestActivity :PermissionActivity(){
@@ -82,8 +85,9 @@ class TestActivity :PermissionActivity(){
                 if (result != null){
                     list.clear()
                     for (localMedia in result){
-                        list.add(localMedia!!.uri)
-                        Log.e("qwer",localMedia.realPath)
+                        val path = localMedia!!.realPath
+                        Log.e("qwer",path)
+                        list.add(localMedia.uri)
                     }
                     testAdapter.notifyDataSetChanged()
                 }
@@ -107,8 +111,10 @@ class TestActivity :PermissionActivity(){
                     if (result != null){
                         list.clear()
                         for (localMedia in result){
-                            list.add(IOUtils.getFileUri(this@TestActivity,localMedia!!.realPath))
-                            Log.e("qwer",localMedia.realPath)
+                            val path = localMedia!!.realPath
+                            Log.e("qwer",path)
+                            //list.add(IOUtils.getFileUri(this@TestActivity,localMedia!!.realPath))
+                            list.add(localMedia.uri)
                         }
                         testAdapter.notifyDataSetChanged()
                     }
