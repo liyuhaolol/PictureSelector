@@ -43,7 +43,6 @@ public class AndroidGalleryEngine implements OpenGalleryEngine {
             pickMedia = activity.registerForActivityResult(pickRequest, uri -> {
                 if (uri != null) {
                     LocalMedia media = PicChooser.getInstance(activity).buildLocalMedia(activity,uri.toString());
-                    media.setUri(uri);
                     picChooser.mediaList.add(media);
                     if (picChooser.cropFileEngine != null){
                         ArrayList<Uri> uris = new ArrayList<>();
@@ -70,7 +69,6 @@ public class AndroidGalleryEngine implements OpenGalleryEngine {
                 if (!uris.isEmpty()) {
                     for (Uri uri : uris){
                         LocalMedia media = PicChooser.getInstance(activity).buildLocalMedia(activity,uri.toString());
-                        media.setUri(uri);
                         picChooser.mediaList.add(media);
                     }
                     if (picChooser.cropFileEngine != null){

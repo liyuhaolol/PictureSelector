@@ -1159,10 +1159,6 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
                     copyOutputAudioToDir();
                 }
                 LocalMedia media = buildLocalMedia(selectorConfig.cameraPath);
-                if (intent != null){
-                    Uri outPutUri = intent.getParcelableExtra(MediaStore.EXTRA_OUTPUT);
-                    media.setUri(outPutUri);
-                }
                 media.setCameraSource(true);
                 return media;
             }

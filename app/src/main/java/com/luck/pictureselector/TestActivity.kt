@@ -32,7 +32,7 @@ class TestActivity :PermissionActivity(){
     lateinit var pc: PicChooser
 
     lateinit var testAdapter: TestAdapter
-    var list:ArrayList<Uri> = arrayListOf()
+    var list:ArrayList<String> = arrayListOf()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -58,8 +58,8 @@ class TestActivity :PermissionActivity(){
             .setImageEngine(GlideEngine.createGlideEngine())
             .openGallery(SelectMimeType.ofAll())
             .isGif(false)
-            .setSelectionMode(SelectModeConfig.SINGLE)
-            //.setMaxSelectNum(5)
+            .setSelectionMode(SelectModeConfig.MULTIPLE)
+            .setMaxSelectNum(5)
             .setSelectorUIStyle(UpPictureSelectorStyle())
             .setOpenGalleryEngine(AndroidGalleryEngine(this))
             //.setCropEngine(ImageFileCropEngine().initResultLauncher(this))
@@ -87,7 +87,7 @@ class TestActivity :PermissionActivity(){
                     for (localMedia in result){
                         val path = localMedia!!.realPath
                         Log.e("qwer",path)
-                        list.add(localMedia.uri)
+                        list.add(path)
                     }
                     testAdapter.notifyDataSetChanged()
                 }
@@ -113,8 +113,7 @@ class TestActivity :PermissionActivity(){
                         for (localMedia in result){
                             val path = localMedia!!.realPath
                             Log.e("qwer",path)
-                            //list.add(IOUtils.getFileUri(this@TestActivity,localMedia!!.realPath))
-                            list.add(localMedia.uri)
+                            list.add(path)
                         }
                         testAdapter.notifyDataSetChanged()
                     }

@@ -23,7 +23,6 @@ import java.io.File;
  */
 
 public class LocalMedia implements Parcelable {
-    private Uri uri;
     /**
      * file to ID
      */
@@ -204,7 +203,6 @@ public class LocalMedia implements Parcelable {
     }
 
     protected LocalMedia(Parcel in) {
-        uri = in.readParcelable(Uri.class.getClassLoader());
         id = in.readLong();
         path = in.readString();
         realPath = in.readString();
@@ -244,7 +242,6 @@ public class LocalMedia implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeParcelable(uri, flags);
         dest.writeLong(id);
         dest.writeString(path);
         dest.writeString(realPath);
@@ -449,14 +446,6 @@ public class LocalMedia implements Parcelable {
             path = getWatermarkPath();
         }
         return path;
-    }
-
-    public Uri getUri() {
-        return uri;
-    }
-
-    public void setUri(Uri uri) {
-        this.uri = uri;
     }
 
     public long getId() {

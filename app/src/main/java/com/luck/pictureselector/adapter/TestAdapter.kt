@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.luck.pictureselector.databinding.ItemImgBinding
 import spa.lyh.cn.lib_image.app.ImageLoadUtil
 
-class TestAdapter(val context: Context,val list:ArrayList<Uri>): RecyclerView.Adapter<TestAdapter.ViewHolder>() {
+class TestAdapter(val context: Context,val list:ArrayList<String>): RecyclerView.Adapter<TestAdapter.ViewHolder>() {
 
 
 
