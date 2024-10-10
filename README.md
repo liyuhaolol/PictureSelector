@@ -1,6 +1,72 @@
 # PictureSelector 3.0 
    A PictureSelector for Android platform, which supports obtaining pictures, videos, audio & photos from photo albums, cutting (single picture or multi picture cutting), compression, theme custom configuration and other functions, and supports dynamic access & an open source picture selection framework suitable for Android 5.0 + system<br> 
-   
+# 由于GooglePlay现在禁止非相册类或者视频音频编辑类App再使用，图片，视频，音频权限。导致三方相册库均无法使用，所以我在本库的基础上，Android13以上图片，视频的选择使用原生的PhotoPicker，但是后续裁切和压缩依然使用本库。
+
+## 更新日志
+- chooser 发布到`1.0.1`，封装原库的selector，Andriod13以上使用`PhotoPicker`，以下使用selector
+- ucrop 升级到`v3.11.3`，适配`Android15`的Edge2Edge
+
+# 简易使用说明
+- 引用方法
+```sh
+repositories {
+  google()
+  mavenCentral()
+}
+
+dependencies {
+  // PictureSelector basic (Necessary)
+  implementation 'io.github.liyuhaolol:PictureChooser:1.0.1'
+
+  // image compress library (Not necessary)
+  implementation 'io.github.lucksiege:compress:v3.11.2'
+
+  // uCrop library (Not necessary)
+  implementation 'io.github.liyuhaolol:ucrop:v3.11.3'
+
+  // simple camerax library (Not necessary)
+  implementation 'io.github.lucksiege:camerax:v3.11.2'
+}
+```
+- 原作者的PictureSelector使用方法和功能完全没有改动，可以继续按照原逻辑使用
+- Chooser仅跟进适配了图片，视频的单选多选，裁剪和压缩。其余功能均未适配。
+- 需要的权限
+```sh
+<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" 
+      android:maxSdkVersion="28"/>
+<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" 
+      android:maxSdkVersion="32"/>
+<uses-permission android:name="android.permission.RECORD_AUDIO" />可选
+<uses-permission android:name="android.permission.CAMERA" />可选
+<uses-permission android:name="android.permission.VIBRATE" />可选
+```
+- 只有在Android13以下才需要请求`android.permission.READ_EXTERNAL_STORAGE`权限，PhotoPicker选取图片不需要任何权限
+- 方法调用
+```sh
+PicChooser.getInstance(this)
+            .setImageEngine(GlideEngine.createGlideEngine())
+            .openGallery(SelectMimeType.ofAll())
+            .isGif(false)
+            .setSelectionMode(SelectModeConfig.MULTIPLE)
+            .setMaxSelectNum(5)
+            .setSelectorUIStyle(UpPictureSelectorStyle())
+            .setOpenGalleryEngine(AndroidGalleryEngine(this))
+            .setCropEngine(ImageFileCropEngine().initResultLauncher(this))
+            .setCompressEngine(ImageFileCompressEngine())
+            .forResult(this,object : OnResultCallbackListener<LocalMedia?> {
+            override fun onResult(result: ArrayList<LocalMedia?>?) {
+
+            }
+            override fun onCancel() {
+                
+            }
+        })
+```
+- 注意事项
+- 1，具体逻辑可以看`TestActivity`和`com.luck.pictureselector.newlib`下的文件，那些文件也是按照本库之前的范例进行了一些适配修改，复制粘贴即可。
+- 2，`AndroidGalleryEngine(this)`和`ImageFileCropEngine().initResultLauncher(this)`由于使用了`ActivityResultLauncher`所以必须在`Activity`的`onCreate`生命周期内完成初始化，否则项目会闪退
+- 其他玩意并不想解答，如果你发现不能用，或者用着不舒服就去自己魔改吧，我这里不接受任何issues。
+
    [简体中文🇨🇳](README_CN.md)
 
    [Download Demo Apk](https://github.com/LuckSiege/PictureSelector/raw/version_component/app/demo/demo_2023-12-17_060744_v3.11.2.apk)<br>
