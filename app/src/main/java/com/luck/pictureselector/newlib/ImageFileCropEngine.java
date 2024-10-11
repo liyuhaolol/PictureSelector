@@ -11,6 +11,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.widget.ImageView;
 
+import androidx.activity.ComponentActivity;
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
@@ -57,7 +58,7 @@ public class ImageFileCropEngine implements ChooserCropFileEngine {
 
 
     //这是给Andriod13以上原生图片选择器初始化ForActivityResult用的，需要在onCreate里调用。相机，或者三方相册不需要调用这个方法
-    public ImageFileCropEngine initResultLauncher(AppCompatActivity activity){
+    public ImageFileCropEngine initResultLauncher(ComponentActivity activity){
         resultLauncher = activity.registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 new ActivityResultCallback<ActivityResult>() {
@@ -107,6 +108,74 @@ public class ImageFileCropEngine implements ChooserCropFileEngine {
                             }
                             if(picChooser.compressFileEngine != null){
                                 goCompress(activity,picChooser);
+                            }else{
+                                if (picChooser.callback != null){
+                                    picChooser.callback.onResult(PicListData.getInstance().mediaList);
+                                }
+                            }
+                        }else if(result.getResultCode() == Crop.RESULT_CROP_ERROR){
+                            Log.e("ImageFileCropEngine","图片裁剪出现错误");
+                        }else if(result.getResultCode() == Activity.RESULT_CANCELED){
+                            if (picChooser.callback != null){
+                                picChooser.callback.onCancel();
+                            }
+                        }
+                    }
+                }
+        );
+        return this;
+    }
+
+    public ImageFileCropEngine initResultLauncher(Fragment fragment){
+        resultLauncher = fragment.registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                new ActivityResultCallback<ActivityResult>() {
+                    @Override
+                    public void onActivityResult(ActivityResult result) {
+                        PicListData picListData = PicListData.getInstance();
+                        if (result.getResultCode() == Activity.RESULT_OK){
+                            if (picListData.mediaList.size() == 1){
+                                LocalMedia media = picListData.mediaList.get(0);
+                                assert result.getData() != null;
+                                Uri output = Crop.getOutput(result.getData());
+                                media.setCutPath(output != null ? output.getPath() : "");
+                                media.setCut(!TextUtils.isEmpty(media.getCutPath()));
+                                media.setCropImageWidth(Crop.getOutputImageWidth(result.getData()));
+                                media.setCropImageHeight(Crop.getOutputImageHeight(result.getData()));
+                                media.setCropOffsetX(Crop.getOutputImageOffsetX(result.getData()));
+                                media.setCropOffsetY(Crop.getOutputImageOffsetY(result.getData()));
+                                media.setCropResultAspectRatio(Crop.getOutputCropAspectRatio(result.getData()));
+                                media.setCustomData(Crop.getOutputCustomExtraData(result.getData()));
+                                media.setSandboxPath(media.getCutPath());
+                            }else{
+                                assert result.getData() != null;
+                                String extra = result.getData().getStringExtra(MediaStore.EXTRA_OUTPUT);
+                                if (TextUtils.isEmpty(extra)) {
+                                    extra = result.getData().getStringExtra(CustomIntentKey.EXTRA_OUTPUT_URI);
+                                }
+                                try {
+                                    JSONArray array = new JSONArray(extra);
+                                    if (array.length() == picListData.mediaList.size()) {
+                                        for (int i = 0; i < picListData.mediaList.size(); i++) {
+                                            LocalMedia media = picListData.mediaList.get(i);
+                                            JSONObject item = array.optJSONObject(i);
+                                            media.setCutPath(item.optString(CustomIntentKey.EXTRA_OUT_PUT_PATH));
+                                            media.setCut(!TextUtils.isEmpty(media.getCutPath()));
+                                            media.setCropImageWidth(item.optInt(CustomIntentKey.EXTRA_IMAGE_WIDTH));
+                                            media.setCropImageHeight(item.optInt(CustomIntentKey.EXTRA_IMAGE_HEIGHT));
+                                            media.setCropOffsetX(item.optInt(CustomIntentKey.EXTRA_OFFSET_X));
+                                            media.setCropOffsetY(item.optInt(CustomIntentKey.EXTRA_OFFSET_Y));
+                                            media.setCropResultAspectRatio((float) item.optDouble(CustomIntentKey.EXTRA_ASPECT_RATIO));
+                                            media.setCustomData(item.optString(CustomIntentKey.EXTRA_CUSTOM_EXTRA_DATA));
+                                            media.setSandboxPath(media.getCutPath());
+                                        }
+                                    }
+                                }catch (Exception e){
+                                    e.printStackTrace();
+                                }
+                            }
+                            if(picChooser.compressFileEngine != null){
+                                goCompress(fragment.getActivity(),picChooser);
                             }else{
                                 if (picChooser.callback != null){
                                     picChooser.callback.onResult(PicListData.getInstance().mediaList);
@@ -241,7 +310,7 @@ public class ImageFileCropEngine implements ChooserCropFileEngine {
     }
 
 
-    private void goCompress(Activity activity,PicChooser picChooser){
+    private void goCompress(Context context,PicChooser picChooser){
         ArrayList<Uri> uris = new ArrayList<>();
         ConcurrentHashMap<String, LocalMedia> queue = new ConcurrentHashMap<>();
         for (int i = 0; i < PicListData.getInstance().mediaList.size(); i++) {
@@ -258,7 +327,7 @@ public class ImageFileCropEngine implements ChooserCropFileEngine {
                 picChooser.callback.onResult(PicListData.getInstance().mediaList);
             }
         }else{
-            picChooser.compressFileEngine.onStartCompress(activity, uris, new OnKeyValueResultCallbackListener() {
+            picChooser.compressFileEngine.onStartCompress(context, uris, new OnKeyValueResultCallbackListener() {
                 @Override
                 public void onCallback(String srcPath, String compressPath) {
                     if (TextUtils.isEmpty(srcPath)) {

@@ -64,7 +64,7 @@ public class AndroidGalleryEngine implements OpenGalleryEngine {
         }
 
         if (pickMultipleMedia == null){
-            pickMultipleRequest = new PickMultipleRequest(picChooser.maxSelectNum>1?picChooser.maxSelectNum:2,FileMimeType.getImageMimeType(),FileMimeType.getImageAndVideoMimeType());
+            pickMultipleRequest = new PickMultipleRequest(2,FileMimeType.getImageMimeType(),FileMimeType.getImageAndVideoMimeType());
             pickMultipleMedia = fragment.registerForActivityResult(pickMultipleRequest, uris -> {
                 if (!uris.isEmpty()) {
                     for (Uri uri : uris){
