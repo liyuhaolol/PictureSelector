@@ -40,12 +40,12 @@ public class AndroidGalleryEngine implements OpenGalleryEngine {
     private PickRequest pickRequest;
 
     public AndroidGalleryEngine(Fragment fragment){
-        PicChooser picChooser = PicChooser.getInstance(fragment.requireActivity());
+        PicChooser picChooser = PicChooser.getInstance();
         if (pickMedia == null){
             pickRequest = new PickRequest(FileMimeType.getImageMimeType(),FileMimeType.getImageAndVideoMimeType());
             pickMedia = fragment.registerForActivityResult(pickRequest, uri -> {
                 if (uri != null) {
-                    LocalMedia media = PicChooser.getInstance(fragment.requireActivity()).buildLocalMedia(fragment.requireActivity(),uri.toString());
+                    LocalMedia media = PicChooser.getInstance().buildLocalMedia(fragment.requireActivity(),uri.toString());
                     picChooser.mediaList.add(media);
                     if (picChooser.cropFileEngine != null){
                         ArrayList<Uri> uris = new ArrayList<>();
@@ -71,7 +71,7 @@ public class AndroidGalleryEngine implements OpenGalleryEngine {
             pickMultipleMedia = fragment.registerForActivityResult(pickMultipleRequest, uris -> {
                 if (!uris.isEmpty()) {
                     for (Uri uri : uris){
-                        LocalMedia media = PicChooser.getInstance(fragment.requireActivity()).buildLocalMedia(fragment.requireActivity(),uri.toString());
+                        LocalMedia media = PicChooser.getInstance().buildLocalMedia(fragment.requireActivity(),uri.toString());
                         picChooser.mediaList.add(media);
                     }
                     if (picChooser.cropFileEngine != null){
@@ -93,12 +93,12 @@ public class AndroidGalleryEngine implements OpenGalleryEngine {
 
     }
     public AndroidGalleryEngine(ComponentActivity activity){
-        PicChooser picChooser = PicChooser.getInstance(activity);
+        PicChooser picChooser = PicChooser.getInstance();
         if (pickMedia == null){
             pickRequest = new PickRequest(FileMimeType.getImageMimeType(),FileMimeType.getImageAndVideoMimeType());
             pickMedia = activity.registerForActivityResult(pickRequest, uri -> {
                 if (uri != null) {
-                    LocalMedia media = PicChooser.getInstance(activity).buildLocalMedia(activity,uri.toString());
+                    LocalMedia media = PicChooser.getInstance().buildLocalMedia(activity,uri.toString());
                     picChooser.mediaList.add(media);
                     if (picChooser.cropFileEngine != null){
                         ArrayList<Uri> uris = new ArrayList<>();
@@ -124,7 +124,7 @@ public class AndroidGalleryEngine implements OpenGalleryEngine {
             pickMultipleMedia = activity.registerForActivityResult(pickMultipleRequest, uris -> {
                 if (!uris.isEmpty()) {
                     for (Uri uri : uris){
-                        LocalMedia media = PicChooser.getInstance(activity).buildLocalMedia(activity,uri.toString());
+                        LocalMedia media = PicChooser.getInstance().buildLocalMedia(activity,uri.toString());
                         picChooser.mediaList.add(media);
                     }
                     if (picChooser.cropFileEngine != null){
@@ -147,9 +147,9 @@ public class AndroidGalleryEngine implements OpenGalleryEngine {
     }
 
     @Override
-    public void launch(Activity activity){
+    public void launch(){
         if (pickMedia != null && pickMultipleMedia != null){
-            PicChooser picChooser = PicChooser.getInstance(activity);
+            PicChooser picChooser = PicChooser.getInstance();
             ActivityResultContracts.PickVisualMedia.VisualMediaType type;
             if (picChooser.chooseMode == SelectMimeType.ofVideo()){
                 pickRequest.setChooseMode(SelectMimeType.ofVideo());

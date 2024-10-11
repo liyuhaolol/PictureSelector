@@ -59,7 +59,7 @@ public class ImageFileCropEngine implements CropFileEngine {
                 new ActivityResultCallback<ActivityResult>() {
                     @Override
                     public void onActivityResult(ActivityResult result) {
-                        PicChooser picChooser = PicChooser.getInstance(activity);
+                        PicChooser picChooser = PicChooser.getInstance();
                         if (result.getResultCode() == Activity.RESULT_OK){
                             if (picChooser.mediaList.size() == 1){
                                 LocalMedia media = picChooser.mediaList.get(0);
@@ -134,7 +134,7 @@ public class ImageFileCropEngine implements CropFileEngine {
         Uri destinationUri = null;
         ArrayList<String> dataCropSource = new ArrayList<>();
         for (int i = 0; i < Uris.size(); i++) {
-            LocalMedia media = PicChooser.getInstance(activity).buildLocalMedia(activity,Uris.get(i).toString());
+            LocalMedia media = PicChooser.getInstance().buildLocalMedia(activity,Uris.get(i).toString());
             dataCropSource.add(media.getAvailablePath());
             if (srcUri == null && PictureMimeType.isHasImage(media.getMimeType())) {
                 String currentCropPath = media.getAvailablePath();

@@ -2,6 +2,7 @@ package spa.lyh.cn.chooser;
 
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Build;
 import android.util.Log;
 
@@ -30,7 +31,6 @@ import java.util.ArrayList;
 import spa.lyh.cn.chooser.engine.OpenGalleryEngine;
 
 public class PicChooser {
-    private Activity activity;
     public int chooseMode = SelectMimeType.ofAll();
     public boolean isGif = true;
     public int selectionMode = SelectModeConfig.MULTIPLE;
@@ -48,21 +48,17 @@ public class PicChooser {
 
 
     // 提供全局访问点
-    public static synchronized PicChooser getInstance(Activity activity) {
+    public static synchronized PicChooser getInstance() {
         if (instance == null) {
-            instance = new PicChooser(activity);
+            instance = new PicChooser();
         }
         return instance;
     }
 
 
-    private PicChooser(Activity activity){
-        this.activity = activity;
+    private PicChooser(){
         mediaList = new ArrayList<>();
     }
-/*    public static PicChooser create(Activity activity) {
-        return new PicChooser(activity);
-    }*/
 
     public PicChooser openGallery(int chooseMode) {
         this.chooseMode = chooseMode;
@@ -112,21 +108,14 @@ public class PicChooser {
         return this;
     }
 
-/*    public PicChooser build(){
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            if (androidGalleryEngine != null){
-                androidGalleryEngine.init(activity);
-            }else {
-                build12();
-            }
-        }else{
-            build12();
-        }
-        return this;
-    }*/
-
-    private void build12(){
-        model = PictureSelector.create(activity)
+    private void build12(Activity activity){
+        build12after(PictureSelector.create(activity));
+    }
+    private void build12(Fragment fragment){
+        build12after(PictureSelector.create(fragment));
+    }
+    private void build12after(PictureSelector selector){
+        model = selector
                 .openGallery(chooseMode)
                 .isGif(isGif)
                 .setSelectionMode(selectionMode);
@@ -158,11 +147,30 @@ public class PicChooser {
         if (maxSelectNum == 1){
             setSelectionMode(SelectModeConfig.SINGLE);
         }
-        build12();
+        build12(activity);
         mediaList.clear();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (openGalleryEngine != null){
-                openGalleryEngine.launch(activity);
+                openGalleryEngine.launch();
+            }else {
+                forResult12();
+            }
+        }else{
+            forResult12();
+        }
+
+    }
+
+    public void forResult(Fragment fragment,OnResultCallbackListener<LocalMedia> callback){
+        this.callback = callback;
+        if (maxSelectNum == 1){
+            setSelectionMode(SelectModeConfig.SINGLE);
+        }
+        build12(fragment);
+        mediaList.clear();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (openGalleryEngine != null){
+                openGalleryEngine.launch();
             }else {
                 forResult12();
             }

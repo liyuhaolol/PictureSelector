@@ -1,7 +1,6 @@
 package com.luck.pictureselector
 
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -11,7 +10,7 @@ import com.luck.picture.lib.config.SelectModeConfig
 import com.luck.picture.lib.entity.LocalMedia
 import com.luck.picture.lib.interfaces.OnResultCallbackListener
 import com.luck.pictureselector.adapter.TestAdapter
-import com.luck.pictureselector.databinding.ActivityTestBinding
+import com.luck.pictureselector.databinding.ActivityTestTwoBinding
 import com.luck.pictureselector.newlib.AndroidGalleryEngine
 import com.luck.pictureselector.newlib.GlideEngine
 import com.luck.pictureselector.newlib.ImageFileCompressEngine
@@ -21,24 +20,18 @@ import com.luck.pictureselector.newlib.UpPictureSelectorStyle
 import spa.lyh.cn.chooser.PicChooser
 import spa.lyh.cn.peractivity.ManifestPro
 import spa.lyh.cn.peractivity.PermissionActivity
-import spa.lyh.cn.utils_io.IOUtils
-import java.io.File
-import java.io.FileInputStream
-import java.io.FileNotFoundException
 
-
-class TestActivity :PermissionActivity(){
-    lateinit var b:ActivityTestBinding
+class Test2Activity:PermissionActivity() {
+    lateinit var b: ActivityTestTwoBinding
     var mark = 1
     lateinit var pc: PicChooser
 
     lateinit var testAdapter: TestAdapter
     var list:ArrayList<String> = arrayListOf()
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        b = ActivityTestBinding.inflate(layoutInflater)
+        b = ActivityTestTwoBinding.inflate(layoutInflater)
         setContentView(b.root)
         initView()
     }
@@ -54,10 +47,6 @@ class TestActivity :PermissionActivity(){
         b.btnOpenCamera.setOnClickListener{
             mark = 2
             askForPermission(REQUIRED_LOAD_METHOD, ManifestPro.permission.READ_EXTERNAL_STORAGE_BLOW_ANDROID_13,ManifestPro.permission.CAMERA)
-        }
-        b.btnJump.setOnClickListener{
-            val intent = Intent(this, Test2Activity::class.java)
-            startActivity(intent)
         }
         pc = PicChooser.getInstance()
             .setImageEngine(GlideEngine.createGlideEngine())
@@ -131,7 +120,4 @@ class TestActivity :PermissionActivity(){
                 }
             })
     }
-
-
-
 }

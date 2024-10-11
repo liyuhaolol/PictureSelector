@@ -94,6 +94,9 @@
         <activity
             android:name=".TestActivity">
         </activity>
+        <activity
+            android:name=".Test2Activity">
+        </activity>
     </application>
 
 </manifest>

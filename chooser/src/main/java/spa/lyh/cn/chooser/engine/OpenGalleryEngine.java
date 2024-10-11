@@ -4,7 +4,7 @@ import android.app.Activity;
 
 public interface OpenGalleryEngine {
 
-    void launch(Activity activity);
+    void launch();
 
     void updateMaxItems(int maxItems);
 }
