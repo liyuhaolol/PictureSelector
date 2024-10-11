@@ -16,7 +16,7 @@ repositories {
 
 dependencies {
   // PictureSelector basic (Necessary)
-  implementation 'io.github.liyuhaolol:PictureChooser:1.0.1'
+  implementation 'io.github.liyuhaolol:PictureChooser:1.0.2'
 
   // image compress library (Not necessary)
   implementation 'io.github.lucksiege:compress:v3.11.2'
@@ -43,7 +43,7 @@ dependencies {
 - 只有在Android13以下才需要请求`android.permission.READ_EXTERNAL_STORAGE`权限，PhotoPicker选取图片不需要任何权限
 - 方法调用
 ```sh
-PicChooser.getInstance(this)
+            PicChooser()
             .setImageEngine(GlideEngine.createGlideEngine())
             .openGallery(SelectMimeType.ofAll())
             .isGif(false)
