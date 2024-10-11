@@ -28,6 +28,7 @@ import com.luck.picture.lib.utils.SdkVersionUtils;
 
 import java.util.ArrayList;
 
+import spa.lyh.cn.chooser.engine.ChooserCropFileEngine;
 import spa.lyh.cn.chooser.engine.OpenGalleryEngine;
 
 public class PicChooser {
@@ -35,30 +36,14 @@ public class PicChooser {
     public boolean isGif = true;
     public int selectionMode = SelectModeConfig.MULTIPLE;
     public int maxSelectNum = 1;
-    public CropFileEngine cropFileEngine = null;
+    public ChooserCropFileEngine cropFileEngine = null;
     public CompressFileEngine compressFileEngine = null;
     private PictureSelectionModel model = null;
     private PictureSelectorStyle uiStyle = null;
     public OpenGalleryEngine openGalleryEngine = null;
     public OnResultCallbackListener<LocalMedia> callback = null;
-    public ArrayList<LocalMedia> mediaList;
     private ImageEngine imageEngine = null;
 
-    private static PicChooser instance;
-
-
-    // 提供全局访问点
-    public static synchronized PicChooser getInstance() {
-        if (instance == null) {
-            instance = new PicChooser();
-        }
-        return instance;
-    }
-
-
-    private PicChooser(){
-        mediaList = new ArrayList<>();
-    }
 
     public PicChooser openGallery(int chooseMode) {
         this.chooseMode = chooseMode;
@@ -77,13 +62,10 @@ public class PicChooser {
 
     public PicChooser setMaxSelectNum(int maxSelectNum) {
         this.maxSelectNum = maxSelectNum;
-        if (openGalleryEngine != null){
-            openGalleryEngine.updateMaxItems(maxSelectNum);
-        }
         return this;
     }
 
-    public PicChooser setCropEngine(CropFileEngine engine) {
+    public PicChooser setCropEngine(ChooserCropFileEngine engine) {
         cropFileEngine = engine;
         return this;
     }
@@ -144,14 +126,18 @@ public class PicChooser {
 
     public void forResult(Activity activity,OnResultCallbackListener<LocalMedia> callback){
         this.callback = callback;
-        if (maxSelectNum == 1){
+        if (maxSelectNum <= 1){
             setSelectionMode(SelectModeConfig.SINGLE);
+        }else{
+            if (openGalleryEngine != null){
+                openGalleryEngine.updateMaxItems(maxSelectNum);
+            }
         }
         build12(activity);
-        mediaList.clear();
+        PicListData.getInstance().mediaList.clear();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (openGalleryEngine != null){
-                openGalleryEngine.launch();
+                openGalleryEngine.launch(this);
             }else {
                 forResult12();
             }
@@ -163,14 +149,18 @@ public class PicChooser {
 
     public void forResult(Fragment fragment,OnResultCallbackListener<LocalMedia> callback){
         this.callback = callback;
-        if (maxSelectNum == 1){
+        if (maxSelectNum <= 1){
             setSelectionMode(SelectModeConfig.SINGLE);
+        }else{
+            if (openGalleryEngine != null){
+                openGalleryEngine.updateMaxItems(maxSelectNum);
+            }
         }
         build12(fragment);
-        mediaList.clear();
+        PicListData.getInstance().mediaList.clear();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (openGalleryEngine != null){
-                openGalleryEngine.launch();
+                openGalleryEngine.launch(this);
             }else {
                 forResult12();
             }
@@ -196,20 +186,5 @@ public class PicChooser {
         }else{
             Log.e("Chooser","请先执行build完成初始化");
         }
-    }
-
-    public LocalMedia buildLocalMedia(Activity activity,String absolutePath) {
-        SelectorConfig selectorConfig = SelectorProviders.getInstance().getSelectorConfig();
-        LocalMedia media = LocalMedia.generateLocalMedia(activity, absolutePath);
-        media.setChooseModel(selectorConfig.chooseMode);
-        if (SdkVersionUtils.isQ() && !PictureMimeType.isContent(absolutePath)) {
-            media.setSandboxPath(absolutePath);
-        } else {
-            media.setSandboxPath(null);
-        }
-        if (selectorConfig.isCameraRotateImage && PictureMimeType.isHasImage(media.getMimeType())) {
-            BitmapUtils.rotateImage(activity, absolutePath);
-        }
-        return media;
     }
 }

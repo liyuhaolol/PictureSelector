@@ -48,7 +48,7 @@ class Test2Activity:PermissionActivity() {
             mark = 2
             askForPermission(REQUIRED_LOAD_METHOD, ManifestPro.permission.READ_EXTERNAL_STORAGE_BLOW_ANDROID_13,ManifestPro.permission.CAMERA)
         }
-        pc = PicChooser.getInstance()
+        pc = PicChooser()
             .setImageEngine(GlideEngine.createGlideEngine())
             .openGallery(SelectMimeType.ofAll())
             .isGif(false)

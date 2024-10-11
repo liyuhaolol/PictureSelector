@@ -2,20 +2,14 @@ package com.luck.pictureselector.newlib;
 
 
 import android.app.Activity;
-import android.content.Context;
-import android.database.Cursor;
 import android.net.Uri;
-import android.provider.MediaStore;
 import android.text.TextUtils;
-import android.util.Log;
 
 import androidx.activity.ComponentActivity;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.PickVisualMediaRequest;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
 
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.SelectMimeType;
@@ -24,7 +18,9 @@ import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.interfaces.OnKeyValueResultCallbackListener;
 import com.luck.picture.lib.utils.SdkVersionUtils;
 
+import spa.lyh.cn.chooser.MediaDataBuild;
 import spa.lyh.cn.chooser.PicChooser;
+import spa.lyh.cn.chooser.PicListData;
 import spa.lyh.cn.chooser.engine.OpenGalleryEngine;
 import spa.lyh.cn.chooser.request.PickMultipleRequest;
 import spa.lyh.cn.chooser.request.PickRequest;
@@ -38,24 +34,25 @@ public class AndroidGalleryEngine implements OpenGalleryEngine {
     ActivityResultLauncher<PickVisualMediaRequest> pickMultipleMedia;
     public PickMultipleRequest pickMultipleRequest;
     private PickRequest pickRequest;
+    private PicChooser picChooser;
 
     public AndroidGalleryEngine(Fragment fragment){
-        PicChooser picChooser = PicChooser.getInstance();
         if (pickMedia == null){
             pickRequest = new PickRequest(FileMimeType.getImageMimeType(),FileMimeType.getImageAndVideoMimeType());
             pickMedia = fragment.registerForActivityResult(pickRequest, uri -> {
                 if (uri != null) {
-                    LocalMedia media = PicChooser.getInstance().buildLocalMedia(fragment.requireActivity(),uri.toString());
-                    picChooser.mediaList.add(media);
+                    LocalMedia media = MediaDataBuild.buildLocalMedia(fragment.requireActivity(),uri.toString());
+                    PicListData.getInstance().mediaList.add(media);
                     if (picChooser.cropFileEngine != null){
                         ArrayList<Uri> uris = new ArrayList<>();
                         uris.add(uri);
+                        picChooser.cropFileEngine.setPicChooser(picChooser);
                         picChooser.cropFileEngine.onStartCrop(fragment.requireActivity(),uris);
                     }else if(picChooser.compressFileEngine != null){
                         goCompress(fragment.requireActivity(),picChooser);
                     }else{
                         if (picChooser.callback != null){
-                            picChooser.callback.onResult(picChooser.mediaList);
+                            picChooser.callback.onResult(PicListData.getInstance().mediaList);
                         }
                     }
                 } else {
@@ -71,16 +68,17 @@ public class AndroidGalleryEngine implements OpenGalleryEngine {
             pickMultipleMedia = fragment.registerForActivityResult(pickMultipleRequest, uris -> {
                 if (!uris.isEmpty()) {
                     for (Uri uri : uris){
-                        LocalMedia media = PicChooser.getInstance().buildLocalMedia(fragment.requireActivity(),uri.toString());
-                        picChooser.mediaList.add(media);
+                        LocalMedia media = MediaDataBuild.buildLocalMedia(fragment.requireActivity(),uri.toString());
+                        PicListData.getInstance().mediaList.add(media);
                     }
                     if (picChooser.cropFileEngine != null){
+                        picChooser.cropFileEngine.setPicChooser(picChooser);
                         picChooser.cropFileEngine.onStartCrop(fragment.requireActivity(),uris);
                     }else if(picChooser.compressFileEngine != null){
                         goCompress(fragment.requireActivity(),picChooser);
                     }else{
                         if (picChooser.callback != null){
-                            picChooser.callback.onResult(picChooser.mediaList);
+                            picChooser.callback.onResult(PicListData.getInstance().mediaList);
                         }
                     }
                 } else {
@@ -93,22 +91,22 @@ public class AndroidGalleryEngine implements OpenGalleryEngine {
 
     }
     public AndroidGalleryEngine(ComponentActivity activity){
-        PicChooser picChooser = PicChooser.getInstance();
         if (pickMedia == null){
             pickRequest = new PickRequest(FileMimeType.getImageMimeType(),FileMimeType.getImageAndVideoMimeType());
             pickMedia = activity.registerForActivityResult(pickRequest, uri -> {
                 if (uri != null) {
-                    LocalMedia media = PicChooser.getInstance().buildLocalMedia(activity,uri.toString());
-                    picChooser.mediaList.add(media);
+                    LocalMedia media = MediaDataBuild.buildLocalMedia(activity,uri.toString());
+                    PicListData.getInstance().mediaList.add(media);
                     if (picChooser.cropFileEngine != null){
                         ArrayList<Uri> uris = new ArrayList<>();
                         uris.add(uri);
+                        picChooser.cropFileEngine.setPicChooser(picChooser);
                         picChooser.cropFileEngine.onStartCrop(activity,uris);
                     }else if(picChooser.compressFileEngine != null){
                         goCompress(activity,picChooser);
                     }else{
                         if (picChooser.callback != null){
-                            picChooser.callback.onResult(picChooser.mediaList);
+                            picChooser.callback.onResult(PicListData.getInstance().mediaList);
                         }
                     }
                 } else {
@@ -120,20 +118,22 @@ public class AndroidGalleryEngine implements OpenGalleryEngine {
         }
 
         if (pickMultipleMedia == null){
-            pickMultipleRequest = new PickMultipleRequest(picChooser.maxSelectNum>1?picChooser.maxSelectNum:2,FileMimeType.getImageMimeType(),FileMimeType.getImageAndVideoMimeType());
+
+            pickMultipleRequest = new PickMultipleRequest(2,FileMimeType.getImageMimeType(),FileMimeType.getImageAndVideoMimeType());
             pickMultipleMedia = activity.registerForActivityResult(pickMultipleRequest, uris -> {
                 if (!uris.isEmpty()) {
                     for (Uri uri : uris){
-                        LocalMedia media = PicChooser.getInstance().buildLocalMedia(activity,uri.toString());
-                        picChooser.mediaList.add(media);
+                        LocalMedia media = MediaDataBuild.buildLocalMedia(activity,uri.toString());
+                        PicListData.getInstance().mediaList.add(media);
                     }
                     if (picChooser.cropFileEngine != null){
+                        picChooser.cropFileEngine.setPicChooser(picChooser);
                         picChooser.cropFileEngine.onStartCrop(activity,uris);
                     }else if(picChooser.compressFileEngine != null){
                         goCompress(activity,picChooser);
                     }else{
                         if (picChooser.callback != null){
-                            picChooser.callback.onResult(picChooser.mediaList);
+                            picChooser.callback.onResult(PicListData.getInstance().mediaList);
                         }
                     }
                 } else {
@@ -147,9 +147,9 @@ public class AndroidGalleryEngine implements OpenGalleryEngine {
     }
 
     @Override
-    public void launch(){
+    public void launch(PicChooser chooser){
+        this.picChooser = chooser;
         if (pickMedia != null && pickMultipleMedia != null){
-            PicChooser picChooser = PicChooser.getInstance();
             ActivityResultContracts.PickVisualMedia.VisualMediaType type;
             if (picChooser.chooseMode == SelectMimeType.ofVideo()){
                 pickRequest.setChooseMode(SelectMimeType.ofVideo());
@@ -192,15 +192,15 @@ public class AndroidGalleryEngine implements OpenGalleryEngine {
     @Override
     public void updateMaxItems(int maxSelectNum){
         if (pickMultipleRequest != null){
-            pickMultipleRequest.updateMaxItems(maxSelectNum >0?maxSelectNum:1);
+            pickMultipleRequest.updateMaxItems(maxSelectNum >1?maxSelectNum:2);
         }
     }
 
     private void goCompress(Activity activity,PicChooser picChooser){
         ArrayList<Uri> uris = new ArrayList<>();
         ConcurrentHashMap<String, LocalMedia> queue = new ConcurrentHashMap<>();
-        for (int i = 0; i < picChooser.mediaList.size(); i++) {
-            LocalMedia mediaC = picChooser.mediaList.get(i);
+        for (int i = 0; i < PicListData.getInstance().mediaList.size(); i++) {
+            LocalMedia mediaC = PicListData.getInstance().mediaList.get(i);
             String availablePath = mediaC.getAvailablePath();
             if (PictureMimeType.isHasImage(mediaC.getMimeType())) {
                 Uri a = PictureMimeType.isContent(availablePath) ? Uri.parse(availablePath) : Uri.fromFile(new File(availablePath));
@@ -210,7 +210,7 @@ public class AndroidGalleryEngine implements OpenGalleryEngine {
         }
         if (queue.size() == 0) {
             if (picChooser.callback != null){
-                picChooser.callback.onResult(picChooser.mediaList);
+                picChooser.callback.onResult(PicListData.getInstance().mediaList);
             }
         }else{
             picChooser.compressFileEngine.onStartCompress(activity, uris, new OnKeyValueResultCallbackListener() {
@@ -218,7 +218,7 @@ public class AndroidGalleryEngine implements OpenGalleryEngine {
                 public void onCallback(String srcPath, String compressPath) {
                     if (TextUtils.isEmpty(srcPath)) {
                         if (picChooser.callback != null){
-                            picChooser.callback.onResult(picChooser.mediaList);
+                            picChooser.callback.onResult(PicListData.getInstance().mediaList);
                         }
                     } else {
                         LocalMedia media = queue.get(srcPath);
@@ -238,7 +238,7 @@ public class AndroidGalleryEngine implements OpenGalleryEngine {
                         }
                         if (queue.size() == 0) {
                             if (picChooser.callback != null){
-                                picChooser.callback.onResult(picChooser.mediaList);
+                                picChooser.callback.onResult(PicListData.getInstance().mediaList);
                             }
                         }
                     }

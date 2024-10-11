@@ -59,7 +59,7 @@ class TestActivity :PermissionActivity(){
             val intent = Intent(this, Test2Activity::class.java)
             startActivity(intent)
         }
-        pc = PicChooser.getInstance()
+        pc = PicChooser()
             .setImageEngine(GlideEngine.createGlideEngine())
             .openGallery(SelectMimeType.ofAll())
             .isGif(false)
@@ -111,8 +111,8 @@ class TestActivity :PermissionActivity(){
         PictureSelector.create(this)
             .openCamera(SelectMimeType.ofImage())
             .setCameraInterceptListener(MeOnCameraInterceptListener())
-            //.setCropEngine(ImageFileCropEngine())
-            //.setCompressEngine(ImageFileCompressEngine())
+            .setCropEngine(ImageFileCropEngine())
+            .setCompressEngine(ImageFileCompressEngine())
             .forResult(object : OnResultCallbackListener<LocalMedia?> {
                 override fun onResult(result: java.util.ArrayList<LocalMedia?>?) {
                     if (result != null){
