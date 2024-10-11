@@ -68,6 +68,8 @@ class TestActivity :PermissionActivity(){
 
     }
 
+
+
     override fun permissionAllowed() {
         super.permissionAllowed()
         if (mark == 1){
