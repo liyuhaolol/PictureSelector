@@ -5,6 +5,7 @@
 ## 更新日志
 - chooser 发布到`1.0.1`，封装原库的selector，Andriod13以上使用`PhotoPicker`，以下使用selector
 - ucrop 升级到`v3.11.3`，适配`Android15`的Edge2Edge
+- camerax 升级到`v3.11.3`，适配`Android15`的Edge2Edge
 
 # 简易使用说明
 - 引用方法
@@ -25,7 +26,7 @@ dependencies {
   implementation 'io.github.liyuhaolol:ucrop:v3.11.3'
 
   // simple camerax library (Not necessary)
-  implementation 'io.github.lucksiege:camerax:v3.11.2'
+  implementation 'io.github.liyuhaolol:camerax:v3.11.3'
 }
 ```
 - 原作者的PictureSelector使用方法和功能完全没有改动，可以继续按照原逻辑使用
