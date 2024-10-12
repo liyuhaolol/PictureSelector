@@ -77,7 +77,7 @@ centralPortal {
     password = ossrhPassword
     name = "ucrop"
     group = "io.github.liyuhaolol"
-    version = "v3.11.3"
+    version = "v3.11.4"
     pom {
         //packaging = "aar"
         name = "ucrop"
