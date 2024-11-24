@@ -2,6 +2,7 @@ package com.luck.pictureselector.newlib;
 
 
 import android.app.Activity;
+import android.content.Context;
 import android.net.Uri;
 import android.text.TextUtils;
 
@@ -9,6 +10,7 @@ import androidx.activity.ComponentActivity;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.PickVisualMediaRequest;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.core.app.ActivityOptionsCompat;
 import androidx.fragment.app.Fragment;
 
 import com.luck.picture.lib.config.PictureMimeType;
@@ -147,7 +149,7 @@ public class AndroidGalleryEngine implements OpenGalleryEngine {
     }
 
     @Override
-    public void launch(PicChooser chooser){
+    public void launch(Context context,PicChooser chooser){
         this.picChooser = chooser;
         if (pickMedia != null && pickMultipleMedia != null){
             ActivityResultContracts.PickVisualMedia.VisualMediaType type;
@@ -176,15 +178,15 @@ public class AndroidGalleryEngine implements OpenGalleryEngine {
                     type = new ActivityResultContracts.PickVisualMedia.SingleMimeType("*/*");
                 }
             }
-
+            ActivityOptionsCompat options = ActivityOptionsCompat.makeCustomAnimation(context, spa.lyh.cn.chooser.R.anim.slide_in, spa.lyh.cn.chooser.R.anim.slide_out);
             if (picChooser.selectionMode == SelectModeConfig.MULTIPLE){
                 pickMultipleMedia.launch(new PickVisualMediaRequest.Builder()
                         .setMediaType(type)
-                        .build());
+                        .build(),options);
             }else {
                 pickMedia.launch(new PickVisualMediaRequest.Builder()
                         .setMediaType(type)
-                        .build());
+                        .build(),options);
             }
         }
     }

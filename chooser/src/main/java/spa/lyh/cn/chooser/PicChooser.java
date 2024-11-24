@@ -137,7 +137,7 @@ public class PicChooser {
         PicListData.getInstance().mediaList.clear();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (openGalleryEngine != null){
-                openGalleryEngine.launch(this);
+                openGalleryEngine.launch(activity,this);
             }else {
                 forResult12();
             }
@@ -160,7 +160,7 @@ public class PicChooser {
         PicListData.getInstance().mediaList.clear();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (openGalleryEngine != null){
-                openGalleryEngine.launch(this);
+                openGalleryEngine.launch(fragment.getActivity(),this);
             }else {
                 forResult12();
             }
