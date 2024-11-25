@@ -18,7 +18,7 @@ repositories {
 
 dependencies {
   // PictureSelector basic (Necessary)
-  implementation 'io.github.liyuhaolol:PictureChooser:1.0.2'
+  implementation 'io.github.liyuhaolol:PictureChooser:1.0.3'
 
   // image compress library (Not necessary)
   implementation 'io.github.lucksiege:compress:v3.11.2'
