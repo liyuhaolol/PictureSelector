@@ -3,7 +3,7 @@
 # 由于GooglePlay现在禁止非相册类或者视频音频编辑类App再使用，图片，视频，音频权限。导致三方相册库均无法使用，所以我在本库的基础上，Android13以上图片，视频的选择使用原生的PhotoPicker，但是后续裁切和压缩依然使用本库。
 
 ## 更新日志
-- chooser 发布到`1.0.2`，封装原库的selector，Andriod13以上使用`PhotoPicker`，以下使用selector
+- chooser 发布到`1.0.3`，封装原库的selector，Andriod13以上使用`PhotoPicker`，以下使用selector
 - ucrop 升级到`v3.11.3`，适配`Android15`的Edge2Edge
 - camerax 升级到`v3.11.3`，适配`Android15`的Edge2Edge
 - ucrop 升级到`v3.11.4`，适配折叠屏
