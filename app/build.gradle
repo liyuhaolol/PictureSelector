@@ -47,11 +47,11 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "21"
     }
     buildFeatures {
         viewBinding = true
@@ -68,8 +68,8 @@ dependencies {
     implementation project(":ijkplayer-java")
     implementation project(":chooser")
     //implementation("io.github.liyuhaolol:PictureChooser:1.0.0")
-    implementation 'androidx.navigation:navigation-fragment-ktx:2.8.1'
-    implementation 'androidx.navigation:navigation-ui-ktx:2.8.1'
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.8.4'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.8.4'
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.8'
     implementation 'com.davemorrissey.labs:subsampling-scale-image-view-androidx:3.10.0'
     implementation "androidx.appcompat:appcompat:1.7.0"
@@ -83,6 +83,6 @@ dependencies {
     implementation("io.coil-kt:coil-gif:${cfgs.coil_version}")
     implementation("io.coil-kt:coil-video:${cfgs.coil_version}")
     implementation "io.github.liyuhaolol:Permission:1.2.7"
-    implementation "io.github.liyuhaolol:glideutils:1.2.0"
-    implementation "io.github.liyuhaolol:IO:1.1.4"
+    implementation "io.github.liyuhaolol:glideutils:1.2.1"
+    implementation "io.github.liyuhaolol:IO:1.1.5"
 }

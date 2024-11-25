@@ -20,8 +20,8 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
     }
 
     buildFeatures {
@@ -44,7 +44,7 @@ dependencies {
     //implementation "androidx.fragment:fragment:${cfgs.fragment_version}"
     implementation("androidx.exifinterface:exifinterface:1.3.7")
     implementation("androidx.viewpager2:viewpager2:1.1.0")
-    implementation("androidx.constraintlayout:constraintlayout:2.1.4")
+    implementation("androidx.constraintlayout:constraintlayout:2.2.0")
 }
 
 var signingKeyId = ""//签名的密钥后8位
