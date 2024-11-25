@@ -4,6 +4,10 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.app.ActivityOptionsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.luck.picture.lib.basic.PictureSelector
 import com.luck.picture.lib.config.SelectMimeType
@@ -31,6 +35,7 @@ class TestActivity :PermissionActivity(){
     lateinit var b:ActivityTestBinding
     var mark = 1
     lateinit var pc: PicChooser
+    lateinit var launcher:ActivityResultLauncher<Intent>
 
     lateinit var testAdapter: TestAdapter
     var list:ArrayList<String> = arrayListOf()
@@ -57,7 +62,8 @@ class TestActivity :PermissionActivity(){
         }
         b.btnJump.setOnClickListener{
             val intent = Intent(this, Test2Activity::class.java)
-            startActivity(intent)
+            val options = ActivityOptionsCompat.makeCustomAnimation(this@TestActivity, spa.lyh.cn.chooser.R.anim.slide_in, spa.lyh.cn.chooser.R.anim.stay);
+            launcher.launch(intent,options)
         }
         pc = PicChooser()
             .setImageEngine(GlideEngine.createGlideEngine())
@@ -70,8 +76,17 @@ class TestActivity :PermissionActivity(){
             .setCropEngine(ImageFileCropEngine().initResultLauncher(this))
             .setCompressEngine(ImageFileCompressEngine())
 
-
+        launcher = registerForActivityResult<Intent, ActivityResult>(
+            ActivityResultContracts.StartActivityForResult()
+        ) { result ->
+            Log.e("qwer","result")
+        }
     }
+
+/*    override fun onResume() {
+        super.onResume()
+        overrideActivityTransition(OVERRIDE_TRANSITION_CLOSE,spa.lyh.cn.chooser.R.anim.stay, spa.lyh.cn.chooser.R.anim.slide_out)
+    }*/
 
 
 

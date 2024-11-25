@@ -178,7 +178,7 @@ public class AndroidGalleryEngine implements OpenGalleryEngine {
                     type = new ActivityResultContracts.PickVisualMedia.SingleMimeType("*/*");
                 }
             }
-            ActivityOptionsCompat options = ActivityOptionsCompat.makeCustomAnimation(context, spa.lyh.cn.chooser.R.anim.slide_in, spa.lyh.cn.chooser.R.anim.slide_out);
+            ActivityOptionsCompat options = ActivityOptionsCompat.makeCustomAnimation(context, spa.lyh.cn.chooser.R.anim.slide_in, spa.lyh.cn.chooser.R.anim.stay);
             if (picChooser.selectionMode == SelectModeConfig.MULTIPLE){
                 pickMultipleMedia.launch(new PickVisualMediaRequest.Builder()
                         .setMediaType(type)
