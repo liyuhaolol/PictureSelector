@@ -42,7 +42,7 @@ dependencies {
     implementation("androidx.exifinterface:exifinterface:1.3.7")
     implementation("androidx.transition:transition:1.5.1")
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
-    implementation("androidx.recyclerview:recyclerview:1.3.2")
+    implementation("androidx.recyclerview:recyclerview:1.4.0")
     implementation("com.google.code.gson:gson:2.10.1")
 }
 

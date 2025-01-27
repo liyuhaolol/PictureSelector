@@ -110,13 +110,6 @@ public class BottomNavBar extends RelativeLayout implements View.OnClickListener
             }
         }
 
-        int narBarHeight = bottomBarStyle.getBottomNarBarHeight();
-        if (StyleUtils.checkSizeValidity(narBarHeight)) {
-            getLayoutParams().height = narBarHeight;
-        } else {
-            getLayoutParams().height = DensityUtil.dip2px(getContext(), 46);
-        }
-
         int backgroundColor = bottomBarStyle.getBottomNarBarBackgroundColor();
         if (StyleUtils.checkStyleValidity(backgroundColor)) {
             setBackgroundColor(backgroundColor);

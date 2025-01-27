@@ -39,7 +39,8 @@ android {
 
 dependencies {
     implementation("androidx.appcompat:appcompat:1.7.0")
-    implementation("androidx.recyclerview:recyclerview:1.3.2")
+    implementation ("androidx.activity:activity:1.10.0")
+    implementation("androidx.recyclerview:recyclerview:1.4.0")
     //implementation "androidx.activity:activity:${cfgs.activity_version}"
     //implementation "androidx.fragment:fragment:${cfgs.fragment_version}"
     implementation("androidx.exifinterface:exifinterface:1.3.7")

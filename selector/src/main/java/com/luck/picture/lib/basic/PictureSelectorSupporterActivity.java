@@ -2,23 +2,24 @@ package com.luck.picture.lib.basic;
 
 import android.content.Context;
 import android.content.res.Configuration;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
+import android.view.Window;
 
+import androidx.activity.EdgeToEdge;
+import androidx.activity.SystemBarStyle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 
 import com.luck.picture.lib.PictureSelectorFragment;
 import com.luck.picture.lib.R;
 import com.luck.picture.lib.config.SelectorConfig;
 import com.luck.picture.lib.config.SelectorProviders;
-import com.luck.picture.lib.immersive.ImmersiveManager;
 import com.luck.picture.lib.language.LanguageConfig;
 import com.luck.picture.lib.language.PictureLanguageUtils;
 import com.luck.picture.lib.style.PictureWindowAnimationStyle;
-import com.luck.picture.lib.style.SelectMainStyle;
-import com.luck.picture.lib.utils.StyleUtils;
 
 /**
  * @author：luck
@@ -31,28 +32,24 @@ public class PictureSelectorSupporterActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(
+                this,
+                SystemBarStyle.auto(Color.TRANSPARENT, Color.TRANSPARENT),
+                SystemBarStyle.auto(Color.TRANSPARENT, Color.TRANSPARENT));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            Window window = this.getWindow();
+            if (window != null){
+                window.setStatusBarContrastEnforced(false);
+                window.setNavigationBarContrastEnforced(false);
+            }
+        }
         initSelectorConfig();
-        immersive();
         setContentView(R.layout.ps_activity_container);
         setupFragment();
     }
 
     private void initSelectorConfig() {
         selectorConfig = SelectorProviders.getInstance().getSelectorConfig();
-    }
-
-    private void immersive() {
-        SelectMainStyle mainStyle = selectorConfig.selectorStyle.getSelectMainStyle();
-        int statusBarColor = mainStyle.getStatusBarColor();
-        int navigationBarColor = mainStyle.getNavigationBarColor();
-        boolean isDarkStatusBarBlack = mainStyle.isDarkStatusBarBlack();
-        if (!StyleUtils.checkStyleValidity(statusBarColor)) {
-            statusBarColor = ContextCompat.getColor(this, R.color.ps_color_grey);
-        }
-        if (!StyleUtils.checkStyleValidity(navigationBarColor)) {
-            navigationBarColor = ContextCompat.getColor(this, R.color.ps_color_grey);
-        }
-        ImmersiveManager.immersiveAboveAPI23(this, statusBarColor, navigationBarColor, isDarkStatusBarBlack);
     }
 
     private void setupFragment() {

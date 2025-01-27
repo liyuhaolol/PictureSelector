@@ -18,7 +18,6 @@ import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.SelectMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.entity.MediaExtraInfo;
-import com.luck.picture.lib.immersive.ImmersiveManager;
 import com.luck.picture.lib.interfaces.OnResultCallbackListener;
 import com.luck.picture.lib.utils.MediaUtils;
 
@@ -37,7 +36,6 @@ public class InjectFragmentActivity extends AppCompatActivity implements IBridge
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         int color = ContextCompat.getColor(this, R.color.app_color_white);
-        ImmersiveManager.immersiveAboveAPI23(this, color, color, true);
         setContentView(R.layout.activity_inject_fragment);
         tvResult = findViewById(R.id.tv_result);
         findViewById(R.id.tvb_inject_fragment).setOnClickListener(new View.OnClickListener() {
@@ -50,13 +48,11 @@ public class InjectFragmentActivity extends AppCompatActivity implements IBridge
                         .buildLaunch(R.id.fragment_container, new OnResultCallbackListener<LocalMedia>() {
                             @Override
                             public void onResult(ArrayList<LocalMedia> result) {
-                                setTranslucentStatusBar();
                                 analyticalSelectResults(result);
                             }
 
                             @Override
                             public void onCancel() {
-                                setTranslucentStatusBar();
                                 Log.i(TAG, "PictureSelector Cancel");
                             }
                         });
@@ -82,7 +78,6 @@ public class InjectFragmentActivity extends AppCompatActivity implements IBridge
 
     @Override
     public void onSelectFinish(PictureCommonFragment.SelectorResult result) {
-        setTranslucentStatusBar();
         if (result == null) {
             return;
         }
@@ -91,7 +86,6 @@ public class InjectFragmentActivity extends AppCompatActivity implements IBridge
             analyticalSelectResults(selectorResult);
         } else if (result.mResultCode == RESULT_CANCELED) {
             Log.i(TAG, "onSelectFinish PictureSelector Cancel");
-            setTranslucentStatusBar();
         }
     }
 
@@ -131,13 +125,6 @@ public class InjectFragmentActivity extends AppCompatActivity implements IBridge
             Log.i(TAG, "文件大小: " + media.getSize());
         }
         tvResult.setText(builder.toString());
-    }
-
-    /**
-     * 设置状态栏字体颜色
-     */
-    private void setTranslucentStatusBar() {
-        ImmersiveManager.translucentStatusBar(InjectFragmentActivity.this, true);
     }
 
 }

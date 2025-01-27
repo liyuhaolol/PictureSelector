@@ -10,16 +10,6 @@ import android.widget.RelativeLayout;
 public class SelectMainStyle {
 
     /**
-     * 状态栏背景色
-     */
-    private int statusBarColor;
-
-    /**
-     * 导航栏背景色
-     */
-    private int navigationBarColor;
-
-    /**
      * 状态栏字体颜色，非黑即白
      */
     private boolean isDarkStatusBarBlack = false;
@@ -179,7 +169,7 @@ public class SelectMainStyle {
 
     /**
      * 勾选样式位置
-     * {@link RelativeLayout.addRule()}
+     *
      */
     private int[] adapterSelectStyleGravity;
 
@@ -200,7 +190,7 @@ public class SelectMainStyle {
 
     /**
      * 时长文字位置
-     * {@link RelativeLayout.addRule()}
+     *
      */
     private int[] adapterDurationGravity;
 
@@ -251,7 +241,7 @@ public class SelectMainStyle {
     private int adapterTagTextColor;
     /**
      * 资源标识的位置
-     * {@link RelativeLayout.addRule()}
+     *
      */
     private int[] adapterTagGravity;
     /**
@@ -261,7 +251,7 @@ public class SelectMainStyle {
 
     /**
      * 图片被编辑标识位置
-     * {@link RelativeLayout.addRule()}
+     *
      */
     private int[] adapterImageEditorGravity;
 
@@ -285,22 +275,6 @@ public class SelectMainStyle {
 
     public SelectMainStyle() {
 
-    }
-
-    public int getStatusBarColor() {
-        return statusBarColor;
-    }
-
-    public void setStatusBarColor(int statusBarColor) {
-        this.statusBarColor = statusBarColor;
-    }
-
-    public int getNavigationBarColor() {
-        return navigationBarColor;
-    }
-
-    public void setNavigationBarColor(int navigationBarColor) {
-        this.navigationBarColor = navigationBarColor;
     }
 
     public boolean isDarkStatusBarBlack() {

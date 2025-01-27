@@ -2,6 +2,7 @@ package com.luck.picture.lib;
 
 import android.annotation.SuppressLint;
 import android.app.Service;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.os.Vibrator;
@@ -53,9 +54,12 @@ import com.luck.picture.lib.manager.SelectedManager;
 import com.luck.picture.lib.permissions.PermissionChecker;
 import com.luck.picture.lib.permissions.PermissionConfig;
 import com.luck.picture.lib.permissions.PermissionResultCallback;
+import com.luck.picture.lib.style.BottomNavBarStyle;
 import com.luck.picture.lib.style.PictureSelectorStyle;
 import com.luck.picture.lib.style.SelectMainStyle;
+import com.luck.picture.lib.style.TitleBarStyle;
 import com.luck.picture.lib.utils.ActivityCompatHelper;
+import com.luck.picture.lib.utils.AndroidBarUtils;
 import com.luck.picture.lib.utils.AnimUtils;
 import com.luck.picture.lib.utils.DateUtils;
 import com.luck.picture.lib.utils.DensityUtil;
@@ -113,6 +117,8 @@ public class PictureSelectorFragment extends PictureCommonFragment
     private AlbumListPopWindow albumListPopWindow;
 
     private SlideSelectTouchListener mDragSelectTouchListener;
+
+    private View nav_bar;
 
     public static PictureSelectorFragment newInstance() {
         PictureSelectorFragment fragment = new PictureSelectorFragment();
@@ -253,8 +259,58 @@ public class PictureSelectorFragment extends PictureCommonFragment
         } else {
             requestLoadData();
         }
+        nav_bar = view.findViewById(R.id.luck_bar);
+        PictureSelectorStyle selectorStyle = selectorConfig.selectorStyle;
+        BottomNavBarStyle bottomBarStyle = selectorStyle.getBottomBarStyle();
+        int backgroundColor = bottomBarStyle.getBottomNarBarBackgroundColor();
+        if (StyleUtils.checkStyleValidity(backgroundColor)) {
+            nav_bar.setBackgroundColor(backgroundColor);
+        }
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        AndroidBarUtils.autoFitNavBar(requireActivity(),nav_bar);
+        PictureSelectorStyle selectorStyle = selectorConfig.selectorStyle;
+        BottomNavBarStyle bottomBarStyle = selectorStyle.getBottomBarStyle();
+        int backgroundColor = bottomBarStyle.getBottomNarBarBackgroundColor();
+        if (StyleUtils.checkStyleValidity(backgroundColor)) {
+            //有颜色
+            //int color = ContextCompat.getColor(requireActivity(),backgroundColor);
+            int color = backgroundColor;
+            int redValue = Color.red(color);
+            int greenValue = Color.green(color);
+            int blueValue = Color.blue(color);
+            int[] colorArry = new int[]{redValue,greenValue,blueValue};
+            if (isLightRGB(colorArry)){
+                AndroidBarUtils.setNavBarMode(requireActivity().getWindow(), true);
+            }else {
+                AndroidBarUtils.setNavBarMode(requireActivity().getWindow(), false);
+            }
+        }else{
+            //没有颜色
+            AndroidBarUtils.setNavBarMode(requireActivity().getWindow(), false);
+        }
+        TitleBarStyle titleBarStyle = selectorStyle.getTitleBarStyle();
+        int titleBackgroundColor = titleBarStyle.getTitleBackgroundColor();
+        if (StyleUtils.checkStyleValidity(titleBackgroundColor)) {
+            //有颜色
+            int color = titleBackgroundColor;
+            int redValue = Color.red(color);
+            int greenValue = Color.green(color);
+            int blueValue = Color.blue(color);
+            int[] colorArry = new int[]{redValue,greenValue,blueValue};
+            if (isLightRGB(colorArry)){
+                AndroidBarUtils.setStatusBarMode(requireActivity().getWindow(), true);
+            }else {
+                AndroidBarUtils.setStatusBarMode(requireActivity().getWindow(), false);
+            }
+        }else{
+            //没有颜色
+            AndroidBarUtils.setStatusBarMode(requireActivity().getWindow(), false);
+        }
+    }
 
     @Override
     public void onFragmentResume() {
@@ -861,6 +917,7 @@ public class PictureSelectorFragment extends PictureCommonFragment
                 }
             }
 
+            @SuppressLint("MissingPermission")
             @Override
             public void onItemLongClick(View itemView, int position) {
                 if (mDragSelectTouchListener != null && selectorConfig.isFastSlidingSelect) {
@@ -1285,5 +1342,13 @@ public class PictureSelectorFragment extends PictureCommonFragment
         if (tvDataEmpty.getVisibility() == View.VISIBLE) {
             tvDataEmpty.setVisibility(View.GONE);
         }
+    }
+
+    public boolean isLightRGB(int[] colors){
+        int grayLevel = (int) (colors[0] * 0.299 + colors[1] * 0.587 + colors[2] * 0.114);
+        if(grayLevel>=192){
+            return true;
+        }
+        return false;
     }
 }

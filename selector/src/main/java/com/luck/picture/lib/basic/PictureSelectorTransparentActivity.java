@@ -2,6 +2,7 @@ package com.luck.picture.lib.basic;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Window;
 import android.view.WindowManager;
@@ -20,7 +21,6 @@ import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.SelectorConfig;
 import com.luck.picture.lib.config.SelectorProviders;
 import com.luck.picture.lib.entity.LocalMedia;
-import com.luck.picture.lib.immersive.ImmersiveManager;
 import com.luck.picture.lib.style.PictureWindowAnimationStyle;
 import com.luck.picture.lib.style.SelectMainStyle;
 import com.luck.picture.lib.utils.StyleUtils;
@@ -39,10 +39,8 @@ public class PictureSelectorTransparentActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initSelectorConfig();
-        immersive();
         setContentView(R.layout.ps_empty);
         if (isExternalPreview()) {
-            // TODO ignore
         } else {
             setActivitySize();
         }
@@ -56,23 +54,6 @@ public class PictureSelectorTransparentActivity extends AppCompatActivity {
     private boolean isExternalPreview() {
         int modeTypeSource = getIntent().getIntExtra(PictureConfig.EXTRA_MODE_TYPE_SOURCE, 0);
         return modeTypeSource == PictureConfig.MODE_TYPE_EXTERNAL_PREVIEW_SOURCE;
-    }
-
-    private void immersive() {
-        if (selectorConfig.selectorStyle == null) {
-            SelectorProviders.getInstance().getSelectorConfig();
-        }
-        SelectMainStyle mainStyle = selectorConfig.selectorStyle.getSelectMainStyle();
-        int statusBarColor = mainStyle.getStatusBarColor();
-        int navigationBarColor = mainStyle.getNavigationBarColor();
-        boolean isDarkStatusBarBlack = mainStyle.isDarkStatusBarBlack();
-        if (!StyleUtils.checkStyleValidity(statusBarColor)) {
-            statusBarColor = ContextCompat.getColor(this, R.color.ps_color_grey);
-        }
-        if (!StyleUtils.checkStyleValidity(navigationBarColor)) {
-            navigationBarColor = ContextCompat.getColor(this, R.color.ps_color_grey);
-        }
-        ImmersiveManager.immersiveAboveAPI23(this, statusBarColor, navigationBarColor, isDarkStatusBarBlack);
     }
 
     private void setupFragment() {

@@ -131,7 +131,6 @@ import com.luck.picture.lib.utils.MediaUtils;
 import com.luck.picture.lib.utils.PictureFileUtils;
 import com.luck.picture.lib.utils.SandboxTransformUtils;
 import com.luck.picture.lib.utils.SdkVersionUtils;
-import com.luck.picture.lib.utils.StyleUtils;
 import com.luck.picture.lib.utils.ToastUtils;
 import com.luck.picture.lib.utils.ValueOf;
 import com.luck.picture.lib.widget.MediumBoldTextView;
@@ -1702,29 +1701,9 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
         options.isForbidCropGifWebp(cb_not_gif.isChecked());
         options.isForbidSkipMultipleCrop(true);
         options.setMaxScaleMultiplier(100);
-        if (selectorStyle != null && selectorStyle.getSelectMainStyle().getStatusBarColor() != 0) {
-            SelectMainStyle mainStyle = selectorStyle.getSelectMainStyle();
-            boolean isDarkStatusBarBlack = mainStyle.isDarkStatusBarBlack();
-            int statusBarColor = mainStyle.getStatusBarColor();
-            options.isDarkStatusBarBlack(isDarkStatusBarBlack);
-            if (StyleUtils.checkStyleValidity(statusBarColor)) {
-                options.setStatusBarColor(statusBarColor);
-                options.setToolbarColor(statusBarColor);
-            } else {
-                options.setStatusBarColor(ContextCompat.getColor(getContext(), R.color.ps_color_grey));
-                options.setToolbarColor(ContextCompat.getColor(getContext(), R.color.ps_color_grey));
-            }
-            TitleBarStyle titleBarStyle = selectorStyle.getTitleBarStyle();
-            if (StyleUtils.checkStyleValidity(titleBarStyle.getTitleTextColor())) {
-                options.setToolbarWidgetColor(titleBarStyle.getTitleTextColor());
-            } else {
-                options.setToolbarWidgetColor(ContextCompat.getColor(getContext(), R.color.ps_color_white));
-            }
-        } else {
-            options.setStatusBarColor(ContextCompat.getColor(getContext(), R.color.ps_color_grey));
-            options.setToolbarColor(ContextCompat.getColor(getContext(), R.color.ps_color_grey));
-            options.setToolbarWidgetColor(ContextCompat.getColor(getContext(), R.color.ps_color_white));
-        }
+        options.setStatusBarColor(ContextCompat.getColor(getContext(), R.color.ps_color_grey));
+        options.setToolbarColor(ContextCompat.getColor(getContext(), R.color.ps_color_grey));
+        options.setToolbarWidgetColor(ContextCompat.getColor(getContext(), R.color.ps_color_white));
         return options;
     }
 
@@ -2140,7 +2119,6 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
                 whiteBottomNavBarStyle.setBottomOriginalTextColor(ContextCompat.getColor(getContext(), R.color.ps_color_53575e));
 
                 SelectMainStyle selectMainStyle = new SelectMainStyle();
-                selectMainStyle.setStatusBarColor(ContextCompat.getColor(getContext(), R.color.ps_color_white));
                 selectMainStyle.setDarkStatusBarBlack(true);
                 selectMainStyle.setSelectNormalTextColor(ContextCompat.getColor(getContext(), R.color.ps_color_9b));
                 selectMainStyle.setSelectTextColor(ContextCompat.getColor(getContext(), R.color.ps_color_fa632d));
@@ -2167,7 +2145,6 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
 
 
                 SelectMainStyle numberBlueSelectMainStyle = new SelectMainStyle();
-                numberBlueSelectMainStyle.setStatusBarColor(ContextCompat.getColor(getContext(), R.color.ps_color_blue));
                 numberBlueSelectMainStyle.setSelectNumberStyle(true);
                 numberBlueSelectMainStyle.setPreviewSelectNumberStyle(true);
                 numberBlueSelectMainStyle.setSelectBackground(R.drawable.ps_demo_blue_num_selector);

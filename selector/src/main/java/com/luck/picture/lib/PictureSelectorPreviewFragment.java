@@ -179,7 +179,6 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
      * 内部预览
      *
      * @param isBottomPreview 是否顶部预览进来的
-     * @param currentAlbum    当前预览的目录
      * @param isShowCamera    是否有显示拍照图标
      * @param position        预览下标
      * @param totalNum        当前预览总数
