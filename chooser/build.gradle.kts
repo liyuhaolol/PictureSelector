@@ -39,8 +39,8 @@ android {
 dependencies {
 
     implementation("androidx.appcompat:appcompat:1.7.0")
-    api(project(":selector"))
-    //api("io.github.liyuhaolol:PictureSelector:v3.11.5")
+    //api(project(":selector"))
+    api("io.github.liyuhaolol:PictureSelector:v3.11.6")
     //implementation("com.google.android.material:material:1.12.0")
 }
 
@@ -75,7 +75,7 @@ centralPortal {
     password = ossrhPassword
     name = "PictureChooser"
     group = "io.github.liyuhaolol"
-    version = "1.0.3"
+    version = "1.0.4"
     pom {
         //packaging = "aar"
         name = "PictureChooser"
