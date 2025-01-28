@@ -185,7 +185,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
             cb_mode, cb_hide, cb_crop_circular, cb_styleCrop, cb_showCropGrid,
             cb_showCropFrame, cb_preview_audio, cb_original, cb_single_back,
             cb_custom_camera, cbPage, cbEnabledMask, cbEditor, cb_custom_sandbox, cb_only_dir,
-            cb_preview_full, cb_preview_scale, cb_inject_layout, cb_time_axis, cb_WithImageVideo,
+            cb_preview_full, cb_preview_scale, cb_time_axis, cb_WithImageVideo,
             cb_system_album, cb_fast_select, cb_skip_not_gif, cb_not_gif, cb_attach_camera_mode,
             cb_attach_system_mode, cb_camera_zoom, cb_camera_focus, cb_query_sort_order, cb_watermark,
             cb_custom_preview, cb_permission_desc,cb_video_thumbnails, cb_auto_video, cb_selected_anim,
@@ -241,7 +241,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
         cb_fast_select = findViewById(R.id.cb_fast_select);
         cb_preview_full = findViewById(R.id.cb_preview_full);
         cb_preview_scale = findViewById(R.id.cb_preview_scale);
-        cb_inject_layout = findViewById(R.id.cb_inject_layout);
+        //cb_inject_layout = findViewById(R.id.cb_inject_layout);
         cb_preview_img = findViewById(R.id.cb_preview_img);
         cb_camera_zoom = findViewById(R.id.cb_camera_zoom);
         cb_camera_focus = findViewById(R.id.cb_camera_focus);
@@ -491,7 +491,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
                                     }
                                 })
                                 //.setExtendLoaderEngine(getExtendLoaderEngine())
-                                .setInjectLayoutResourceListener(getInjectLayoutResource())
+                                //.setInjectLayoutResourceListener(getInjectLayoutResource())
                                 .setSelectionMode(cb_choose_mode.isChecked() ? SelectModeConfig.MULTIPLE : SelectModeConfig.SINGLE)
                                 .setLanguage(language)
                                 .setQuerySortOrder(cb_query_sort_order.isChecked() ? MediaStore.MediaColumns.DATE_MODIFIED + " ASC" : "")
@@ -928,9 +928,9 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
      *
      * @return
      */
-    private OnInjectLayoutResourceListener getInjectLayoutResource() {
+/*    private OnInjectLayoutResourceListener getInjectLayoutResource() {
         return cb_inject_layout.isChecked() ? new MeOnInjectLayoutResourceListener() : null;
-    }
+    }*/
 
 
     /**

@@ -327,7 +327,7 @@ public final class PictureSelectionModel {
      * @param listener
      *
      */
-    public PictureSelectionModel setInjectLayoutResourceListener(OnInjectLayoutResourceListener listener) {
+    private PictureSelectionModel setInjectLayoutResourceListener(OnInjectLayoutResourceListener listener) {
         selectionConfig.isInjectLayoutResource = listener != null;
         selectionConfig.onLayoutResourceListener = listener;
         return this;
