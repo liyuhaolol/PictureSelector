@@ -18,16 +18,16 @@ repositories {
 
 dependencies {
   // PictureSelector basic (Necessary)
-  implementation 'io.github.liyuhaolol:PictureChooser:1.0.3'
+  implementation 'io.github.liyuhaolol:PictureChooser:1.0.4'
 
   // image compress library (Not necessary)
   implementation 'io.github.lucksiege:compress:v3.11.2'
 
   // uCrop library (Not necessary)
-  implementation 'io.github.liyuhaolol:ucrop:v3.11.4'
+  implementation 'io.github.liyuhaolol:ucrop:v3.11.5'
 
   // simple camerax library (Not necessary)
-  implementation 'io.github.liyuhaolol:camerax:v3.11.3'
+  implementation 'io.github.liyuhaolol:camerax:v3.11.4'
 }
 ```
 - 原作者的PictureSelector使用方法和功能完全没有改动，可以继续按照原逻辑使用
