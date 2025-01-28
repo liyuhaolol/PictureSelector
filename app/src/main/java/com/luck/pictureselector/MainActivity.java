@@ -2180,8 +2180,8 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
                 numberSelectMainStyle.setSelectText(R.string.ps_send_num);
                 numberSelectMainStyle.setSelectTextColor(ContextCompat.getColor(getContext(), R.color.ps_color_white));
                 numberSelectMainStyle.setMainListBackgroundColor(ContextCompat.getColor(getContext(), R.color.ps_color_black));
-                numberSelectMainStyle.setCompleteSelectRelativeTop(true);
-                numberSelectMainStyle.setPreviewSelectRelativeBottom(true);
+                //numberSelectMainStyle.setCompleteSelectRelativeTop(true);
+                //numberSelectMainStyle.setPreviewSelectRelativeBottom(true);
                 numberSelectMainStyle.setAdapterItemIncludeEdge(false);
 
                 // 头部TitleBar 风格

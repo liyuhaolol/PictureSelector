@@ -61,28 +61,28 @@
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        android:background="@color/ps_color_8D57FC">
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="45dp">
             <com.luck.picture.lib.widget.BottomNavBar
                 android:id="@+id/bottom_nar_bar"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                tools:layout_height="45dp" />
-            <com.luck.picture.lib.widget.CompleteSelectView
-                android:id="@+id/ps_complete_select"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+            <RelativeLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:enabled="false"
-                android:layout_marginEnd="15dp"
-                android:background="@drawable/ps_transparent_space"
-                app:layout_constraintBottom_toBottomOf="@id/bottom_nar_bar"
+                android:layout_height="match_parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@id/bottom_nar_bar" />
+                android:layout_marginEnd="15dp">
+                <com.luck.picture.lib.widget.CompleteSelectView
+                    android:id="@+id/ps_complete_select"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:enabled="false"
+                    android:layout_centerInParent="true"/>
+            </RelativeLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
         <View
             android:id="@+id/luck_bar"

@@ -17,12 +17,12 @@ public class SelectMainStyle {
     /**
      * 完成按钮从底部放在右上角
      */
-    private boolean isCompleteSelectRelativeTop;
+    private boolean isCompleteSelectRelativeTop = false;
 
     /**
      * 预览页选择按钮从顶部放在右下角
      */
-    private boolean isPreviewSelectRelativeBottom;
+    private boolean isPreviewSelectRelativeBottom = false;
 
     /**
      * 预览页是否显示选择画廊
@@ -289,17 +289,17 @@ public class SelectMainStyle {
         return isCompleteSelectRelativeTop;
     }
 
-    public void setCompleteSelectRelativeTop(boolean completeSelectRelativeTop) {
+/*    public void setCompleteSelectRelativeTop(boolean completeSelectRelativeTop) {
         isCompleteSelectRelativeTop = completeSelectRelativeTop;
-    }
+    }*/
 
     public boolean isPreviewSelectRelativeBottom() {
         return isPreviewSelectRelativeBottom;
     }
 
-    public void setPreviewSelectRelativeBottom(boolean previewSelectRelativeBottom) {
+/*    public void setPreviewSelectRelativeBottom(boolean previewSelectRelativeBottom) {
         isPreviewSelectRelativeBottom = previewSelectRelativeBottom;
-    }
+    }*/
 
     public boolean isPreviewDisplaySelectGallery() {
         return isPreviewDisplaySelectGallery;
