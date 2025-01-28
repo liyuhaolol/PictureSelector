@@ -155,7 +155,6 @@ public class UCropActivity extends AppCompatActivity {
         setImageData(intent);
         setInitialState();
         addBlockingView();
-        Log.e("qwer","UCropActivity");
     }
 
     @Override

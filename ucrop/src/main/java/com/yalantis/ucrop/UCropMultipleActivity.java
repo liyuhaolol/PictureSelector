@@ -2,6 +2,7 @@ package com.yalantis.ucrop;
 
 import android.annotation.TargetApi;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.ColorFilter;
 import android.graphics.drawable.Animatable;
 import android.graphics.drawable.Drawable;
@@ -23,6 +24,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.EdgeToEdge;
+import androidx.activity.SystemBarStyle;
 import androidx.annotation.ColorInt;
 import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
@@ -42,6 +45,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.yalantis.ucrop.decoration.GridSpacingItemDecoration;
 import com.yalantis.ucrop.model.AspectRatio;
 import com.yalantis.ucrop.model.CustomIntentKey;
+import com.yalantis.ucrop.util.AndroidBarUtils;
 import com.yalantis.ucrop.util.DensityUtil;
 import com.yalantis.ucrop.util.FileUtils;
 
@@ -92,12 +96,29 @@ public class UCropMultipleActivity extends AppCompatActivity implements UCropFra
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(
+                this,
+                SystemBarStyle.auto(Color.TRANSPARENT, Color.TRANSPARENT),
+                SystemBarStyle.auto(Color.TRANSPARENT, Color.TRANSPARENT));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            Window window = this.getWindow();
+            if (window != null){
+                window.setStatusBarContrastEnforced(false);
+                window.setNavigationBarContrastEnforced(false);
+            }
+        }
         setContentView(R.layout.ucrop_activity_multiple);
         RelativeLayout relativeLayout = findViewById(R.id.ucrop_multiple);
         setupViews(getIntent());
         relativeLayout.setBackgroundColor(mBackBarColor);
         initCropFragments(getIntent());
-        Log.e("qwer","UCropMultipleActivity");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        AndroidBarUtils.setStatusBarMode(getWindow(), false);
+        AndroidBarUtils.setNavBarMode(getWindow(), false);
     }
 
     private void initCropFragments(Intent intent) {
