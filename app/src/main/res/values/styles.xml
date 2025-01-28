@@ -1,7 +1,14 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="BaseNoActionBarTheme">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/app_color_grey</item>
+        <item name="colorPrimaryDark">@color/app_color_grey</item>
+        <item name="colorAccent">@color/app_color_grey</item>
+    </style>
+
+    <style name="AppTheme2" parent="BaseNoActionBarTheme">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/app_color_grey</item>
         <item name="colorPrimaryDark">@color/app_color_grey</item>

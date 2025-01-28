@@ -61,6 +61,7 @@ android {
 }
 
 dependencies {
+    implementation "androidx.activity:activity:1.10.0"
     implementation project(':compress')
     implementation project(':ucrop')
     //implementation("io.github.liyuhaolol:ucrop:v3.11.3")

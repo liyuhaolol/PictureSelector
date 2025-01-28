@@ -1,10 +1,15 @@
 package com.luck.pictureselector;
 
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.widget.TextView;
 
+import androidx.activity.EdgeToEdge;
+import androidx.activity.SystemBarStyle;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
@@ -35,6 +40,17 @@ public class InjectFragmentActivity extends AppCompatActivity implements IBridge
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(
+                this,
+                SystemBarStyle.light(Color.TRANSPARENT, Color.TRANSPARENT),
+                SystemBarStyle.light(Color.TRANSPARENT, Color.TRANSPARENT));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            Window window = this.getWindow();
+            if (window != null){
+                window.setStatusBarContrastEnforced(false);
+                window.setNavigationBarContrastEnforced(false);
+            }
+        }
         int color = ContextCompat.getColor(this, R.color.app_color_white);
         setContentView(R.layout.activity_inject_fragment);
         tvResult = findViewById(R.id.tv_result);
