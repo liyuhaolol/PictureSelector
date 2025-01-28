@@ -79,7 +79,7 @@ centralPortal {
     password = ossrhPassword
     name = "PictureSelector"
     group = "io.github.liyuhaolol"
-    version = "v3.11.5"
+    version = "v3.11.6"
     pom {
         //packaging = "aar"
         name = "PictureSelector"

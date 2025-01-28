@@ -11,6 +11,7 @@ import android.content.res.Configuration;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.text.TextUtils;
@@ -1345,8 +1346,9 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
                     WindowManager.LayoutParams lp = window.getAttributes();
                     if (isAnimInit) {
                         lp.flags |= WindowManager.LayoutParams.FLAG_FULLSCREEN;
-                        lp.layoutInDisplayCutoutMode =
-                                WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                            lp.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_ALWAYS;
+                        }
                         window.setAttributes(lp);
                         window.addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
                     } else {
