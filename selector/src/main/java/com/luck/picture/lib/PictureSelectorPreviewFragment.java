@@ -9,6 +9,7 @@ import android.app.Service;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Vibrator;
@@ -64,9 +65,13 @@ import com.luck.picture.lib.magical.MagicalView;
 import com.luck.picture.lib.magical.OnMagicalViewCallback;
 import com.luck.picture.lib.magical.ViewParams;
 import com.luck.picture.lib.manager.SelectedManager;
+import com.luck.picture.lib.style.BottomNavBarStyle;
+import com.luck.picture.lib.style.PictureSelectorStyle;
 import com.luck.picture.lib.style.PictureWindowAnimationStyle;
 import com.luck.picture.lib.style.SelectMainStyle;
+import com.luck.picture.lib.style.TitleBarStyle;
 import com.luck.picture.lib.utils.ActivityCompatHelper;
+import com.luck.picture.lib.utils.AndroidBarUtils;
 import com.luck.picture.lib.utils.DensityUtil;
 import com.luck.picture.lib.utils.DownloadFileUtils;
 import com.luck.picture.lib.utils.MediaUtils;
@@ -162,6 +167,8 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
     protected List<View> mAnimViews = new ArrayList<>();
 
     private boolean isPause = false;
+
+    private View nav_bar;
 
     public static PictureSelectorPreviewFragment newInstance() {
         PictureSelectorPreviewFragment fragment = new PictureSelectorPreviewFragment();
@@ -270,7 +277,16 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
             initComplete();
         }
         iniMagicalView();
+        nav_bar = view.findViewById(R.id.luck_bar);
+        PictureSelectorStyle selectorStyle = selectorConfig.selectorStyle;
+        BottomNavBarStyle bottomBarStyle = selectorStyle.getBottomBarStyle();
+        int backgroundColor = bottomBarStyle.getBottomNarBarBackgroundColor();
+        if (StyleUtils.checkStyleValidity(backgroundColor)) {
+            nav_bar.setBackgroundColor(backgroundColor);
+        }
     }
+
+
 
     /**
      * addAminViews
@@ -1694,6 +1710,45 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
             resumePausePlay();
             isPause = false;
         }
+        AndroidBarUtils.autoFitNavBar(requireActivity(),nav_bar);
+        PictureSelectorStyle selectorStyle = selectorConfig.selectorStyle;
+        BottomNavBarStyle bottomBarStyle = selectorStyle.getBottomBarStyle();
+        int backgroundColor = bottomBarStyle.getBottomNarBarBackgroundColor();
+        if (StyleUtils.checkStyleValidity(backgroundColor)) {
+            //有颜色
+            //int color = ContextCompat.getColor(requireActivity(),backgroundColor);
+            int color = backgroundColor;
+            int redValue = Color.red(color);
+            int greenValue = Color.green(color);
+            int blueValue = Color.blue(color);
+            int[] colorArry = new int[]{redValue,greenValue,blueValue};
+            if (isLightRGB(colorArry)){
+                AndroidBarUtils.setNavBarMode(requireActivity().getWindow(), true);
+            }else {
+                AndroidBarUtils.setNavBarMode(requireActivity().getWindow(), false);
+            }
+        }else{
+            //没有颜色
+            AndroidBarUtils.setNavBarMode(requireActivity().getWindow(), false);
+        }
+        TitleBarStyle titleBarStyle = selectorStyle.getTitleBarStyle();
+        int titleBackgroundColor = titleBarStyle.getTitleBackgroundColor();
+        if (StyleUtils.checkStyleValidity(titleBackgroundColor)) {
+            //有颜色
+            int color = titleBackgroundColor;
+            int redValue = Color.red(color);
+            int greenValue = Color.green(color);
+            int blueValue = Color.blue(color);
+            int[] colorArry = new int[]{redValue,greenValue,blueValue};
+            if (isLightRGB(colorArry)){
+                AndroidBarUtils.setStatusBarMode(requireActivity().getWindow(), true);
+            }else {
+                AndroidBarUtils.setStatusBarMode(requireActivity().getWindow(), false);
+            }
+        }else{
+            //没有颜色
+            AndroidBarUtils.setStatusBarMode(requireActivity().getWindow(), false);
+        }
     }
 
     @Override
@@ -1729,5 +1784,11 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
         super.onDestroy();
     }
 
-
+    public boolean isLightRGB(int[] colors){
+        int grayLevel = (int) (colors[0] * 0.299 + colors[1] * 0.587 + colors[2] * 0.114);
+        if(grayLevel>=192){
+            return true;
+        }
+        return false;
+    }
 }

@@ -27,17 +27,6 @@
         tools:layout_height="48dp" />
 
 
-    <com.luck.picture.lib.widget.PreviewBottomNavBar
-        android:id="@+id/bottom_nar_bar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:clickable="true"
-        android:focusable="true"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:layout_height="48dp" />
-
     <com.luck.picture.lib.widget.MediumBoldTextView
         android:id="@+id/ps_tv_selected"
         android:layout_width="wrap_content"
@@ -72,16 +61,40 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/title_bar" />
 
-    <com.luck.picture.lib.widget.CompleteSelectView
-        android:id="@+id/ps_complete_select"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:enabled="false"
-        android:layout_marginEnd="15dp"
-        android:background="@drawable/ps_transparent_space"
-        app:layout_constraintBottom_toBottomOf="@id/bottom_nar_bar"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/bottom_nar_bar" />
+        app:layout_constraintStart_toStartOf="parent">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <com.luck.picture.lib.widget.PreviewBottomNavBar
+                android:id="@+id/bottom_nar_bar"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:clickable="true"
+                android:focusable="true"
+                app:layout_constraintTop_toTopOf="parent"/>
+            <com.luck.picture.lib.widget.CompleteSelectView
+                android:id="@+id/ps_complete_select"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:enabled="false"
+                android:layout_marginEnd="15dp"
+                android:background="@drawable/ps_transparent_space"
+                app:layout_constraintBottom_toBottomOf="@id/bottom_nar_bar"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/bottom_nar_bar" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+        <View
+            android:id="@+id/luck_bar"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:background="@color/ps_color_grey"/>
+    </LinearLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
