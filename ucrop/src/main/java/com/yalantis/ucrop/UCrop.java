@@ -613,14 +613,11 @@ public class UCrop {
         /**
          * @param color - desired resolved color of the statusbar
          */
-        public void setStatusBarColor(@ColorInt int color) {
+        public void setBackBarColor(@ColorInt int color) {
             mOptionBundle.putInt(EXTRA_STATUS_BAR_COLOR, color);
         }
 
 
-        /**
-         * @param Is the font of the status bar black
-         */
         public void isDarkStatusBarBlack(boolean isDarkStatusBarBlack) {
             mOptionBundle.putBoolean(EXTRA_DARK_STATUS_BAR_BLACK, isDarkStatusBarBlack);
         }

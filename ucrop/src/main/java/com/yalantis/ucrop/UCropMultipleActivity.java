@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -41,7 +42,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.yalantis.ucrop.decoration.GridSpacingItemDecoration;
 import com.yalantis.ucrop.model.AspectRatio;
 import com.yalantis.ucrop.model.CustomIntentKey;
-import com.yalantis.ucrop.statusbar.ImmersiveManager;
 import com.yalantis.ucrop.util.DensityUtil;
 import com.yalantis.ucrop.util.FileUtils;
 
@@ -65,7 +65,7 @@ public class UCropMultipleActivity extends AppCompatActivity implements UCropFra
     private int mToolbarTitleSize;
     // Enables dynamic coloring
     private int mToolbarColor;
-    private int mStatusBarColor;
+    private int mBackBarColor;
     @DrawableRes
     private int mToolbarCancelDrawable;
     @DrawableRes
@@ -92,19 +92,12 @@ public class UCropMultipleActivity extends AppCompatActivity implements UCropFra
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        immersive();
         setContentView(R.layout.ucrop_activity_multiple);
         RelativeLayout relativeLayout = findViewById(R.id.ucrop_multiple);
-        relativeLayout.setBackgroundColor(mStatusBarColor);
         setupViews(getIntent());
+        relativeLayout.setBackgroundColor(mBackBarColor);
         initCropFragments(getIntent());
-    }
-
-    private void immersive() {
-        Intent intent = getIntent();
-        boolean isDarkStatusBarBlack = intent.getBooleanExtra(UCrop.Options.EXTRA_DARK_STATUS_BAR_BLACK, false);
-        mStatusBarColor = intent.getIntExtra(UCrop.Options.EXTRA_STATUS_BAR_COLOR, ContextCompat.getColor(this, R.color.ucrop_color_statusbar));
-        ImmersiveManager.immersiveAboveAPI23(this, mStatusBarColor, mStatusBarColor, isDarkStatusBarBlack);
+        Log.e("qwer","UCropMultipleActivity");
     }
 
     private void initCropFragments(Intent intent) {
@@ -291,7 +284,7 @@ public class UCropMultipleActivity extends AppCompatActivity implements UCropFra
         aspectRatioList = getIntent().getParcelableArrayListExtra(UCrop.Options.EXTRA_MULTIPLE_ASPECT_RATIO);
         isForbidCropGifWebp = intent.getBooleanExtra(UCrop.Options.EXTRA_CROP_FORBID_GIF_WEBP, false);
         outputCropFileName = intent.getStringExtra(UCrop.Options.EXTRA_CROP_OUTPUT_FILE_NAME);
-        mStatusBarColor = intent.getIntExtra(UCrop.Options.EXTRA_STATUS_BAR_COLOR, ContextCompat.getColor(this, R.color.ucrop_color_statusbar));
+        mBackBarColor = intent.getIntExtra(UCrop.Options.EXTRA_STATUS_BAR_COLOR, ContextCompat.getColor(this, R.color.ucrop_color_statusbar));
         mToolbarColor = intent.getIntExtra(UCrop.Options.EXTRA_TOOL_BAR_COLOR, ContextCompat.getColor(this, R.color.ucrop_color_toolbar));
 
         mToolbarWidgetColor = intent.getIntExtra(UCrop.Options.EXTRA_UCROP_WIDGET_COLOR_TOOLBAR, ContextCompat.getColor(this, R.color.ucrop_color_toolbar_widget));
@@ -309,7 +302,6 @@ public class UCropMultipleActivity extends AppCompatActivity implements UCropFra
      * Configures and styles both status bar and toolbar.
      */
     private void setupAppBar() {
-        setStatusBarColor(mStatusBarColor);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
 
@@ -331,22 +323,6 @@ public class UCropMultipleActivity extends AppCompatActivity implements UCropFra
         final ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayShowTitleEnabled(false);
-        }
-    }
-
-    /**
-     * Sets status-bar color for L devices.
-     *
-     * @param color - status-bar color
-     */
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    private void setStatusBarColor(@ColorInt int color) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            final Window window = getWindow();
-            if (window != null) {
-                window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-                window.setStatusBarColor(color);
-            }
         }
     }
 

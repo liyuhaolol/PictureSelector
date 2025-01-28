@@ -1701,7 +1701,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
         options.isForbidCropGifWebp(cb_not_gif.isChecked());
         options.isForbidSkipMultipleCrop(true);
         options.setMaxScaleMultiplier(100);
-        options.setStatusBarColor(ContextCompat.getColor(getContext(), R.color.ps_color_grey));
+        options.setBackBarColor(ContextCompat.getColor(getContext(), R.color.ps_color_grey));
         options.setToolbarColor(ContextCompat.getColor(getContext(), R.color.ps_color_grey));
         options.setToolbarWidgetColor(ContextCompat.getColor(getContext(), R.color.ps_color_white));
         return options;

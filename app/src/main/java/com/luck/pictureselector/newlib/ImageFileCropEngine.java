@@ -303,7 +303,7 @@ public class ImageFileCropEngine implements ChooserCropFileEngine {
         options.isForbidCropGifWebp(true);
         options.isForbidSkipMultipleCrop(false);
         options.setMaxScaleMultiplier(100);
-        options.setStatusBarColor(ContextCompat.getColor(context, com.luck.picture.lib.R.color.ps_color_grey));
+        options.setBackBarColor(ContextCompat.getColor(context, com.luck.picture.lib.R.color.ps_color_grey));
         options.setToolbarColor(ContextCompat.getColor(context, com.luck.picture.lib.R.color.ps_color_grey));
         options.setToolbarWidgetColor(ContextCompat.getColor(context, com.luck.picture.lib.R.color.ps_color_white));
         return options;

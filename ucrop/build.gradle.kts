@@ -39,6 +39,7 @@ android {
 
 dependencies {
     implementation("androidx.appcompat:appcompat:1.7.0")
+    implementation ("androidx.activity:activity:1.10.0")
     implementation("androidx.exifinterface:exifinterface:1.3.7")
     implementation("androidx.transition:transition:1.5.1")
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
