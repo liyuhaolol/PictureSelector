@@ -9,13 +9,13 @@
 - ucrop 升级到`v3.11.4`，适配折叠屏
 
 # 简易使用说明
-- 引用方法
+- 引用方法(这里才是最新版本)
 ```sh
 repositories {
   google()
   mavenCentral()
 }
-
+ 
 dependencies {
   // PictureSelector basic (Necessary)
   implementation 'io.github.liyuhaolol:PictureChooser:1.0.4'
