@@ -1,3 +1,5 @@
+# 本人一时兴起去医院做了全飞秒手术，后了解到恢复周期长达半年，期间不能长时间看电脑屏幕，看电脑屏幕长了眼睛疼，会花眼。本地分支（未上传）已经初步解决了Chooser必须依赖`Activity`并且必须在`OnCreate`里实例化的限制问题。现在可以在任意生命周期，`Activity`,`Fragment`,`Dialog`里直接进行实例化。实际上就是把选择功能跟界面生命周期解耦，随用随初始化。恢复PictureSelector原作者的代码逻辑。但是奈何我这个眼睛啊，短时间没法把代码完成发版了，各位先凑合用吧。
+
 # PictureSelector 3.0 
    A PictureSelector for Android platform, which supports obtaining pictures, videos, audio & photos from photo albums, cutting (single picture or multi picture cutting), compression, theme custom configuration and other functions, and supports dynamic access & an open source picture selection framework suitable for Android 5.0 + system<br> 
 # 由于GooglePlay现在禁止非相册类或者视频音频编辑类App再使用，图片，视频，音频权限。导致三方相册库均无法使用，所以我在本库的基础上，Android13以上图片，视频的选择使用原生的PhotoPicker，但是后续裁切和压缩依然使用本库。
