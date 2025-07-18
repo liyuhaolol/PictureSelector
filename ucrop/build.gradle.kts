@@ -38,13 +38,13 @@ android {
 }
 
 dependencies {
-    implementation("androidx.appcompat:appcompat:1.7.0")
-    implementation ("androidx.activity:activity:1.10.0")
-    implementation("androidx.exifinterface:exifinterface:1.3.7")
-    implementation("androidx.transition:transition:1.5.1")
-    implementation("com.squareup.okhttp3:okhttp:4.12.0")
-    implementation("androidx.recyclerview:recyclerview:1.4.0")
-    implementation("com.google.code.gson:gson:2.10.1")
+    implementation(libs.androidx.appcompat)
+    implementation (libs.androidx.activity)
+    implementation(libs.androidx.exifinterface)
+    implementation(libs.androidx.transition)
+    implementation(libs.okhttp)
+    implementation(libs.androidx.recyclerview)
+    implementation(libs.gson)
 }
 
 var signingKeyId = ""//签名的密钥后8位

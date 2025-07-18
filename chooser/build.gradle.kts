@@ -38,9 +38,9 @@ android {
 
 dependencies {
 
-    implementation("androidx.appcompat:appcompat:1.7.0")
-    //api(project(":selector"))
-    api("io.github.liyuhaolol:PictureSelector:v3.11.6")
+    implementation(libs.androidx.appcompat)
+    api(project(":selector"))
+    //api("io.github.liyuhaolol:PictureSelector:v3.11.6")
     //implementation("com.google.android.material:material:1.12.0")
 }
 

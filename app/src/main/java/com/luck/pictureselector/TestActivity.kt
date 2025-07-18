@@ -133,7 +133,7 @@ class TestActivity :PermissionActivity(){
                     if (result != null){
                         list.clear()
                         for (localMedia in result){
-                            val path = localMedia!!.realPath
+                            val path = localMedia!!.cutPath
                             Log.e("qwer",path)
                             list.add(path)
                         }

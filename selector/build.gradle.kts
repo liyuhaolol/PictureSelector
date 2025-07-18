@@ -38,14 +38,14 @@ android {
 }
 
 dependencies {
-    implementation("androidx.appcompat:appcompat:1.7.0")
-    implementation ("androidx.activity:activity:1.10.0")
-    implementation("androidx.recyclerview:recyclerview:1.4.0")
+    implementation(libs.androidx.appcompat)
+    implementation (libs.androidx.activity)
+    implementation(libs.androidx.recyclerview)
     //implementation "androidx.activity:activity:${cfgs.activity_version}"
     //implementation "androidx.fragment:fragment:${cfgs.fragment_version}"
-    implementation("androidx.exifinterface:exifinterface:1.3.7")
-    implementation("androidx.viewpager2:viewpager2:1.1.0")
-    implementation("androidx.constraintlayout:constraintlayout:2.2.0")
+    implementation(libs.androidx.exifinterface)
+    implementation(libs.androidx.viewpager2)
+    implementation(libs.androidx.constraintlayout)
 }
 
 var signingKeyId = ""//签名的密钥后8位

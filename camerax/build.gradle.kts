@@ -41,9 +41,9 @@ dependencies {
     api ("androidx.camera:camera-camera2:1.2.1")
     implementation ("androidx.camera:camera-view:1.2.1")
     implementation ("androidx.camera:camera-lifecycle:1.2.1")
-    implementation ("androidx.appcompat:appcompat:1.7.0")
-    implementation ("androidx.transition:transition:1.5.1")
-    implementation ("androidx.concurrent:concurrent-futures:1.2.0")
+    implementation ("androidx.appcompat:appcompat:1.7.1")
+    implementation ("androidx.transition:transition:1.6.0")
+    implementation ("androidx.concurrent:concurrent-futures:1.3.0")
 }
 
 var signingKeyId = ""//签名的密钥后8位
