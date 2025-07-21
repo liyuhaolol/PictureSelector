@@ -5,12 +5,12 @@ plugins {
 
 android {
     namespace = "com.luck.pictureselector"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.luck.pictureselector"
         minSdk = 21
-        targetSdk = 35
+        targetSdk = 36
         versionCode = 93
         versionName = "v3.11.2"
     }

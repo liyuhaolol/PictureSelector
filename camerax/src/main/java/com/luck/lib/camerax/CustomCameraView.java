@@ -1,7 +1,7 @@
 package com.luck.lib.camerax;
 
-import static androidx.camera.core.VideoCapture.ERROR_RECORDING_TOO_SHORT;
-import static androidx.camera.view.video.OnVideoSavedCallback.ERROR_MUXER;
+/*import static androidx.camera.core.VideoCapture.ERROR_RECORDING_TOO_SHORT;
+import static androidx.camera.view.video.OnVideoSavedCallback.ERROR_MUXER;*/
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -22,6 +22,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.Display;
 import android.view.Surface;
 import android.view.TextureView;
@@ -47,9 +48,16 @@ import androidx.camera.core.MeteringPoint;
 import androidx.camera.core.MeteringPointFactory;
 import androidx.camera.core.Preview;
 import androidx.camera.core.UseCaseGroup;
-import androidx.camera.core.VideoCapture;
+//import androidx.camera.core.VideoCapture;
 import androidx.camera.core.ZoomState;
 import androidx.camera.lifecycle.ProcessCameraProvider;
+import androidx.camera.video.FileOutputOptions;
+import androidx.camera.video.Quality;
+import androidx.camera.video.QualitySelector;
+import androidx.camera.video.Recorder;
+import androidx.camera.video.Recording;
+import androidx.camera.video.VideoCapture;
+import androidx.camera.video.VideoRecordEvent;
 import androidx.camera.view.LifecycleCameraController;
 import androidx.camera.view.PreviewView;
 import androidx.core.content.ContextCompat;
@@ -109,7 +117,8 @@ public class CustomCameraView extends RelativeLayout implements CameraXOrientati
     private ProcessCameraProvider mCameraProvider;
     private ImageCapture mImageCapture;
     private ImageAnalysis mImageAnalyzer;
-    private VideoCapture mVideoCapture;
+    private VideoCapture<Recorder> mVideoCapture;
+    Recording currentRecording;
 
     private int displayId = -1;
     /**
@@ -297,6 +306,7 @@ public class CustomCameraView extends RelativeLayout implements CameraXOrientati
                                 mCaptureLayout, mImageCallbackListener, mCameraListener));
             }
 
+            @SuppressLint("MissingPermission")
             @Override
             public void recordStart() {
                 if (!mCameraProvider.isBound(mVideoCapture)) {
@@ -306,7 +316,7 @@ public class CustomCameraView extends RelativeLayout implements CameraXOrientati
                 mSwitchCamera.setVisibility(INVISIBLE);
                 mFlashLamp.setVisibility(INVISIBLE);
                 tvCurrentTime.setVisibility(isDisplayRecordTime ? VISIBLE : GONE);
-                VideoCapture.OutputFileOptions fileOptions;
+                FileOutputOptions fileOptions;
                 File cameraFile;
                 if (isSaveExternal()) {
                     cameraFile = FileUtils.createTempFile(getContext(), true);
@@ -314,35 +324,54 @@ public class CustomCameraView extends RelativeLayout implements CameraXOrientati
                     cameraFile = FileUtils.createCameraFile(getContext(), CameraUtils.TYPE_VIDEO,
                             outPutCameraFileName, videoFormat, outPutCameraDir);
                 }
-                fileOptions = new VideoCapture.OutputFileOptions.Builder(cameraFile).build();
-                mVideoCapture.startRecording(fileOptions, mainExecutor,
-                        new VideoCapture.OnVideoSavedCallback() {
-                            @Override
-                            public void onVideoSaved(@NonNull @NotNull VideoCapture.OutputFileResults outputFileResults) {
-                                long minSecond = recordVideoMinSecond <= 0 ? CustomCameraConfig.DEFAULT_MIN_RECORD_VIDEO : recordVideoMinSecond;
-                                if (recordTime < minSecond || outputFileResults.getSavedUri() == null) {
-                                    return;
-                                }
-                                Uri savedUri = outputFileResults.getSavedUri();
-                                SimpleCameraX.putOutputUri(activity.getIntent(), savedUri);
-                                String outPutPath = FileUtils.isContent(savedUri.toString()) ? savedUri.toString() : savedUri.getPath();
-                                mTextureView.setVisibility(View.VISIBLE);
-                                tvCurrentTime.setVisibility(GONE);
-                                if (mTextureView.isAvailable()) {
-                                    startVideoPlay(outPutPath);
-                                } else {
-                                    mTextureView.setSurfaceTextureListener(surfaceTextureListener);
-                                }
-                            }
+                fileOptions = new FileOutputOptions.Builder(cameraFile).build();
+                currentRecording = mVideoCapture.getOutput()
+                        .prepareRecording(getContext(), fileOptions)
+                        .withAudioEnabled() // 如果你要录音
+                        .start(mainExecutor, event -> {
+                            if (event instanceof VideoRecordEvent.Start) {
+                                // 可选：开始录制时的逻辑
+                                Log.d("CameraX", "Recording started");
+                            } else if (event instanceof VideoRecordEvent.Finalize) {
+                                VideoRecordEvent.Finalize finalizeEvent = (VideoRecordEvent.Finalize) event;
 
-                            @Override
-                            public void onError(int videoCaptureError, @NonNull @NotNull String message,
-                                                @Nullable @org.jetbrains.annotations.Nullable Throwable cause) {
-                                if (mCameraListener != null) {
-                                    if (videoCaptureError == ERROR_RECORDING_TOO_SHORT || videoCaptureError == ERROR_MUXER) {
+                                // 错误处理
+                                if (!finalizeEvent.hasError()) {
+                                    long minSecond = recordVideoMinSecond <= 0 ? CustomCameraConfig.DEFAULT_MIN_RECORD_VIDEO : recordVideoMinSecond;
+
+                                    // 计算录制时长
+                                    long durationMillis = finalizeEvent.getRecordingStats().getRecordedDurationNanos() / 1_000_000;
+                                    long recordTime = durationMillis / 1000;
+
+                                    Uri savedUri = finalizeEvent.getOutputResults().getOutputUri();
+
+                                    if (recordTime < minSecond || savedUri == null) {
+                                        // 录制太短，自动删除或提示
                                         recordShort(0);
+                                        return;
+                                    }
+
+                                    // 保存和播放逻辑
+                                    SimpleCameraX.putOutputUri(activity.getIntent(), savedUri);
+                                    String outputPath = FileUtils.isContent(savedUri.toString()) ? savedUri.toString() : savedUri.getPath();
+
+                                    mTextureView.setVisibility(View.VISIBLE);
+                                    tvCurrentTime.setVisibility(View.GONE);
+                                    if (mTextureView.isAvailable()) {
+                                        startVideoPlay(outputPath);
                                     } else {
-                                        mCameraListener.onError(videoCaptureError, message, cause);
+                                        mTextureView.setSurfaceTextureListener(surfaceTextureListener);
+                                    }
+                                } else {
+                                    int errorCode = finalizeEvent.getError();
+
+                                    if (errorCode != VideoRecordEvent.Finalize.ERROR_NONE) {
+                                        if (errorCode == VideoRecordEvent.Finalize.ERROR_SOURCE_INACTIVE ||
+                                                errorCode == VideoRecordEvent.Finalize.ERROR_ENCODING_FAILED) {
+                                            recordShort(0);
+                                        } else if (mCameraListener != null) {
+                                            mCameraListener.onError(errorCode, "Recording error", finalizeEvent.getCause());
+                                        }
                                     }
                                 }
                             }
@@ -374,7 +403,10 @@ public class CustomCameraView extends RelativeLayout implements CameraXOrientati
                 mCaptureLayout.resetCaptureLayout();
                 mCaptureLayout.setTextWithAnimation(getContext().getString(R.string.picture_recording_time_is_short));
                 try {
-                    mVideoCapture.stopRecording();
+                    if (currentRecording != null) {
+                        currentRecording.stop();  // 触发 Finalize 回调
+                        currentRecording = null;
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -384,7 +416,10 @@ public class CustomCameraView extends RelativeLayout implements CameraXOrientati
             public void recordEnd(long time) {
                 recordTime = time;
                 try {
-                    mVideoCapture.stopRecording();
+                    if (currentRecording != null) {
+                        currentRecording.stop();  // 触发 Finalize 回调
+                        currentRecording = null;
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -804,15 +839,18 @@ public class CustomCameraView extends RelativeLayout implements CameraXOrientati
 
     @SuppressLint("RestrictedApi")
     private void buildVideoCapture() {
-        VideoCapture.Builder videoBuilder = new VideoCapture.Builder();
-        videoBuilder.setTargetRotation(mCameraPreviewView.getDisplay().getRotation());
-        if (videoFrameRate > 0) {
-            videoBuilder.setVideoFrameRate(videoFrameRate);
-        }
-        if (videoBitRate > 0) {
-            videoBuilder.setBitRate(videoBitRate);
-        }
-        mVideoCapture = videoBuilder.build();
+
+        QualitySelector qualitySelector = QualitySelector.from(Quality.HIGHEST); // 默认
+
+        // ⚠️ 新 API 中不能直接设置帧率和码率，需通过自定义 EncoderProfiles 来实现（较复杂）
+        // 这里只能通过质量选择器间接控制帧率/码率（或者使用 Camera2Interop）
+
+        Recorder recorder = new Recorder.Builder()
+                .setExecutor(ContextCompat.getMainExecutor(getContext()))
+                .setQualitySelector(qualitySelector)
+                .build();
+
+        mVideoCapture = VideoCapture.withOutput(recorder);
     }
 
 
@@ -1089,7 +1127,10 @@ public class CustomCameraView extends RelativeLayout implements CameraXOrientati
             mImagePreviewBg.setAlpha(0F);
         } else {
             try {
-                mVideoCapture.stopRecording();
+                if (currentRecording != null) {
+                    currentRecording.stop();  // 触发 Finalize 回调
+                    currentRecording = null;
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }

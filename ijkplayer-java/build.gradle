@@ -4,7 +4,7 @@ android {
     namespace 'tv.danmaku.ijk.media.player'
     // http://tools.android.com/tech-docs/new-build-system/tips
     //noinspection GroovyAssignabilityCheck
-    compileSdkVersion 35
+    compileSdkVersion 36
     //noinspection GroovyAssignabilityCheck
 
     lintOptions {
@@ -12,7 +12,7 @@ android {
     }
     defaultConfig {
         minSdkVersion 9
-        targetSdkVersion 35
+        targetSdkVersion 36
     }
     buildTypes {
         release {

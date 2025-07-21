@@ -10,7 +10,7 @@ plugins {
 
 android {
     namespace = "com.luck.lib.camerax"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         minSdk = 21
@@ -37,10 +37,10 @@ android {
 }
 
 dependencies {
-    api ("androidx.camera:camera-core:1.2.1")
-    api ("androidx.camera:camera-camera2:1.2.1")
-    implementation ("androidx.camera:camera-view:1.2.1")
-    implementation ("androidx.camera:camera-lifecycle:1.2.1")
+    api (libs.androidx.camera.core)
+    api (libs.androidx.camera.camera2)
+    implementation (libs.androidx.camera.view)
+    implementation (libs.androidx.camera.lifecycle)
     implementation (libs.androidx.appcompat)
     implementation (libs.androidx.transition)
     implementation (libs.androidx.concurrent.futures)

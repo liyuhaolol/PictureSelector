@@ -10,7 +10,7 @@ plugins{
 android {
     namespace = "com.yalantis.ucrop"
 
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         minSdk = 19

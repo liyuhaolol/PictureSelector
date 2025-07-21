@@ -11,7 +11,7 @@ plugins {
 
 android {
     namespace = "spa.lyh.cn.chooser"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         minSdk = 19
