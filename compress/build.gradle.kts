@@ -3,48 +3,36 @@ import java.io.InputStreamReader
 import java.util.Properties
 import net.thebugmc.gradle.sonatypepublisher.PublishingType.AUTOMATIC
 
-plugins {
+plugins{
     id("com.android.library")
     id("net.thebugmc.gradle.sonatype-central-portal-publisher") version "1.2.4"
 }
 
 android {
-    namespace = "com.luck.lib.camerax"
+    namespace = "top.zibin.luban"
     compileSdk = 36
 
     defaultConfig {
-        minSdk = 21
-        consumerProguardFiles("consumer-rules.pro")
+        minSdk = 14
     }
-
     buildTypes {
         release {
-            isMinifyEnabled = false
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
+            isMinifyEnabled  = false
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"),"proguard-rules.pro")
         }
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_21
         targetCompatibility = JavaVersion.VERSION_21
     }
+
     buildFeatures {
         viewBinding = true
         buildConfig = true
     }
 }
 
-dependencies {
-    api (libs.androidx.camera.core)
-    api (libs.androidx.camera.camera2)
-    implementation (libs.androidx.camera.view)
-    implementation (libs.androidx.camera.lifecycle)
-    implementation (libs.androidx.appcompat)
-    implementation (libs.androidx.transition)
-    implementation (libs.androidx.concurrent.futures)
-}
+dependencies {}
 
 var signingKeyId = ""//签名的密钥后8位
 var signingPassword = ""//签名设置的密码
@@ -75,12 +63,12 @@ if (localProperties.exists()) {
 centralPortal {
     username = ossrhUsername
     password = ossrhPassword
-    name = "camerax"
+    name = "compress"
     group = "io.github.liyuhaolol"
-    version = "v3.11.5"
+    version = "v3.11.3"
     pom {
         //packaging = "aar"
-        name = "camerax"
+        name = "compress"
         description = "Android PictureSelector Utils"
         url = "https://github.com/liyuhaolol/PictureSelector"
         licenses {

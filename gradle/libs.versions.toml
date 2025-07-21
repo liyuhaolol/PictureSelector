@@ -18,6 +18,7 @@ navigationFragmentKtx = "2.9.2"
 okhttp = "5.1.0"
 permission = "1.2.7"
 picasso = "2.71828"
+pictureselector = "v3.11.7"
 recyclerview = "1.4.0"
 subsamplingScaleImageViewAndroidx = "3.10.0"
 transition = "1.6.0"
@@ -50,6 +51,7 @@ leakcanary-android = { module = "com.squareup.leakcanary:leakcanary-android", ve
 okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
 permission = { module = "io.github.liyuhaolol:Permission", version.ref = "permission" }
 picasso = { module = "com.squareup.picasso:picasso", version.ref = "picasso" }
+pictureselector = { module = "io.github.liyuhaolol:PictureSelector", version.ref = "pictureselector" }
 subsampling-scale-image-view-androidx = { module = "com.davemorrissey.labs:subsampling-scale-image-view-androidx", version.ref = "subsamplingScaleImageViewAndroidx" }
 
 

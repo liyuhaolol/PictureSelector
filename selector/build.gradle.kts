@@ -5,7 +5,7 @@ import net.thebugmc.gradle.sonatypepublisher.PublishingType.AUTOMATIC
 
 plugins{
     id("com.android.library")
-    id("net.thebugmc.gradle.sonatype-central-portal-publisher") version "1.2.3"
+    id("net.thebugmc.gradle.sonatype-central-portal-publisher") version "1.2.4"
 }
 
 android {
@@ -79,7 +79,7 @@ centralPortal {
     password = ossrhPassword
     name = "PictureSelector"
     group = "io.github.liyuhaolol"
-    version = "v3.11.6"
+    version = "v3.11.7"
     pom {
         //packaging = "aar"
         name = "PictureSelector"

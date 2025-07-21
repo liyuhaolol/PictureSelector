@@ -6,7 +6,7 @@ import net.thebugmc.gradle.sonatypepublisher.PublishingType.AUTOMATIC
 plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
-    id("net.thebugmc.gradle.sonatype-central-portal-publisher") version "1.2.3"
+    id("net.thebugmc.gradle.sonatype-central-portal-publisher") version "1.2.4"
 }
 
 android {
@@ -39,8 +39,8 @@ android {
 dependencies {
 
     implementation(libs.androidx.appcompat)
-    api(project(":selector"))
-    //api("io.github.liyuhaolol:PictureSelector:v3.11.6")
+    //api(project(":selector"))
+    api(libs.pictureselector)
     //implementation("com.google.android.material:material:1.12.0")
 }
 
@@ -75,7 +75,7 @@ centralPortal {
     password = ossrhPassword
     name = "PictureChooser"
     group = "io.github.liyuhaolol"
-    version = "1.0.4"
+    version = "1.0.5"
     pom {
         //packaging = "aar"
         name = "PictureChooser"
