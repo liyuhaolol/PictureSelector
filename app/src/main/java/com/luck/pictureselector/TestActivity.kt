@@ -1,7 +1,6 @@
 package com.luck.pictureselector
 
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.result.ActivityResult
@@ -25,16 +24,11 @@ import com.luck.pictureselector.newlib.UpPictureSelectorStyle
 import spa.lyh.cn.chooser.PicChooser
 import spa.lyh.cn.peractivity.ManifestPro
 import spa.lyh.cn.peractivity.PermissionActivity
-import spa.lyh.cn.utils_io.IOUtils
-import java.io.File
-import java.io.FileInputStream
-import java.io.FileNotFoundException
 
 
 class TestActivity :PermissionActivity(){
     lateinit var b:ActivityTestBinding
     var mark = 1
-    lateinit var pc: PicChooser
     lateinit var launcher:ActivityResultLauncher<Intent>
 
     lateinit var testAdapter: TestAdapter
@@ -65,16 +59,6 @@ class TestActivity :PermissionActivity(){
             val options = ActivityOptionsCompat.makeCustomAnimation(this@TestActivity, spa.lyh.cn.chooser.R.anim.slide_in, spa.lyh.cn.chooser.R.anim.stay);
             launcher.launch(intent,options)
         }
-        pc = PicChooser()
-            .setImageEngine(GlideEngine.createGlideEngine())
-            .openGallery(SelectMimeType.ofAll())
-            .isGif(false)
-            .setSelectionMode(SelectModeConfig.SINGLE)
-            //.setMaxSelectNum(5)
-            .setSelectorUIStyle(UpPictureSelectorStyle())
-            .setOpenGalleryEngine(AndroidGalleryEngine(this))
-            .setCropEngine(ImageFileCropEngine().initResultLauncher(this))
-            .setCompressEngine(ImageFileCompressEngine())
 
         launcher = registerForActivityResult<Intent, ActivityResult>(
             ActivityResultContracts.StartActivityForResult()
@@ -102,24 +86,35 @@ class TestActivity :PermissionActivity(){
     fun openPhoto(){
         //val no = 5-list.size
         //pc.setMaxSelectNum(no)
-        pc.forResult(this,object : OnResultCallbackListener<LocalMedia?> {
-            override fun onResult(result: ArrayList<LocalMedia?>?) {
-                if (result != null){
-                    list.clear()
-                    for (localMedia in result){
-                        val path = localMedia!!.compressPath
-                        Log.e("qwer",path)
-                        list.add(path)
+        PicChooser
+            .with(this)
+            .setImageEngine(GlideEngine.createGlideEngine())
+            .openGallery(SelectMimeType.ofImage())
+            .isGif(false)
+            .setSelectionMode(SelectModeConfig.SINGLE)
+            //.setMaxSelectNum(5)
+            .setSelectorUIStyle(UpPictureSelectorStyle())
+            .setOpenGalleryEngine(AndroidGalleryEngine())
+            .setCropEngine(ImageFileCropEngine())
+            .setCompressEngine(ImageFileCompressEngine())
+            .forResult(object : OnResultCallbackListener<LocalMedia?> {
+                override fun onResult(result: ArrayList<LocalMedia?>?) {
+                    if (result != null){
+                        list.clear()
+                        for (localMedia in result){
+                            val path = localMedia!!.availablePath
+                            Log.e("qwer",path)
+                            list.add(path)
+                        }
+                        testAdapter.notifyDataSetChanged()
                     }
-                    testAdapter.notifyDataSetChanged()
                 }
-            }
 
-            override fun onCancel() {
-                Log.e("qwer","整体被取消了")
-            }
+                override fun onCancel() {
+                    Log.e("qwer","整体被取消了")
+                }
 
-        })
+            })
     }
 
     fun openCamera(){
@@ -133,7 +128,7 @@ class TestActivity :PermissionActivity(){
                     if (result != null){
                         list.clear()
                         for (localMedia in result){
-                            val path = localMedia!!.cutPath
+                            val path = localMedia!!.availablePath
                             Log.e("qwer",path)
                             list.add(path)
                         }

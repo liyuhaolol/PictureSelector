@@ -9,5 +9,4 @@ public interface OpenGalleryEngine {
 
     void launch(Context context,PicChooser chooser);
 
-    void updateMaxItems(int maxItems);
 }

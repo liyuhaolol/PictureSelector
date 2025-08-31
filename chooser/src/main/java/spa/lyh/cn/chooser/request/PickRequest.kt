@@ -2,6 +2,7 @@ package spa.lyh.cn.chooser.request
 
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import com.luck.picture.lib.config.SelectMimeType

@@ -5,6 +5,7 @@ import net.thebugmc.gradle.sonatypepublisher.PublishingType.AUTOMATIC
 
 plugins{
     id("com.android.library")
+    id("org.jetbrains.kotlin.android")
     id("net.thebugmc.gradle.sonatype-central-portal-publisher") version "1.2.4"
 }
 android {
@@ -22,6 +23,9 @@ android {
             isMinifyEnabled  = false
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"),"proguard-rules.pro")
         }
+    }
+    kotlinOptions {
+        jvmTarget = "21"
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_21
@@ -78,7 +82,7 @@ centralPortal {
     password = ossrhPassword
     name = "ucrop"
     group = "io.github.liyuhaolol"
-    version = "v3.11.6"
+    version = "v3.11.7"
     pom {
         //packaging = "aar"
         name = "ucrop"

@@ -1,6 +1,15 @@
 ## 由于GooglePlay现在禁止非相册类或者视频音频编辑类App再使用，图片，视频，音频权限。导致三方相册库均无法使用，所以我在本库的基础上，Android13以上图片，视频的选择使用原生的PhotoPicker，但是后续裁切和压缩依然使用本库。
 
+## Chooser是对Selector的封装，导入Chooser会自动导入Selector，Chooser只适配了图片选择器，图片裁切，图片压缩等主流的设置选项。如果你有图片水印之类的需求那你继续用Selector就行。至于适配我没看过我不知道。如果你有视频类更详细的配置，我也没适配，走的Selector默认逻辑。
+
+## 20250831小告知：随着静心重写了Chooser的逻辑，现在已经还原了Selector原本的代码书写逻辑，Selector怎么用Chooser就怎么用。并且也适配到Android16，媒体选择这部分我预测短时间内Google不会再进行任何改动。我个人也因突发工作变动不再负责Android方面的开发，所以不会追着Android版本改动留意项目的适配度。所以本项目至此大概率彻底完结。以上。
+
+
 ## 更新日志
+
+### 2025.08.31
+- chooser 发布到`1.0.6`，解除`ActivityForResult`对`Activity->onCreate()`的硬绑定关系，现在可以在任意位置初始化PicChooser
+- ucrop 升级到`v3.11.7`，解除`ActivityForResult`对`Activity->onCreate()`的硬绑定关系，现在可以在任意位置初始化PicChooser
 
 ### 2025.07.21
 - chooser 发布到`1.0.5`，适配`Android16`，适配16K Page Size
@@ -24,13 +33,13 @@ repositories {
  
 dependencies {
   // PictureSelector basic (Necessary)
-  implementation 'io.github.liyuhaolol:PictureChooser:1.0.5'
+  implementation 'io.github.liyuhaolol:PictureChooser:1.0.6'
 
   // image compress library (Not necessary)
   implementation 'io.github.liyuhaolol:compress:v3.11.3'
 
   // uCrop library (Not necessary)
-  implementation 'io.github.liyuhaolol:ucrop:v3.11.6'
+  implementation 'io.github.liyuhaolol:ucrop:v3.11.7'
 
   // simple camerax library (Not necessary)
   implementation 'io.github.liyuhaolol:camerax:v3.11.5'
@@ -51,29 +60,32 @@ dependencies {
 - 只有在Android13以下才需要请求`android.permission.READ_EXTERNAL_STORAGE`权限，PhotoPicker选取图片不需要任何权限
 - 方法调用
 ```sh
-            PicChooser()
+          PicChooser
+            .with(this)
             .setImageEngine(GlideEngine.createGlideEngine())
-            .openGallery(SelectMimeType.ofAll())
+            .openGallery(SelectMimeType.ofImage())
             .isGif(false)
             .setSelectionMode(SelectModeConfig.MULTIPLE)
             .setMaxSelectNum(5)
             .setSelectorUIStyle(UpPictureSelectorStyle())
-            .setOpenGalleryEngine(AndroidGalleryEngine(this))
-            .setCropEngine(ImageFileCropEngine().initResultLauncher(this))
+            .setOpenGalleryEngine(AndroidGalleryEngine())
+            .setCropEngine(ImageFileCropEngine())
             .setCompressEngine(ImageFileCompressEngine())
-            .forResult(this,object : OnResultCallbackListener<LocalMedia?> {
-            override fun onResult(result: ArrayList<LocalMedia?>?) {
-
-            }
-            override fun onCancel() {
-                
-            }
-        })
+            .forResult(object : OnResultCallbackListener<LocalMedia?> {
+                override fun onResult(result: ArrayList<LocalMedia?>?) {
+                  
+                }
+                override fun onCancel() {
+                  
+                }
+            })
 ```
 - 注意事项
-- 1，具体逻辑可以看`TestActivity`和`com.luck.pictureselector.newlib`下的文件，那些文件也是按照本库之前的范例进行了一些适配修改，复制粘贴即可。
-- 2，`AndroidGalleryEngine(this)`和`ImageFileCropEngine().initResultLauncher(this)`由于使用了`ActivityResultLauncher`所以必须在`Activity`的`onCreate`生命周期内完成初始化，否则项目会闪退
-- 其他玩意并不想解答，如果你发现不能用，或者用着不舒服就去自己魔改吧，我这里不接受任何issues。
+- 1，具体逻辑可以看`TestActivity``Test2Fragment`和`com.luck.pictureselector.newlib`下的文件，那些文件也是按照本库之前的范例进行了一些适配修改，复制粘贴即可。
+- 其他玩意并不想解答，如果你发现不能用，或者用着不舒服就去自己魔改吧，我这里不接受，也没法接受任何issues。毕竟是clone的别人的项目。
+
+
+- 下面是项目原本的说明了！
 
    [简体中文🇨🇳](README_CN.md)
 

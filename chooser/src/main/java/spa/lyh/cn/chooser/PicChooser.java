@@ -1,7 +1,6 @@
 package spa.lyh.cn.chooser;
 
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.Build;
 import android.util.Log;
@@ -10,24 +9,18 @@ import androidx.fragment.app.Fragment;
 
 import com.luck.picture.lib.basic.PictureSelectionModel;
 import com.luck.picture.lib.basic.PictureSelector;
-import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.SelectMimeType;
 import com.luck.picture.lib.config.SelectModeConfig;
-import com.luck.picture.lib.config.SelectorConfig;
-import com.luck.picture.lib.config.SelectorProviders;
-import com.luck.picture.lib.engine.CompressFileEngine;
-import com.luck.picture.lib.engine.CropFileEngine;
 import com.luck.picture.lib.engine.ImageEngine;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.interfaces.OnPermissionsInterceptListener;
 import com.luck.picture.lib.interfaces.OnRequestPermissionListener;
 import com.luck.picture.lib.interfaces.OnResultCallbackListener;
 import com.luck.picture.lib.style.PictureSelectorStyle;
-import com.luck.picture.lib.utils.BitmapUtils;
-import com.luck.picture.lib.utils.SdkVersionUtils;
 
 import java.util.ArrayList;
 
+import spa.lyh.cn.chooser.engine.ChooserCompressFileEngine;
 import spa.lyh.cn.chooser.engine.ChooserCropFileEngine;
 import spa.lyh.cn.chooser.engine.OpenGalleryEngine;
 
@@ -37,14 +30,30 @@ public class PicChooser {
     public int selectionMode = SelectModeConfig.MULTIPLE;
     public int maxSelectNum = 1;
     public ChooserCropFileEngine cropFileEngine = null;
-    public CompressFileEngine compressFileEngine = null;
+    public ChooserCompressFileEngine compressFileEngine = null;
     private PictureSelectionModel model = null;
     private PictureSelectorStyle uiStyle = null;
     public OpenGalleryEngine openGalleryEngine = null;
     public OnResultCallbackListener<LocalMedia> callback = null;
     private ImageEngine imageEngine = null;
+    /////////////////////////////////////
+    private Context context;
 
+    private PicChooser(Context context){
+        this.context = context;
+    }
 
+    public static PicChooser with(Context context){
+        return new PicChooser(context);
+    }
+    public static PicChooser with(Fragment fragment){
+        return new PicChooser(fragment.requireActivity());
+    }
+
+    public static PicChooser with(android.app.Fragment fragment){
+        return new PicChooser(fragment.getActivity());
+    }
+    //////////////////////////////////////////////////
     public PicChooser openGallery(int chooseMode) {
         this.chooseMode = chooseMode;
         return this;
@@ -70,7 +79,7 @@ public class PicChooser {
         return this;
     }
 
-    public PicChooser setCompressEngine(CompressFileEngine engine) {
+    public PicChooser setCompressEngine(ChooserCompressFileEngine engine) {
         compressFileEngine = engine;
         return this;
     }
@@ -90,11 +99,8 @@ public class PicChooser {
         return this;
     }
 
-    private void build12(Activity activity){
-        build12after(PictureSelector.create(activity));
-    }
-    private void build12(Fragment fragment){
-        build12after(PictureSelector.create(fragment));
+    private void build12(){
+        build12after(PictureSelector.create(context));
     }
     private void build12after(PictureSelector selector){
         model = selector
@@ -124,43 +130,19 @@ public class PicChooser {
                 });
     }
 
-    public void forResult(Activity activity,OnResultCallbackListener<LocalMedia> callback){
+    public void forResult(OnResultCallbackListener<LocalMedia> callback){
         this.callback = callback;
         if (maxSelectNum <= 1){
-            setSelectionMode(SelectModeConfig.SINGLE);
-        }else{
-            if (openGalleryEngine != null){
-                openGalleryEngine.updateMaxItems(maxSelectNum);
+            if (selectionMode == SelectModeConfig.MULTIPLE){
+                Log.e("Chooser","选取数量为1，强制设置选择模式为单选");
             }
+            setSelectionMode(SelectModeConfig.SINGLE);
         }
-        build12(activity);
+        build12();
         PicListData.getInstance().mediaList.clear();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (openGalleryEngine != null){
-                openGalleryEngine.launch(activity,this);
-            }else {
-                forResult12();
-            }
-        }else{
-            forResult12();
-        }
-
-    }
-
-    public void forResult(Fragment fragment,OnResultCallbackListener<LocalMedia> callback){
-        this.callback = callback;
-        if (maxSelectNum <= 1){
-            setSelectionMode(SelectModeConfig.SINGLE);
-        }else{
-            if (openGalleryEngine != null){
-                openGalleryEngine.updateMaxItems(maxSelectNum);
-            }
-        }
-        build12(fragment);
-        PicListData.getInstance().mediaList.clear();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            if (openGalleryEngine != null){
-                openGalleryEngine.launch(fragment.getActivity(),this);
+                openGalleryEngine.launch(context,this);
             }else {
                 forResult12();
             }
@@ -187,4 +169,5 @@ public class PicChooser {
             Log.e("Chooser","请先执行build完成初始化");
         }
     }
+
 }

@@ -2,7 +2,6 @@ package com.luck.pictureselector.newlib;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -11,16 +10,12 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.widget.ImageView;
 
-import androidx.activity.ComponentActivity;
 import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.CustomTarget;
@@ -29,9 +24,7 @@ import com.luck.picture.lib.config.Crop;
 import com.luck.picture.lib.config.CustomIntentKey;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.SelectMimeType;
-import com.luck.picture.lib.engine.CropFileEngine;
 import com.luck.picture.lib.entity.LocalMedia;
-import com.luck.picture.lib.interfaces.OnKeyValueResultCallbackListener;
 import com.luck.picture.lib.utils.DateUtils;
 import com.luck.picture.lib.utils.FileDirMap;
 
@@ -40,179 +33,43 @@ import spa.lyh.cn.chooser.PicChooser;
 import spa.lyh.cn.chooser.PicListData;
 import spa.lyh.cn.chooser.engine.ChooserCropFileEngine;
 
-import com.luck.picture.lib.utils.SdkVersionUtils;
 import com.yalantis.ucrop.UCrop;
 import com.yalantis.ucrop.UCropImageEngine;
+import com.yalantis.ucrop.fragment.CropFragment;
+import com.yalantis.ucrop.listener.ResultCallback;
 
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class ImageFileCropEngine implements ChooserCropFileEngine {
-    private ActivityResultLauncher<Intent> resultLauncher;
+
     private PicChooser picChooser;
 
-
-    //这是给Andriod13以上原生图片选择器初始化ForActivityResult用的，需要在onCreate里调用。相机，或者三方相册不需要调用这个方法
-    public ImageFileCropEngine initResultLauncher(ComponentActivity activity){
-        resultLauncher = activity.registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(),
-                new ActivityResultCallback<ActivityResult>() {
-                    @Override
-                    public void onActivityResult(ActivityResult result) {
-                        PicListData picListData = PicListData.getInstance();
-                        if (result.getResultCode() == Activity.RESULT_OK){
-                            if (picListData.mediaList.size() == 1){
-                                LocalMedia media = picListData.mediaList.get(0);
-                                assert result.getData() != null;
-                                Uri output = Crop.getOutput(result.getData());
-                                media.setCutPath(output != null ? output.getPath() : "");
-                                media.setCut(!TextUtils.isEmpty(media.getCutPath()));
-                                media.setCropImageWidth(Crop.getOutputImageWidth(result.getData()));
-                                media.setCropImageHeight(Crop.getOutputImageHeight(result.getData()));
-                                media.setCropOffsetX(Crop.getOutputImageOffsetX(result.getData()));
-                                media.setCropOffsetY(Crop.getOutputImageOffsetY(result.getData()));
-                                media.setCropResultAspectRatio(Crop.getOutputCropAspectRatio(result.getData()));
-                                media.setCustomData(Crop.getOutputCustomExtraData(result.getData()));
-                                media.setSandboxPath(media.getCutPath());
-                            }else{
-                                assert result.getData() != null;
-                                String extra = result.getData().getStringExtra(MediaStore.EXTRA_OUTPUT);
-                                if (TextUtils.isEmpty(extra)) {
-                                    extra = result.getData().getStringExtra(CustomIntentKey.EXTRA_OUTPUT_URI);
-                                }
-                                try {
-                                    JSONArray array = new JSONArray(extra);
-                                    if (array.length() == picListData.mediaList.size()) {
-                                        for (int i = 0; i < picListData.mediaList.size(); i++) {
-                                            LocalMedia media = picListData.mediaList.get(i);
-                                            JSONObject item = array.optJSONObject(i);
-                                            media.setCutPath(item.optString(CustomIntentKey.EXTRA_OUT_PUT_PATH));
-                                            media.setCut(!TextUtils.isEmpty(media.getCutPath()));
-                                            media.setCropImageWidth(item.optInt(CustomIntentKey.EXTRA_IMAGE_WIDTH));
-                                            media.setCropImageHeight(item.optInt(CustomIntentKey.EXTRA_IMAGE_HEIGHT));
-                                            media.setCropOffsetX(item.optInt(CustomIntentKey.EXTRA_OFFSET_X));
-                                            media.setCropOffsetY(item.optInt(CustomIntentKey.EXTRA_OFFSET_Y));
-                                            media.setCropResultAspectRatio((float) item.optDouble(CustomIntentKey.EXTRA_ASPECT_RATIO));
-                                            media.setCustomData(item.optString(CustomIntentKey.EXTRA_CUSTOM_EXTRA_DATA));
-                                            media.setSandboxPath(media.getCutPath());
-                                        }
-                                    }
-                                }catch (Exception e){
-                                    e.printStackTrace();
-                                }
-                            }
-                            if(picChooser.compressFileEngine != null){
-                                goCompress(activity,picChooser);
-                            }else{
-                                if (picChooser.callback != null){
-                                    picChooser.callback.onResult(PicListData.getInstance().mediaList);
-                                }
-                            }
-                        }else if(result.getResultCode() == Crop.RESULT_CROP_ERROR){
-                            Log.e("ImageFileCropEngine","图片裁剪出现错误");
-                        }else if(result.getResultCode() == Activity.RESULT_CANCELED){
-                            if (picChooser.callback != null){
-                                picChooser.callback.onCancel();
-                            }
-                        }
-                    }
-                }
-        );
-        return this;
-    }
-
-    public ImageFileCropEngine initResultLauncher(Fragment fragment){
-        resultLauncher = fragment.registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(),
-                new ActivityResultCallback<ActivityResult>() {
-                    @Override
-                    public void onActivityResult(ActivityResult result) {
-                        PicListData picListData = PicListData.getInstance();
-                        if (result.getResultCode() == Activity.RESULT_OK){
-                            if (picListData.mediaList.size() == 1){
-                                LocalMedia media = picListData.mediaList.get(0);
-                                assert result.getData() != null;
-                                Uri output = Crop.getOutput(result.getData());
-                                media.setCutPath(output != null ? output.getPath() : "");
-                                media.setCut(!TextUtils.isEmpty(media.getCutPath()));
-                                media.setCropImageWidth(Crop.getOutputImageWidth(result.getData()));
-                                media.setCropImageHeight(Crop.getOutputImageHeight(result.getData()));
-                                media.setCropOffsetX(Crop.getOutputImageOffsetX(result.getData()));
-                                media.setCropOffsetY(Crop.getOutputImageOffsetY(result.getData()));
-                                media.setCropResultAspectRatio(Crop.getOutputCropAspectRatio(result.getData()));
-                                media.setCustomData(Crop.getOutputCustomExtraData(result.getData()));
-                                media.setSandboxPath(media.getCutPath());
-                            }else{
-                                assert result.getData() != null;
-                                String extra = result.getData().getStringExtra(MediaStore.EXTRA_OUTPUT);
-                                if (TextUtils.isEmpty(extra)) {
-                                    extra = result.getData().getStringExtra(CustomIntentKey.EXTRA_OUTPUT_URI);
-                                }
-                                try {
-                                    JSONArray array = new JSONArray(extra);
-                                    if (array.length() == picListData.mediaList.size()) {
-                                        for (int i = 0; i < picListData.mediaList.size(); i++) {
-                                            LocalMedia media = picListData.mediaList.get(i);
-                                            JSONObject item = array.optJSONObject(i);
-                                            media.setCutPath(item.optString(CustomIntentKey.EXTRA_OUT_PUT_PATH));
-                                            media.setCut(!TextUtils.isEmpty(media.getCutPath()));
-                                            media.setCropImageWidth(item.optInt(CustomIntentKey.EXTRA_IMAGE_WIDTH));
-                                            media.setCropImageHeight(item.optInt(CustomIntentKey.EXTRA_IMAGE_HEIGHT));
-                                            media.setCropOffsetX(item.optInt(CustomIntentKey.EXTRA_OFFSET_X));
-                                            media.setCropOffsetY(item.optInt(CustomIntentKey.EXTRA_OFFSET_Y));
-                                            media.setCropResultAspectRatio((float) item.optDouble(CustomIntentKey.EXTRA_ASPECT_RATIO));
-                                            media.setCustomData(item.optString(CustomIntentKey.EXTRA_CUSTOM_EXTRA_DATA));
-                                            media.setSandboxPath(media.getCutPath());
-                                        }
-                                    }
-                                }catch (Exception e){
-                                    e.printStackTrace();
-                                }
-                            }
-                            if(picChooser.compressFileEngine != null){
-                                goCompress(fragment.getActivity(),picChooser);
-                            }else{
-                                if (picChooser.callback != null){
-                                    picChooser.callback.onResult(PicListData.getInstance().mediaList);
-                                }
-                            }
-                        }else if(result.getResultCode() == Crop.RESULT_CROP_ERROR){
-                            Log.e("ImageFileCropEngine","图片裁剪出现错误");
-                        }else if(result.getResultCode() == Activity.RESULT_CANCELED){
-                            if (picChooser.callback != null){
-                                picChooser.callback.onCancel();
-                            }
-                        }
-                    }
-                }
-        );
-        return this;
-    }
-
     @Override
-    public void setPicChooser(PicChooser picChooser){
+    public void setPicChooser(PicChooser picChooser) {
         this.picChooser = picChooser;
     }
 
+    /*这个方法应该是使用Selector时会被调用*/
     @Override
     public void onStartCrop(Fragment fragment, Uri srcUri, Uri destinationUri, ArrayList<String> dataSource, int requestCode) {
         UCrop uCrop = inituCrop(fragment.getContext(),srcUri,destinationUri,dataSource);
         uCrop.start(fragment.requireActivity(), fragment, requestCode);
     }
 
-
+    /*这个方法应该是使用PicChooser时会被调用*/
     @Override
-    public void onStartCrop(Activity activity, List<Uri> Uris) {
+    public void onStartCrop(Activity activity, List<Uri> uris) {
         Uri srcUri = null;
         Uri destinationUri = null;
         ArrayList<String> dataCropSource = new ArrayList<>();
-        for (int i = 0; i < Uris.size(); i++) {
-            LocalMedia media = MediaDataBuild.buildLocalMedia(activity,Uris.get(i).toString());
+        for (int i = 0; i < uris.size(); i++) {
+            LocalMedia media = MediaDataBuild.buildLocalMedia(activity,uris.get(i).toString());
             dataCropSource.add(media.getAvailablePath());
             if (srcUri == null && PictureMimeType.isHasImage(media.getMimeType())) {
                 String currentCropPath = media.getAvailablePath();
@@ -228,7 +85,7 @@ public class ImageFileCropEngine implements ChooserCropFileEngine {
             }
         }
         UCrop uCrop = inituCrop(activity,srcUri,destinationUri,dataCropSource);
-        resultLauncher.launch(uCrop.getIntent(activity));
+        CropFragment.launch((FragmentActivity) activity,uCrop,getCallback(activity));
     }
 
     private UCrop inituCrop(Context context,Uri srcUri, Uri destinationUri, ArrayList<String> dataSource){
@@ -267,7 +124,69 @@ public class ImageFileCropEngine implements ChooserCropFileEngine {
     }
 
 
-
+    private ResultCallback getCallback(Activity activity){
+        return new ResultCallback() {
+            @Override
+            public void onActivityResult(@NotNull ActivityResult result) {
+                PicListData picListData = PicListData.getInstance();
+                if (result.getResultCode() == Activity.RESULT_OK){
+                    if (picListData.mediaList.size() == 1){
+                        LocalMedia media = picListData.mediaList.get(0);
+                        assert result.getData() != null;
+                        Uri output = Crop.getOutput(result.getData());
+                        media.setCutPath(output != null ? output.getPath() : "");
+                        media.setCut(!TextUtils.isEmpty(media.getCutPath()));
+                        media.setCropImageWidth(Crop.getOutputImageWidth(result.getData()));
+                        media.setCropImageHeight(Crop.getOutputImageHeight(result.getData()));
+                        media.setCropOffsetX(Crop.getOutputImageOffsetX(result.getData()));
+                        media.setCropOffsetY(Crop.getOutputImageOffsetY(result.getData()));
+                        media.setCropResultAspectRatio(Crop.getOutputCropAspectRatio(result.getData()));
+                        media.setCustomData(Crop.getOutputCustomExtraData(result.getData()));
+                        media.setSandboxPath(media.getCutPath());
+                    }else{
+                        assert result.getData() != null;
+                        String extra = result.getData().getStringExtra(MediaStore.EXTRA_OUTPUT);
+                        if (TextUtils.isEmpty(extra)) {
+                            extra = result.getData().getStringExtra(CustomIntentKey.EXTRA_OUTPUT_URI);
+                        }
+                        try {
+                            JSONArray array = new JSONArray(extra);
+                            if (array.length() == picListData.mediaList.size()) {
+                                for (int i = 0; i < picListData.mediaList.size(); i++) {
+                                    LocalMedia media = picListData.mediaList.get(i);
+                                    JSONObject item = array.optJSONObject(i);
+                                    media.setCutPath(item.optString(CustomIntentKey.EXTRA_OUT_PUT_PATH));
+                                    media.setCut(!TextUtils.isEmpty(media.getCutPath()));
+                                    media.setCropImageWidth(item.optInt(CustomIntentKey.EXTRA_IMAGE_WIDTH));
+                                    media.setCropImageHeight(item.optInt(CustomIntentKey.EXTRA_IMAGE_HEIGHT));
+                                    media.setCropOffsetX(item.optInt(CustomIntentKey.EXTRA_OFFSET_X));
+                                    media.setCropOffsetY(item.optInt(CustomIntentKey.EXTRA_OFFSET_Y));
+                                    media.setCropResultAspectRatio((float) item.optDouble(CustomIntentKey.EXTRA_ASPECT_RATIO));
+                                    media.setCustomData(item.optString(CustomIntentKey.EXTRA_CUSTOM_EXTRA_DATA));
+                                    media.setSandboxPath(media.getCutPath());
+                                }
+                            }
+                        }catch (Exception e){
+                            e.printStackTrace();
+                        }
+                    }
+                    if(picChooser.compressFileEngine != null){
+                        picChooser.compressFileEngine.goCompress(activity,picChooser);
+                    }else{
+                        if (picChooser.callback != null){
+                            picChooser.callback.onResult(PicListData.getInstance().mediaList);
+                        }
+                    }
+                }else if(result.getResultCode() == Crop.RESULT_CROP_ERROR){
+                    Log.e("ImageFileCropEngine","图片裁剪出现错误");
+                }else if(result.getResultCode() == Activity.RESULT_CANCELED){
+                    if (picChooser.callback != null){
+                        picChooser.callback.onCancel();
+                    }
+                }
+            }
+        };
+    }
 
     /**
      * 创建自定义输出目录
@@ -310,54 +229,4 @@ public class ImageFileCropEngine implements ChooserCropFileEngine {
     }
 
 
-    private void goCompress(Context context,PicChooser picChooser){
-        ArrayList<Uri> uris = new ArrayList<>();
-        ConcurrentHashMap<String, LocalMedia> queue = new ConcurrentHashMap<>();
-        for (int i = 0; i < PicListData.getInstance().mediaList.size(); i++) {
-            LocalMedia mediaC = PicListData.getInstance().mediaList.get(i);
-            String availablePath = mediaC.getAvailablePath();
-            if (PictureMimeType.isHasImage(mediaC.getMimeType())) {
-                Uri a = PictureMimeType.isContent(availablePath) ? Uri.parse(availablePath) : Uri.fromFile(new File(availablePath));
-                uris.add(a);
-                queue.put(availablePath, mediaC);
-            }
-        }
-        if (queue.size() == 0) {
-            if (picChooser.callback != null){
-                picChooser.callback.onResult(PicListData.getInstance().mediaList);
-            }
-        }else{
-            picChooser.compressFileEngine.onStartCompress(context, uris, new OnKeyValueResultCallbackListener() {
-                @Override
-                public void onCallback(String srcPath, String compressPath) {
-                    if (TextUtils.isEmpty(srcPath)) {
-                        if (picChooser.callback != null){
-                            picChooser.callback.onResult(PicListData.getInstance().mediaList);
-                        }
-                    } else {
-                        LocalMedia media = queue.get(srcPath);
-                        if (media != null) {
-                            if (SdkVersionUtils.isQ()){
-                                if (!TextUtils.isEmpty(compressPath) && (compressPath.contains("Android/data/")
-                                        || compressPath.contains("data/user/"))) {
-                                    media.setCompressPath(compressPath);
-                                    media.setCompressed(!TextUtils.isEmpty(compressPath));
-                                    media.setSandboxPath(media.getCompressPath());
-                                }
-                            } else {
-                                media.setCompressPath(compressPath);
-                                media.setCompressed(!TextUtils.isEmpty(compressPath));
-                            }
-                            queue.remove(srcPath);
-                        }
-                        if (queue.size() == 0) {
-                            if (picChooser.callback != null){
-                                picChooser.callback.onResult(PicListData.getInstance().mediaList);
-                            }
-                        }
-                    }
-                }
-            });
-        }
-    }
 }

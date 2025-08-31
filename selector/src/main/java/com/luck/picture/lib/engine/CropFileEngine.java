@@ -45,7 +45,7 @@ public interface CropFileEngine {
      */
     void onStartCrop(Fragment fragment, Uri srcUri, Uri destinationUri, ArrayList<String> dataSource, int requestCode);
 
-    void onStartCrop(Activity activity, List<Uri> Uris);
+    void onStartCrop(Activity activity, List<Uri> uris);
 
 
 }

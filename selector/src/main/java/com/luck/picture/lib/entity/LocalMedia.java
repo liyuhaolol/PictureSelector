@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
@@ -430,22 +431,48 @@ public class LocalMedia implements Parcelable {
      */
     public String getAvailablePath() {
         String path = getPath();
+        int type = 0;
         if (isCut()) {
             path = getCutPath();
+            type = 1;
         }
         if (isCompressed()) {
             path = getCompressPath();
+            type = 2;
         }
         if (isToSandboxPath()) {
             path = getSandboxPath();
+            type = 3;
         }
         if (isOriginal()) {
             path = getOriginalPath();
+            type = 4;
         }
         if (isWatermarkPath()) {
             path = getWatermarkPath();
+            type = 5;
         }
+        Log.i("LocalMedia",getMsg(type,path));
         return path;
+    }
+
+    private String getMsg(int type,String path){
+        switch (type){
+            case 0:
+                return "返回Uri默认路径:"+path;
+            case 1:
+                return "返回剪切路径:"+path;
+            case 2:
+                return "返回压缩路径:"+path;
+            case 3:
+                return "返回沙盒路径:"+path;
+            case 4:
+                return "返回原始路径:"+path;
+            case 5:
+                return "返回水印路径:"+path;
+            default:
+                return "理论不可能输出这句话";
+        }
     }
 
     public long getId() {

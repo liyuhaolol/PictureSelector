@@ -22,13 +22,9 @@ import com.luck.pictureselector.newlib.ImageFileCropEngine
 import com.luck.pictureselector.newlib.MeOnCameraInterceptListener
 import com.luck.pictureselector.newlib.UpPictureSelectorStyle
 import spa.lyh.cn.chooser.PicChooser
-import spa.lyh.cn.peractivity.ManifestPro
-import spa.lyh.cn.peractivity.PermissionActivity.Companion.REQUIRED_LOAD_METHOD
-import kotlin.text.clear
 
 class Test2Fragment: Fragment() {
     lateinit var b: FragmentTestTwoBinding
-    lateinit var pc: PicChooser
 
     lateinit var testAdapter: TestAdapter
     var list:ArrayList<String> = arrayListOf()
@@ -53,38 +49,38 @@ class Test2Fragment: Fragment() {
         b.btnOpenCamera.setOnClickListener{
             (requireActivity() as Test2Activity).askForPermissionCamera()
         }
-        pc = PicChooser()
-            .setImageEngine(GlideEngine.createGlideEngine())
-            .openGallery(SelectMimeType.ofAll())
-            .isGif(false)
-            .setSelectionMode(SelectModeConfig.MULTIPLE)
-            .setMaxSelectNum(5)
-            .setSelectorUIStyle(UpPictureSelectorStyle())
-            .setOpenGalleryEngine(AndroidGalleryEngine(this))
-            .setCropEngine(ImageFileCropEngine().initResultLauncher(this))
-            .setCompressEngine(ImageFileCompressEngine())
     }
 
     fun openPhoto(){
-        //val no = 5-list.size
-        //pc.setMaxSelectNum(no)
-        pc.forResult(this,object : OnResultCallbackListener<LocalMedia?> {
-            override fun onResult(result: ArrayList<LocalMedia?>?) {
-                if (result != null){
-                    list.clear()
-                    for (localMedia in result){
-                        val path = localMedia!!.compressPath
-                        list.add(path)
+
+        PicChooser
+            .with(this)
+            .setImageEngine(GlideEngine.createGlideEngine())
+            .openGallery(SelectMimeType.ofAll())
+            .isGif(true)
+            .setSelectionMode(SelectModeConfig.MULTIPLE)
+            .setMaxSelectNum(5)
+            .setSelectorUIStyle(UpPictureSelectorStyle())
+            .setOpenGalleryEngine(AndroidGalleryEngine())
+            .setCropEngine(ImageFileCropEngine())
+            .setCompressEngine(ImageFileCompressEngine())
+            .forResult(object : OnResultCallbackListener<LocalMedia?> {
+                override fun onResult(result: ArrayList<LocalMedia?>?) {
+                    if (result != null){
+                        list.clear()
+                        for (localMedia in result){
+                            val path = localMedia!!.availablePath
+                            list.add(path)
+                        }
+                        testAdapter.notifyDataSetChanged()
                     }
-                    testAdapter.notifyDataSetChanged()
                 }
-            }
 
-            override fun onCancel() {
-                Log.e("qwer","整体被取消了")
-            }
+                override fun onCancel() {
+                    Log.e("qwer","整体被取消了")
+                }
 
-        })
+            })
     }
 
     fun openCamera(){
@@ -98,7 +94,7 @@ class Test2Fragment: Fragment() {
                     if (result != null){
                         list.clear()
                         for (localMedia in result){
-                            val path = localMedia!!.compressPath
+                            val path = localMedia!!.availablePath
                             list.add(path)
                         }
                         testAdapter.notifyDataSetChanged()
