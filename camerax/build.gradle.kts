@@ -1,19 +1,13 @@
-import java.io.FileInputStream
-import java.io.InputStreamReader
-import java.util.Properties
-import net.thebugmc.gradle.sonatypepublisher.PublishingType.AUTOMATIC
-
 plugins {
     id("com.android.library")
-    id("net.thebugmc.gradle.sonatype-central-portal-publisher") version "1.2.4"
 }
 
 android {
     namespace = "com.luck.lib.camerax"
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
-        minSdk = 21
+        minSdk = 24
         consumerProguardFiles("consumer-rules.pro")
     }
 
@@ -27,8 +21,8 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_21
-        targetCompatibility = JavaVersion.VERSION_21
+        sourceCompatibility = JavaVersion.VERSION_25
+        targetCompatibility = JavaVersion.VERSION_25
     }
     buildFeatures {
         viewBinding = true
@@ -46,6 +40,7 @@ dependencies {
     implementation (libs.androidx.concurrent.futures)
 }
 
+/*
 var signingKeyId = ""//签名的密钥后8位
 var signingPassword = ""//签名设置的密码
 var secretKeyRingFile = ""//生成的secring.gpg文件目录
@@ -123,4 +118,4 @@ gradle.taskGraph.whenReady {
 
 signing {
     sign(publishing.publications)
-}
+}*/

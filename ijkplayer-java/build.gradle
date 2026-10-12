@@ -4,7 +4,7 @@ android {
     namespace 'tv.danmaku.ijk.media.player'
     // http://tools.android.com/tech-docs/new-build-system/tips
     //noinspection GroovyAssignabilityCheck
-    compileSdkVersion 36
+    compileSdkVersion 37
     //noinspection GroovyAssignabilityCheck
 
     lintOptions {
@@ -12,17 +12,17 @@ android {
     }
     defaultConfig {
         minSdkVersion 9
-        targetSdkVersion 36
+        targetSdkVersion 37
     }
     buildTypes {
         release {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_21
-        targetCompatibility = JavaVersion.VERSION_21
+        sourceCompatibility = JavaVersion.VERSION_25
+        targetCompatibility = JavaVersion.VERSION_25
     }
 
     buildFeatures {

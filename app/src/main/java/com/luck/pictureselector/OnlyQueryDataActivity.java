@@ -112,19 +112,19 @@ public class OnlyQueryDataActivity extends AppCompatActivity {
             if (chooseModel == SelectMimeType.ofAudio()) {
                 viewHolder.tvDuration.setVisibility(View.VISIBLE);
                 viewHolder.tvDuration.setCompoundDrawablesRelativeWithIntrinsicBounds
-                        (R.drawable.ps_ic_audio, 0, 0, 0);
+                        (com.luck.picture.lib.R.drawable.ps_ic_audio, 0, 0, 0);
             } else {
                 viewHolder.tvDuration.setCompoundDrawablesRelativeWithIntrinsicBounds
-                        (R.drawable.ps_ic_video, 0, 0, 0);
+                        (com.luck.picture.lib.R.drawable.ps_ic_video, 0, 0, 0);
             }
             viewHolder.tvDuration.setText(DateUtils.formatDurationTime(duration));
             if (chooseModel == SelectMimeType.ofAudio()) {
-                viewHolder.mImg.setImageResource(R.drawable.ps_audio_placeholder);
+                viewHolder.mImg.setImageResource(com.luck.picture.lib.R.drawable.ps_audio_placeholder);
             } else {
                 Glide.with(viewHolder.itemView.getContext())
                         .load(PictureMimeType.isContent(path) ? Uri.parse(path) : path)
                         .centerCrop()
-                        .placeholder(R.drawable.ps_image_placeholder)
+                        .placeholder(com.luck.picture.lib.R.drawable.ps_image_placeholder)
                         .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
                         .into(viewHolder.mImg);
             }

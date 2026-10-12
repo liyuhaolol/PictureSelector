@@ -11,7 +11,7 @@ import android.view.WindowManager;
 public class CustomLoadingDialog extends Dialog {
 
     public CustomLoadingDialog(Context context) {
-        super(context, R.style.Picture_Theme_AlertDialog);
+        super(context, com.luck.picture.lib.R.style.Picture_Theme_AlertDialog);
         setCancelable(true);
         setCanceledOnTouchOutside(false);
     }
@@ -27,7 +27,7 @@ public class CustomLoadingDialog extends Dialog {
         params.width = ViewGroup.LayoutParams.WRAP_CONTENT;
         params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
         params.gravity = Gravity.CENTER;
-        getWindow().setWindowAnimations(R.style.PictureThemeDialogWindowStyle);
+        getWindow().setWindowAnimations(com.luck.picture.lib.R.style.PictureThemeDialogWindowStyle);
         getWindow().setAttributes(params);
     }
 }

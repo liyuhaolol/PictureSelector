@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -121,11 +122,12 @@ public class GridImageAdapter extends RecyclerView.Adapter<GridImageAdapter.View
         return position == size;
     }
 
+
     /**
      * 设置值
      */
     @Override
-    public void onBindViewHolder(final ViewHolder viewHolder, final int position) {
+    public void onBindViewHolder(@NonNull ViewHolder viewHolder, int position) {
         //少于MaxSize张，显示继续添加的图标
         if (getItemViewType(position) == TYPE_CAMERA) {
             viewHolder.mImg.setImageResource(R.drawable.ic_add_image);
@@ -157,15 +159,15 @@ public class GridImageAdapter extends RecyclerView.Adapter<GridImageAdapter.View
             if (chooseModel == SelectMimeType.ofAudio()) {
                 viewHolder.tvDuration.setVisibility(View.VISIBLE);
                 viewHolder.tvDuration.setCompoundDrawablesRelativeWithIntrinsicBounds
-                        (R.drawable.ps_ic_audio, 0, 0, 0);
+                        (com.luck.picture.lib.R.drawable.ps_ic_audio, 0, 0, 0);
 
             } else {
                 viewHolder.tvDuration.setCompoundDrawablesRelativeWithIntrinsicBounds
-                        (R.drawable.ps_ic_video, 0, 0, 0);
+                        (com.luck.picture.lib.R.drawable.ps_ic_video, 0, 0, 0);
             }
             viewHolder.tvDuration.setText(DateUtils.formatDurationTime(duration));
             if (chooseModel == SelectMimeType.ofAudio()) {
-                viewHolder.mImg.setImageResource(R.drawable.ps_audio_placeholder);
+                viewHolder.mImg.setImageResource(com.luck.picture.lib.R.drawable.ps_audio_placeholder);
             } else {
                 Glide.with(viewHolder.itemView.getContext())
                         .load(PictureMimeType.isContent(path) && !media.isCut() && !media.isCompressed() ? Uri.parse(path)

@@ -86,7 +86,7 @@ public class PicassoEngine implements ImageEngine {
                     .centerCrop()
                     .noFade()
                     .transform(new RoundedCornersTransform(8))
-                    .placeholder(R.drawable.ps_image_placeholder)
+                    .placeholder(com.luck.picture.lib.R.drawable.ps_image_placeholder)
                     .into(imageView);
         } else {
             if (PictureMimeType.isUrlHasVideo(url)) {
@@ -98,7 +98,7 @@ public class PicassoEngine implements ImageEngine {
                         .centerCrop()
                         .noFade()
                         .transform(new RoundedCornersTransform(8))
-                        .placeholder(R.drawable.ps_image_placeholder)
+                        .placeholder(com.luck.picture.lib.R.drawable.ps_image_placeholder)
                         .into(imageView);
             } else {
                 Picasso.get()
@@ -107,7 +107,7 @@ public class PicassoEngine implements ImageEngine {
                         .centerCrop()
                         .noFade()
                         .transform(new RoundedCornersTransform(8))
-                        .placeholder(R.drawable.ps_image_placeholder)
+                        .placeholder(com.luck.picture.lib.R.drawable.ps_image_placeholder)
                         .into(imageView);
             }
         }
@@ -133,7 +133,7 @@ public class PicassoEngine implements ImageEngine {
                     .resize(200, 200)
                     .centerCrop()
                     .noFade()
-                    .placeholder(R.drawable.ps_image_placeholder)
+                    .placeholder(com.luck.picture.lib.R.drawable.ps_image_placeholder)
                     .into(imageView);
         } else {
             if (PictureMimeType.isUrlHasVideo(url)) {
@@ -144,7 +144,7 @@ public class PicassoEngine implements ImageEngine {
                         .resize(200, 200)
                         .centerCrop()
                         .noFade()
-                        .placeholder(R.drawable.ps_image_placeholder)
+                        .placeholder(com.luck.picture.lib.R.drawable.ps_image_placeholder)
                         .into(imageView);
             } else {
                 Picasso.get()
@@ -152,7 +152,7 @@ public class PicassoEngine implements ImageEngine {
                         .resize(200, 200)
                         .centerCrop()
                         .noFade()
-                        .placeholder(R.drawable.ps_image_placeholder)
+                        .placeholder(com.luck.picture.lib.R.drawable.ps_image_placeholder)
                         .into(imageView);
             }
         }

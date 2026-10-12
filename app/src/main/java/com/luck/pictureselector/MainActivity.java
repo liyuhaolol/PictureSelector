@@ -535,7 +535,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
 
                                     @Override
                                     public long onSelectAnim(View view) {
-                                        Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.ps_anim_modal_in);
+                                        Animation animation = AnimationUtils.loadAnimation(getContext(), com.luck.picture.lib.R.anim.ps_anim_modal_in);
                                         view.startAnimation(animation);
                                         return animation.getDuration();
                                     }
@@ -1701,9 +1701,9 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
         options.isForbidCropGifWebp(cb_not_gif.isChecked());
         options.isForbidSkipMultipleCrop(true);
         options.setMaxScaleMultiplier(100);
-        options.setBackBarColor(ContextCompat.getColor(getContext(), R.color.ps_color_grey));
-        options.setToolbarColor(ContextCompat.getColor(getContext(), R.color.ps_color_grey));
-        options.setToolbarWidgetColor(ContextCompat.getColor(getContext(), R.color.ps_color_white));
+        options.setBackBarColor(ContextCompat.getColor(getContext(), com.luck.picture.lib.R.color.ps_color_grey));
+        options.setToolbarColor(ContextCompat.getColor(getContext(), com.luck.picture.lib.R.color.ps_color_grey));
+        options.setToolbarWidgetColor(ContextCompat.getColor(getContext(), com.luck.picture.lib.R.color.ps_color_white));
         return options;
     }
 
@@ -1908,384 +1908,311 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.left_back:
-                finish();
-                break;
-            case R.id.minus:
-                if (maxSelectNum > 1) {
-                    maxSelectNum--;
-                }
-                tv_select_num.setText(String.valueOf(maxSelectNum));
-                mAdapter.setSelectMax(maxSelectNum + maxSelectVideoNum);
-                break;
-            case R.id.plus:
-                maxSelectNum++;
-                tv_select_num.setText(String.valueOf(maxSelectNum));
-                mAdapter.setSelectMax(maxSelectNum + maxSelectVideoNum);
-                break;
-
-            case R.id.video_minus:
-                if (maxSelectVideoNum > 1) {
-                    maxSelectVideoNum--;
-                }
-                tv_select_video_num.setText(String.valueOf(maxSelectVideoNum));
-                mAdapter.setSelectMax(maxSelectVideoNum + maxSelectNum);
-                break;
-            case R.id.video_plus:
-                maxSelectVideoNum++;
-                tv_select_video_num.setText(String.valueOf(maxSelectVideoNum));
-                mAdapter.setSelectMax(maxSelectVideoNum + maxSelectNum);
-                break;
+        if (v.getId() == R.id.left_back) {
+            finish();
+        } else if (v.getId() == R.id.minus) {
+            if (maxSelectNum > 1) {
+                maxSelectNum--;
+            }
+            tv_select_num.setText(String.valueOf(maxSelectNum));
+            mAdapter.setSelectMax(maxSelectNum + maxSelectVideoNum);
+        } else if (v.getId() == R.id.plus) {
+            maxSelectNum++;
+            tv_select_num.setText(String.valueOf(maxSelectNum));
+            mAdapter.setSelectMax(maxSelectNum + maxSelectVideoNum);
+        } else if (v.getId() == R.id.video_minus) {
+            if (maxSelectVideoNum > 1) {
+                maxSelectVideoNum--;
+            }
+            tv_select_video_num.setText(String.valueOf(maxSelectVideoNum));
+            mAdapter.setSelectMax(maxSelectVideoNum + maxSelectNum);
+        } else if (v.getId() == R.id.video_plus) {
+            maxSelectVideoNum++;
+            tv_select_video_num.setText(String.valueOf(maxSelectVideoNum));
+            mAdapter.setSelectMax(maxSelectVideoNum + maxSelectNum);
         }
     }
 
     @Override
     public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
-        switch (checkedId) {
-            case R.id.rb_all:
-                chooseMode = SelectMimeType.ofAll();
-                cb_preview_img.setChecked(true);
-                cb_preview_video.setChecked(true);
-                cb_isGif.setChecked(false);
-                cb_preview_video.setChecked(true);
-                cb_preview_img.setChecked(true);
-                cb_preview_video.setVisibility(View.VISIBLE);
-                cb_preview_img.setVisibility(View.VISIBLE);
-                llSelectVideoSize.setVisibility(View.VISIBLE);
-                cb_compress.setVisibility(View.VISIBLE);
-                cb_crop.setVisibility(View.VISIBLE);
-                cb_isGif.setVisibility(View.VISIBLE);
-                cb_preview_audio.setVisibility(View.GONE);
-                break;
-            case R.id.rb_image:
-                llSelectVideoSize.setVisibility(View.GONE);
-                chooseMode = SelectMimeType.ofImage();
-                cb_preview_img.setChecked(true);
-                cb_preview_video.setChecked(false);
-                cb_isGif.setChecked(false);
-                cb_preview_video.setChecked(false);
-                cb_preview_video.setVisibility(View.GONE);
-                cb_preview_img.setChecked(true);
-                cb_preview_audio.setVisibility(View.GONE);
-                cb_preview_img.setVisibility(View.VISIBLE);
-                cb_compress.setVisibility(View.VISIBLE);
-                cb_crop.setVisibility(View.VISIBLE);
-                cb_isGif.setVisibility(View.VISIBLE);
-                break;
-            case R.id.rb_video:
-                llSelectVideoSize.setVisibility(View.GONE);
-                chooseMode = SelectMimeType.ofVideo();
-                cb_preview_img.setChecked(false);
-                cb_preview_video.setChecked(true);
-                cb_isGif.setChecked(false);
-                cb_isGif.setVisibility(View.GONE);
-                cb_preview_video.setChecked(true);
-                cb_preview_video.setVisibility(View.VISIBLE);
-                cb_preview_img.setVisibility(View.GONE);
-                cb_preview_img.setChecked(false);
-                cb_compress.setVisibility(View.GONE);
-                cb_preview_audio.setVisibility(View.GONE);
-                cb_crop.setVisibility(View.GONE);
-                break;
-            case R.id.rb_audio:
-                chooseMode = SelectMimeType.ofAudio();
-                cb_preview_audio.setVisibility(View.VISIBLE);
-                break;
-            case R.id.rb_glide:
-                imageEngine = GlideEngine.createGlideEngine();
-                break;
-            case R.id.rb_picasso:
-                imageEngine = PicassoEngine.createPicassoEngine();
-                break;
-            case R.id.rb_coil:
-                imageEngine = new CoilEngine();
-                break;
-            case R.id.rb_media_player:
-                videoPlayerEngine = null;
-                isUseSystemPlayer = false;
-                break;
-            case R.id.rb_exo_player:
-                videoPlayerEngine = new ExoPlayerEngine();
-                isUseSystemPlayer = false;
-                break;
-            case R.id.rb_ijk_player:
-                videoPlayerEngine = new IjkPlayerEngine();
-                isUseSystemPlayer = false;
-                break;
-            case R.id.rb_system_player:
-                isUseSystemPlayer = true;
-                break;
-            case R.id.rb_system:
-                language = LanguageConfig.SYSTEM_LANGUAGE;
-                break;
-            case R.id.rb_jpan:
-                language = LanguageConfig.JAPAN;
-                break;
-            case R.id.rb_tw:
-                language = LanguageConfig.TRADITIONAL_CHINESE;
-                break;
-            case R.id.rb_us:
-                language = LanguageConfig.ENGLISH;
-                break;
-            case R.id.rb_ka:
-                language = LanguageConfig.KOREA;
-                break;
-            case R.id.rb_de:
-                language = LanguageConfig.GERMANY;
-                break;
-            case R.id.rb_fr:
-                language = LanguageConfig.FRANCE;
-                break;
-            case R.id.rb_spanish:
-                language = LanguageConfig.SPANISH;
-                break;
-            case R.id.rb_portugal:
-                language = LanguageConfig.PORTUGAL;
-                break;
-            case R.id.rb_ar:
-                language = LanguageConfig.AR;
-            case R.id.rb_ru:
-                language = LanguageConfig.RU;
-                break;
-            case R.id.rb_cs:
-                language = LanguageConfig.CS;
-                break;
-            case R.id.rb_kk:
-                language = LanguageConfig.KK;
-                break;
-            case R.id.rb_crop_default:
-                aspect_ratio_x = -1;
-                aspect_ratio_y = -1;
-                break;
-            case R.id.rb_crop_1to1:
-                aspect_ratio_x = 1;
-                aspect_ratio_y = 1;
-                break;
-            case R.id.rb_crop_3to4:
-                aspect_ratio_x = 3;
-                aspect_ratio_y = 4;
-                break;
-            case R.id.rb_crop_3to2:
-                aspect_ratio_x = 3;
-                aspect_ratio_y = 2;
-                break;
-            case R.id.rb_crop_16to9:
-                aspect_ratio_x = 16;
-                aspect_ratio_y = 9;
-                break;
-            case R.id.rb_launcher_result:
-                resultMode = 0;
-                break;
-            case R.id.rb_activity_result:
-                resultMode = 1;
-                break;
-            case R.id.rb_callback_result:
-                resultMode = 2;
-                break;
-            case R.id.rb_photo_default_animation:
-                PictureWindowAnimationStyle defaultAnimationStyle = new PictureWindowAnimationStyle();
-                defaultAnimationStyle.setActivityEnterAnimation(R.anim.ps_anim_enter);
-                defaultAnimationStyle.setActivityExitAnimation(R.anim.ps_anim_exit);
-                selectorStyle.setWindowAnimationStyle(defaultAnimationStyle);
-                break;
-            case R.id.rb_photo_up_animation:
-                PictureWindowAnimationStyle animationStyle = new PictureWindowAnimationStyle();
-                animationStyle.setActivityEnterAnimation(R.anim.ps_anim_up_in);
-                animationStyle.setActivityExitAnimation(R.anim.ps_anim_down_out);
-                selectorStyle.setWindowAnimationStyle(animationStyle);
-                break;
-            case R.id.rb_default_style:
-                selectorStyle = new PictureSelectorStyle();
-
-                break;
-            case R.id.rb_white_style:
-                TitleBarStyle whiteTitleBarStyle = new TitleBarStyle();
-                whiteTitleBarStyle.setTitleBackgroundColor(ContextCompat.getColor(getContext(), R.color.ps_color_white));
-                whiteTitleBarStyle.setTitleDrawableRightResource(R.drawable.ic_orange_arrow_down);
-                whiteTitleBarStyle.setTitleLeftBackResource(R.drawable.ps_ic_black_back);
-                whiteTitleBarStyle.setTitleTextColor(ContextCompat.getColor(getContext(), R.color.ps_color_black));
-                whiteTitleBarStyle.setTitleCancelTextColor(ContextCompat.getColor(getContext(), R.color.ps_color_53575e));
-                whiteTitleBarStyle.setDisplayTitleBarLine(true);
-
-                BottomNavBarStyle whiteBottomNavBarStyle = new BottomNavBarStyle();
-                whiteBottomNavBarStyle.setBottomNarBarBackgroundColor(Color.parseColor("#EEEEEE"));
-                whiteBottomNavBarStyle.setBottomPreviewSelectTextColor(ContextCompat.getColor(getContext(), R.color.ps_color_53575e));
-
-                whiteBottomNavBarStyle.setBottomPreviewNormalTextColor(ContextCompat.getColor(getContext(), R.color.ps_color_9b));
-                whiteBottomNavBarStyle.setBottomPreviewSelectTextColor(ContextCompat.getColor(getContext(), R.color.ps_color_fa632d));
-                whiteBottomNavBarStyle.setCompleteCountTips(false);
-                whiteBottomNavBarStyle.setBottomEditorTextColor(ContextCompat.getColor(getContext(), R.color.ps_color_53575e));
-                whiteBottomNavBarStyle.setBottomOriginalTextColor(ContextCompat.getColor(getContext(), R.color.ps_color_53575e));
-
-                SelectMainStyle selectMainStyle = new SelectMainStyle();
-                selectMainStyle.setDarkStatusBarBlack(true);
-                selectMainStyle.setSelectNormalTextColor(ContextCompat.getColor(getContext(), R.color.ps_color_9b));
-                selectMainStyle.setSelectTextColor(ContextCompat.getColor(getContext(), R.color.ps_color_fa632d));
-                selectMainStyle.setPreviewSelectBackground(R.drawable.ps_demo_white_preview_selector);
-                selectMainStyle.setSelectBackground(R.drawable.ps_checkbox_selector);
-                selectMainStyle.setSelectText(R.string.ps_done_front_num);
-                selectMainStyle.setMainListBackgroundColor(ContextCompat.getColor(getContext(), R.color.ps_color_white));
-
-                selectorStyle.setTitleBarStyle(whiteTitleBarStyle);
-                selectorStyle.setBottomBarStyle(whiteBottomNavBarStyle);
-                selectorStyle.setSelectMainStyle(selectMainStyle);
-                break;
-            case R.id.rb_num_style:
-                TitleBarStyle blueTitleBarStyle = new TitleBarStyle();
-                blueTitleBarStyle.setTitleBackgroundColor(ContextCompat.getColor(getContext(), R.color.ps_color_blue));
-
-                BottomNavBarStyle numberBlueBottomNavBarStyle = new BottomNavBarStyle();
-                numberBlueBottomNavBarStyle.setBottomPreviewNormalTextColor(ContextCompat.getColor(getContext(), R.color.ps_color_9b));
-                numberBlueBottomNavBarStyle.setBottomPreviewSelectTextColor(ContextCompat.getColor(getContext(), R.color.ps_color_blue));
-                numberBlueBottomNavBarStyle.setBottomNarBarBackgroundColor(ContextCompat.getColor(getContext(), R.color.ps_color_white));
-                numberBlueBottomNavBarStyle.setBottomSelectNumResources(R.drawable.ps_demo_blue_num_selected);
-                numberBlueBottomNavBarStyle.setBottomEditorTextColor(ContextCompat.getColor(getContext(), R.color.ps_color_53575e));
-                numberBlueBottomNavBarStyle.setBottomOriginalTextColor(ContextCompat.getColor(getContext(), R.color.ps_color_53575e));
-
-
-                SelectMainStyle numberBlueSelectMainStyle = new SelectMainStyle();
-                numberBlueSelectMainStyle.setSelectNumberStyle(true);
-                numberBlueSelectMainStyle.setPreviewSelectNumberStyle(true);
-                numberBlueSelectMainStyle.setSelectBackground(R.drawable.ps_demo_blue_num_selector);
-                numberBlueSelectMainStyle.setMainListBackgroundColor(ContextCompat.getColor(getContext(), R.color.ps_color_white));
-                numberBlueSelectMainStyle.setPreviewSelectBackground(R.drawable.ps_demo_preview_blue_num_selector);
-
-                numberBlueSelectMainStyle.setSelectNormalTextColor(ContextCompat.getColor(getContext(), R.color.ps_color_9b));
-                numberBlueSelectMainStyle.setSelectTextColor(ContextCompat.getColor(getContext(), R.color.ps_color_blue));
-                numberBlueSelectMainStyle.setSelectText(R.string.ps_completed);
-
-                selectorStyle.setTitleBarStyle(blueTitleBarStyle);
-                selectorStyle.setBottomBarStyle(numberBlueBottomNavBarStyle);
-                selectorStyle.setSelectMainStyle(numberBlueSelectMainStyle);
-                break;
-            case R.id.rb_we_chat_style:
-                // 主体风格
-                SelectMainStyle numberSelectMainStyle = new SelectMainStyle();
-                numberSelectMainStyle.setSelectNumberStyle(true);
-                numberSelectMainStyle.setPreviewSelectNumberStyle(false);
-                numberSelectMainStyle.setPreviewDisplaySelectGallery(true);
-                numberSelectMainStyle.setSelectBackground(R.drawable.ps_default_num_selector);
-                numberSelectMainStyle.setPreviewSelectBackground(R.drawable.ps_preview_checkbox_selector);
-                numberSelectMainStyle.setSelectNormalBackgroundResources(R.drawable.ps_select_complete_normal_bg);
-                numberSelectMainStyle.setSelectNormalTextColor(ContextCompat.getColor(getContext(), R.color.ps_color_53575e));
-                numberSelectMainStyle.setSelectNormalText(R.string.ps_send);
-                numberSelectMainStyle.setAdapterPreviewGalleryBackgroundResource(R.drawable.ps_preview_gallery_bg);
-                numberSelectMainStyle.setAdapterPreviewGalleryItemSize(DensityUtil.dip2px(getContext(), 52));
-                numberSelectMainStyle.setPreviewSelectText(R.string.ps_select);
-                numberSelectMainStyle.setPreviewSelectTextSize(14);
-                numberSelectMainStyle.setPreviewSelectTextColor(ContextCompat.getColor(getContext(), R.color.ps_color_white));
-                numberSelectMainStyle.setPreviewSelectMarginRight(DensityUtil.dip2px(getContext(), 6));
-                numberSelectMainStyle.setSelectBackgroundResources(R.drawable.ps_select_complete_bg);
-                numberSelectMainStyle.setSelectText(R.string.ps_send_num);
-                numberSelectMainStyle.setSelectTextColor(ContextCompat.getColor(getContext(), R.color.ps_color_white));
-                numberSelectMainStyle.setMainListBackgroundColor(ContextCompat.getColor(getContext(), R.color.ps_color_black));
-                //numberSelectMainStyle.setCompleteSelectRelativeTop(true);
-                //numberSelectMainStyle.setPreviewSelectRelativeBottom(true);
-                numberSelectMainStyle.setAdapterItemIncludeEdge(false);
-
-                // 头部TitleBar 风格
-                TitleBarStyle numberTitleBarStyle = new TitleBarStyle();
-                numberTitleBarStyle.setHideCancelButton(true);
-                numberTitleBarStyle.setAlbumTitleRelativeLeft(true);
-                if (cb_only_dir.isChecked()) {
-                    numberTitleBarStyle.setTitleAlbumBackgroundResource(R.drawable.ps_demo_only_album_bg);
-                } else {
-                    numberTitleBarStyle.setTitleAlbumBackgroundResource(R.drawable.ps_album_bg);
-                }
-                numberTitleBarStyle.setTitleDrawableRightResource(R.drawable.ps_ic_grey_arrow);
-                numberTitleBarStyle.setPreviewTitleLeftBackResource(R.drawable.ps_ic_normal_back);
-
-                // 底部NavBar 风格
-                BottomNavBarStyle numberBottomNavBarStyle = new BottomNavBarStyle();
-                numberBottomNavBarStyle.setBottomPreviewNarBarBackgroundColor(ContextCompat.getColor(getContext(), R.color.ps_color_half_grey));
-                numberBottomNavBarStyle.setBottomPreviewNormalText(R.string.ps_preview);
-                numberBottomNavBarStyle.setBottomPreviewNormalTextColor(ContextCompat.getColor(getContext(), R.color.ps_color_9b));
-                numberBottomNavBarStyle.setBottomPreviewNormalTextSize(16);
-                numberBottomNavBarStyle.setCompleteCountTips(false);
-                numberBottomNavBarStyle.setBottomPreviewSelectText(R.string.ps_preview_num);
-                numberBottomNavBarStyle.setBottomPreviewSelectTextColor(ContextCompat.getColor(getContext(), R.color.ps_color_white));
-
-
-                selectorStyle.setTitleBarStyle(numberTitleBarStyle);
-                selectorStyle.setBottomBarStyle(numberBottomNavBarStyle);
-                selectorStyle.setSelectMainStyle(numberSelectMainStyle);
-
-                break;
-            case R.id.rb_default:
-                animationMode = AnimationType.DEFAULT_ANIMATION;
-                break;
-            case R.id.rb_alpha:
-                animationMode = AnimationType.ALPHA_IN_ANIMATION;
-                break;
-            case R.id.rb_slide_in:
-                animationMode = AnimationType.SLIDE_IN_BOTTOM_ANIMATION;
-                break;
+        if (checkedId == R.id.rb_all) {
+            chooseMode = SelectMimeType.ofAll();
+            cb_preview_img.setChecked(true);
+            cb_preview_video.setChecked(true);
+            cb_isGif.setChecked(false);
+            cb_preview_video.setChecked(true);
+            cb_preview_img.setChecked(true);
+            cb_preview_video.setVisibility(View.VISIBLE);
+            cb_preview_img.setVisibility(View.VISIBLE);
+            llSelectVideoSize.setVisibility(View.VISIBLE);
+            cb_compress.setVisibility(View.VISIBLE);
+            cb_crop.setVisibility(View.VISIBLE);
+            cb_isGif.setVisibility(View.VISIBLE);
+            cb_preview_audio.setVisibility(View.GONE);
+        } else if (checkedId == R.id.rb_image) {
+            llSelectVideoSize.setVisibility(View.GONE);
+            chooseMode = SelectMimeType.ofImage();
+            cb_preview_img.setChecked(true);
+            cb_preview_video.setChecked(false);
+            cb_isGif.setChecked(false);
+            cb_preview_video.setChecked(false);
+            cb_preview_video.setVisibility(View.GONE);
+            cb_preview_img.setChecked(true);
+            cb_preview_audio.setVisibility(View.GONE);
+            cb_preview_img.setVisibility(View.VISIBLE);
+            cb_compress.setVisibility(View.VISIBLE);
+            cb_crop.setVisibility(View.VISIBLE);
+            cb_isGif.setVisibility(View.VISIBLE);
+        } else if (checkedId == R.id.rb_video) {
+            llSelectVideoSize.setVisibility(View.GONE);
+            chooseMode = SelectMimeType.ofVideo();
+            cb_preview_img.setChecked(false);
+            cb_preview_video.setChecked(true);
+            cb_isGif.setChecked(false);
+            cb_isGif.setVisibility(View.GONE);
+            cb_preview_video.setChecked(true);
+            cb_preview_video.setVisibility(View.VISIBLE);
+            cb_preview_img.setVisibility(View.GONE);
+            cb_preview_img.setChecked(false);
+            cb_compress.setVisibility(View.GONE);
+            cb_preview_audio.setVisibility(View.GONE);
+            cb_crop.setVisibility(View.GONE);
+        } else if (checkedId == R.id.rb_audio) {
+            chooseMode = SelectMimeType.ofAudio();
+            cb_preview_audio.setVisibility(View.VISIBLE);
+        } else if (checkedId == R.id.rb_glide) {
+            imageEngine = GlideEngine.createGlideEngine();
+        } else if (checkedId == R.id.rb_picasso) {
+            imageEngine = PicassoEngine.createPicassoEngine();
+        } else if (checkedId == R.id.rb_coil) {
+            imageEngine = new CoilEngine();
+        } else if (checkedId == R.id.rb_media_player) {
+            videoPlayerEngine = null;
+            isUseSystemPlayer = false;
+        } else if (checkedId == R.id.rb_exo_player) {
+            videoPlayerEngine = new ExoPlayerEngine();
+            isUseSystemPlayer = false;
+        } else if (checkedId == R.id.rb_ijk_player) {
+            videoPlayerEngine = new IjkPlayerEngine();
+            isUseSystemPlayer = false;
+        } else if (checkedId == R.id.rb_system_player) {
+            isUseSystemPlayer = true;
+        } else if (checkedId == R.id.rb_system) {
+            language = LanguageConfig.SYSTEM_LANGUAGE;
+        } else if (checkedId == R.id.rb_jpan) {
+            language = LanguageConfig.JAPAN;
+        } else if (checkedId == R.id.rb_tw) {
+            language = LanguageConfig.TRADITIONAL_CHINESE;
+        } else if (checkedId == R.id.rb_us) {
+            language = LanguageConfig.ENGLISH;
+        } else if (checkedId == R.id.rb_ka) {
+            language = LanguageConfig.KOREA;
+        } else if (checkedId == R.id.rb_de) {
+            language = LanguageConfig.GERMANY;
+        } else if (checkedId == R.id.rb_fr) {
+            language = LanguageConfig.FRANCE;
+        } else if (checkedId == R.id.rb_spanish) {
+            language = LanguageConfig.SPANISH;
+        } else if (checkedId == R.id.rb_portugal) {
+            language = LanguageConfig.PORTUGAL;
+        } else if (checkedId == R.id.rb_ar) {
+            language = LanguageConfig.AR;
+        } else if (checkedId == R.id.rb_ru) {
+            language = LanguageConfig.RU;
+        } else if (checkedId == R.id.rb_cs) {
+            language = LanguageConfig.CS;
+        } else if (checkedId == R.id.rb_kk) {
+            language = LanguageConfig.KK;
+        } else if (checkedId == R.id.rb_crop_default) {
+            aspect_ratio_x = -1;
+            aspect_ratio_y = -1;
+        } else if (checkedId == R.id.rb_crop_1to1) {
+            aspect_ratio_x = 1;
+            aspect_ratio_y = 1;
+        } else if (checkedId == R.id.rb_crop_3to4) {
+            aspect_ratio_x = 3;
+            aspect_ratio_y = 4;
+        } else if (checkedId == R.id.rb_crop_3to2) {
+            aspect_ratio_x = 3;
+            aspect_ratio_y = 2;
+        } else if (checkedId == R.id.rb_crop_16to9) {
+            aspect_ratio_x = 16;
+            aspect_ratio_y = 9;
+        } else if (checkedId == R.id.rb_launcher_result) {
+            resultMode = 0;
+        } else if (checkedId == R.id.rb_activity_result) {
+            resultMode = 1;
+        } else if (checkedId == R.id.rb_callback_result) {
+            resultMode = 2;
+        } else if (checkedId == R.id.rb_photo_default_animation) {
+            PictureWindowAnimationStyle defaultAnimationStyle = new PictureWindowAnimationStyle();
+            defaultAnimationStyle.setActivityEnterAnimation(com.luck.picture.lib.R.anim.ps_anim_enter);
+            defaultAnimationStyle.setActivityExitAnimation(com.luck.picture.lib.R.anim.ps_anim_exit);
+            selectorStyle.setWindowAnimationStyle(defaultAnimationStyle);
+        } else if (checkedId == R.id.rb_photo_up_animation) {
+            PictureWindowAnimationStyle animationStyle = new PictureWindowAnimationStyle();
+            animationStyle.setActivityEnterAnimation(com.luck.picture.lib.R.anim.ps_anim_up_in);
+            animationStyle.setActivityExitAnimation(com.luck.picture.lib.R.anim.ps_anim_down_out);
+            selectorStyle.setWindowAnimationStyle(animationStyle);
+        } else if (checkedId == R.id.rb_default_style) {
+            selectorStyle = new PictureSelectorStyle();
+        } else if (checkedId == R.id.rb_white_style) {
+            TitleBarStyle whiteTitleBarStyle = new TitleBarStyle();
+            whiteTitleBarStyle.setTitleBackgroundColor(ContextCompat.getColor(getContext(), com.luck.picture.lib.R.color.ps_color_white));
+            whiteTitleBarStyle.setTitleDrawableRightResource(R.drawable.ic_orange_arrow_down);
+            whiteTitleBarStyle.setTitleLeftBackResource(com.luck.picture.lib.R.drawable.ps_ic_black_back);
+            whiteTitleBarStyle.setTitleTextColor(ContextCompat.getColor(getContext(), com.luck.picture.lib.R.color.ps_color_black));
+            whiteTitleBarStyle.setTitleCancelTextColor(ContextCompat.getColor(getContext(), com.luck.picture.lib.R.color.ps_color_53575e));
+            whiteTitleBarStyle.setDisplayTitleBarLine(true);
+            BottomNavBarStyle whiteBottomNavBarStyle = new BottomNavBarStyle();
+            whiteBottomNavBarStyle.setBottomNarBarBackgroundColor(Color.parseColor("#EEEEEE"));
+            whiteBottomNavBarStyle.setBottomPreviewSelectTextColor(ContextCompat.getColor(getContext(), com.luck.picture.lib.R.color.ps_color_53575e));
+            whiteBottomNavBarStyle.setBottomPreviewNormalTextColor(ContextCompat.getColor(getContext(), com.luck.picture.lib.R.color.ps_color_9b));
+            whiteBottomNavBarStyle.setBottomPreviewSelectTextColor(ContextCompat.getColor(getContext(), com.luck.picture.lib.R.color.ps_color_fa632d));
+            whiteBottomNavBarStyle.setCompleteCountTips(false);
+            whiteBottomNavBarStyle.setBottomEditorTextColor(ContextCompat.getColor(getContext(), com.luck.picture.lib.R.color.ps_color_53575e));
+            whiteBottomNavBarStyle.setBottomOriginalTextColor(ContextCompat.getColor(getContext(), com.luck.picture.lib.R.color.ps_color_53575e));
+            SelectMainStyle selectMainStyle = new SelectMainStyle();
+            selectMainStyle.setDarkStatusBarBlack(true);
+            selectMainStyle.setSelectNormalTextColor(ContextCompat.getColor(getContext(), com.luck.picture.lib.R.color.ps_color_9b));
+            selectMainStyle.setSelectTextColor(ContextCompat.getColor(getContext(), com.luck.picture.lib.R.color.ps_color_fa632d));
+            selectMainStyle.setPreviewSelectBackground(R.drawable.ps_demo_white_preview_selector);
+            selectMainStyle.setSelectBackground(com.luck.picture.lib.R.drawable.ps_checkbox_selector);
+            selectMainStyle.setSelectText(com.luck.picture.lib.R.string.ps_done_front_num);
+            selectMainStyle.setMainListBackgroundColor(ContextCompat.getColor(getContext(), com.luck.picture.lib.R.color.ps_color_white));
+            selectorStyle.setTitleBarStyle(whiteTitleBarStyle);
+            selectorStyle.setBottomBarStyle(whiteBottomNavBarStyle);
+            selectorStyle.setSelectMainStyle(selectMainStyle);
+        } else if (checkedId == R.id.rb_num_style) {
+            TitleBarStyle blueTitleBarStyle = new TitleBarStyle();
+            blueTitleBarStyle.setTitleBackgroundColor(ContextCompat.getColor(getContext(), com.luck.picture.lib.R.color.ps_color_blue));
+            BottomNavBarStyle numberBlueBottomNavBarStyle = new BottomNavBarStyle();
+            numberBlueBottomNavBarStyle.setBottomPreviewNormalTextColor(ContextCompat.getColor(getContext(), com.luck.picture.lib.R.color.ps_color_9b));
+            numberBlueBottomNavBarStyle.setBottomPreviewSelectTextColor(ContextCompat.getColor(getContext(), com.luck.picture.lib.R.color.ps_color_blue));
+            numberBlueBottomNavBarStyle.setBottomNarBarBackgroundColor(ContextCompat.getColor(getContext(), com.luck.picture.lib.R.color.ps_color_white));
+            numberBlueBottomNavBarStyle.setBottomSelectNumResources(R.drawable.ps_demo_blue_num_selected);
+            numberBlueBottomNavBarStyle.setBottomEditorTextColor(ContextCompat.getColor(getContext(), com.luck.picture.lib.R.color.ps_color_53575e));
+            numberBlueBottomNavBarStyle.setBottomOriginalTextColor(ContextCompat.getColor(getContext(), com.luck.picture.lib.R.color.ps_color_53575e));
+            SelectMainStyle numberBlueSelectMainStyle = new SelectMainStyle();
+            numberBlueSelectMainStyle.setSelectNumberStyle(true);
+            numberBlueSelectMainStyle.setPreviewSelectNumberStyle(true);
+            numberBlueSelectMainStyle.setSelectBackground(R.drawable.ps_demo_blue_num_selector);
+            numberBlueSelectMainStyle.setMainListBackgroundColor(ContextCompat.getColor(getContext(), com.luck.picture.lib.R.color.ps_color_white));
+            numberBlueSelectMainStyle.setPreviewSelectBackground(R.drawable.ps_demo_preview_blue_num_selector);
+            numberBlueSelectMainStyle.setSelectNormalTextColor(ContextCompat.getColor(getContext(), com.luck.picture.lib.R.color.ps_color_9b));
+            numberBlueSelectMainStyle.setSelectTextColor(ContextCompat.getColor(getContext(), com.luck.picture.lib.R.color.ps_color_blue));
+            numberBlueSelectMainStyle.setSelectText(com.luck.picture.lib.R.string.ps_completed);
+            selectorStyle.setTitleBarStyle(blueTitleBarStyle);
+            selectorStyle.setBottomBarStyle(numberBlueBottomNavBarStyle);
+            selectorStyle.setSelectMainStyle(numberBlueSelectMainStyle);
+        } else if (checkedId == R.id.rb_we_chat_style) {
+            // 主体风格
+            SelectMainStyle numberSelectMainStyle = new SelectMainStyle();
+            numberSelectMainStyle.setSelectNumberStyle(true);
+            numberSelectMainStyle.setPreviewSelectNumberStyle(false);
+            numberSelectMainStyle.setPreviewDisplaySelectGallery(true);
+            numberSelectMainStyle.setSelectBackground(com.luck.picture.lib.R.drawable.ps_default_num_selector);
+            numberSelectMainStyle.setPreviewSelectBackground(com.luck.picture.lib.R.drawable.ps_preview_checkbox_selector);
+            numberSelectMainStyle.setSelectNormalBackgroundResources(com.luck.picture.lib.R.drawable.ps_select_complete_normal_bg);
+            numberSelectMainStyle.setSelectNormalTextColor(ContextCompat.getColor(getContext(), com.luck.picture.lib.R.color.ps_color_53575e));
+            numberSelectMainStyle.setSelectNormalText(com.luck.picture.lib.R.string.ps_send);
+            numberSelectMainStyle.setAdapterPreviewGalleryBackgroundResource(com.luck.picture.lib.R.drawable.ps_preview_gallery_bg);
+            numberSelectMainStyle.setAdapterPreviewGalleryItemSize(DensityUtil.dip2px(getContext(), 52));
+            numberSelectMainStyle.setPreviewSelectText(com.luck.picture.lib.R.string.ps_select);
+            numberSelectMainStyle.setPreviewSelectTextSize(14);
+            numberSelectMainStyle.setPreviewSelectTextColor(ContextCompat.getColor(getContext(), com.luck.picture.lib.R.color.ps_color_white));
+            numberSelectMainStyle.setPreviewSelectMarginRight(DensityUtil.dip2px(getContext(), 6));
+            numberSelectMainStyle.setSelectBackgroundResources(com.luck.picture.lib.R.drawable.ps_select_complete_bg);
+            numberSelectMainStyle.setSelectText(com.luck.picture.lib.R.string.ps_send_num);
+            numberSelectMainStyle.setSelectTextColor(ContextCompat.getColor(getContext(), com.luck.picture.lib.R.color.ps_color_white));
+            numberSelectMainStyle.setMainListBackgroundColor(ContextCompat.getColor(getContext(), com.luck.picture.lib.R.color.ps_color_black));
+            //numberSelectMainStyle.setCompleteSelectRelativeTop(true);
+            //numberSelectMainStyle.setPreviewSelectRelativeBottom(true);
+            numberSelectMainStyle.setAdapterItemIncludeEdge(false);
+            // 头部TitleBar 风格
+            TitleBarStyle numberTitleBarStyle = new TitleBarStyle();
+            numberTitleBarStyle.setHideCancelButton(true);
+            numberTitleBarStyle.setAlbumTitleRelativeLeft(true);
+            if (cb_only_dir.isChecked()) {
+                numberTitleBarStyle.setTitleAlbumBackgroundResource(R.drawable.ps_demo_only_album_bg);
+            } else {
+                numberTitleBarStyle.setTitleAlbumBackgroundResource(com.luck.picture.lib.R.drawable.ps_album_bg);
+            }
+            numberTitleBarStyle.setTitleDrawableRightResource(com.luck.picture.lib.R.drawable.ps_ic_grey_arrow);
+            numberTitleBarStyle.setPreviewTitleLeftBackResource(com.luck.picture.lib.R.drawable.ps_ic_normal_back);
+            // 底部NavBar 风格
+            BottomNavBarStyle numberBottomNavBarStyle = new BottomNavBarStyle();
+            numberBottomNavBarStyle.setBottomPreviewNarBarBackgroundColor(ContextCompat.getColor(getContext(), com.luck.picture.lib.R.color.ps_color_half_grey));
+            numberBottomNavBarStyle.setBottomPreviewNormalText(com.luck.picture.lib.R.string.ps_preview);
+            numberBottomNavBarStyle.setBottomPreviewNormalTextColor(ContextCompat.getColor(getContext(), com.luck.picture.lib.R.color.ps_color_9b));
+            numberBottomNavBarStyle.setBottomPreviewNormalTextSize(16);
+            numberBottomNavBarStyle.setCompleteCountTips(false);
+            numberBottomNavBarStyle.setBottomPreviewSelectText(com.luck.picture.lib.R.string.ps_preview_num);
+            numberBottomNavBarStyle.setBottomPreviewSelectTextColor(ContextCompat.getColor(getContext(), com.luck.picture.lib.R.color.ps_color_white));
+            selectorStyle.setTitleBarStyle(numberTitleBarStyle);
+            selectorStyle.setBottomBarStyle(numberBottomNavBarStyle);
+            selectorStyle.setSelectMainStyle(numberSelectMainStyle);
+        } else if (checkedId == R.id.rb_default) {
+            animationMode = AnimationType.DEFAULT_ANIMATION;
+        } else if (checkedId == R.id.rb_alpha) {
+            animationMode = AnimationType.ALPHA_IN_ANIMATION;
+        } else if (checkedId == R.id.rb_slide_in) {
+            animationMode = AnimationType.SLIDE_IN_BOTTOM_ANIMATION;
         }
     }
 
 
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        switch (buttonView.getId()) {
-            case R.id.cb_crop:
-                rgb_crop.setVisibility(isChecked ? View.VISIBLE : View.GONE);
-                cb_hide.setVisibility(isChecked ? View.VISIBLE : View.GONE);
-                cb_crop_circular.setVisibility(isChecked ? View.VISIBLE : View.GONE);
-                cb_styleCrop.setVisibility(isChecked ? View.VISIBLE : View.GONE);
-                cb_showCropFrame.setVisibility(isChecked ? View.VISIBLE : View.GONE);
-                cb_showCropGrid.setVisibility(isChecked ? View.VISIBLE : View.GONE);
-                cb_skip_not_gif.setVisibility(isChecked ? View.VISIBLE : View.GONE);
-                cb_not_gif.setVisibility(isChecked ? View.VISIBLE : View.GONE);
-                break;
-            case R.id.cb_custom_sandbox:
-                cb_only_dir.setChecked(isChecked);
-                break;
-            case R.id.cb_only_dir:
-                cb_custom_sandbox.setChecked(isChecked);
-                break;
-            case R.id.cb_skip_not_gif:
-                cb_not_gif.setChecked(false);
-                cb_skip_not_gif.setChecked(isChecked);
-                break;
-            case R.id.cb_not_gif:
-                cb_skip_not_gif.setChecked(false);
-                cb_not_gif.setChecked(isChecked);
-                break;
-            case R.id.cb_mode:
-                cb_attach_camera_mode.setVisibility(isChecked ? View.GONE : View.VISIBLE);
-                break;
-            case R.id.cb_system_album:
-                cb_attach_system_mode.setVisibility(isChecked ? View.VISIBLE : View.GONE);
-                break;
-            case R.id.cb_custom_camera:
-                cb_camera_zoom.setVisibility(isChecked ? View.VISIBLE : View.GONE);
-                cb_camera_focus.setVisibility(isChecked ? View.VISIBLE : View.GONE);
-                if (isChecked) {
-                } else {
-                    cb_camera_zoom.setChecked(false);
-                    cb_camera_focus.setChecked(false);
-                }
-                break;
-            case R.id.cb_crop_circular:
-                if (isChecked) {
-                    x = aspect_ratio_x;
-                    y = aspect_ratio_y;
-                    aspect_ratio_x = 1;
-                    aspect_ratio_y = 1;
-                } else {
-                    aspect_ratio_x = x;
-                    aspect_ratio_y = y;
-                }
-                rgb_crop.setVisibility(isChecked ? View.GONE : View.VISIBLE);
-                if (isChecked) {
-                    cb_showCropFrame.setChecked(false);
-                    cb_showCropGrid.setChecked(false);
-                } else {
-                    cb_showCropFrame.setChecked(true);
-                    cb_showCropGrid.setChecked(true);
-                }
-                break;
+        if (buttonView.getId() == R.id.cb_crop) {
+            rgb_crop.setVisibility(isChecked ? View.VISIBLE : View.GONE);
+            cb_hide.setVisibility(isChecked ? View.VISIBLE : View.GONE);
+            cb_crop_circular.setVisibility(isChecked ? View.VISIBLE : View.GONE);
+            cb_styleCrop.setVisibility(isChecked ? View.VISIBLE : View.GONE);
+            cb_showCropFrame.setVisibility(isChecked ? View.VISIBLE : View.GONE);
+            cb_showCropGrid.setVisibility(isChecked ? View.VISIBLE : View.GONE);
+            cb_skip_not_gif.setVisibility(isChecked ? View.VISIBLE : View.GONE);
+            cb_not_gif.setVisibility(isChecked ? View.VISIBLE : View.GONE);
+        } else if (buttonView.getId() == R.id.cb_custom_sandbox) {
+            cb_only_dir.setChecked(isChecked);
+        } else if (buttonView.getId() == R.id.cb_only_dir) {
+            cb_custom_sandbox.setChecked(isChecked);
+        } else if (buttonView.getId() == R.id.cb_skip_not_gif) {
+            cb_not_gif.setChecked(false);
+            cb_skip_not_gif.setChecked(isChecked);
+        } else if (buttonView.getId() == R.id.cb_not_gif) {
+            cb_skip_not_gif.setChecked(false);
+            cb_not_gif.setChecked(isChecked);
+        } else if (buttonView.getId() == R.id.cb_mode) {
+            cb_attach_camera_mode.setVisibility(isChecked ? View.GONE : View.VISIBLE);
+        } else if (buttonView.getId() == R.id.cb_system_album) {
+            cb_attach_system_mode.setVisibility(isChecked ? View.VISIBLE : View.GONE);
+        } else if (buttonView.getId() == R.id.cb_custom_camera) {
+            cb_camera_zoom.setVisibility(isChecked ? View.VISIBLE : View.GONE);
+            cb_camera_focus.setVisibility(isChecked ? View.VISIBLE : View.GONE);
+            if (isChecked) {
+            } else {
+                cb_camera_zoom.setChecked(false);
+                cb_camera_focus.setChecked(false);
+            }
+        } else if (buttonView.getId() == R.id.cb_crop_circular) {
+            if (isChecked) {
+                x = aspect_ratio_x;
+                y = aspect_ratio_y;
+                aspect_ratio_x = 1;
+                aspect_ratio_y = 1;
+            } else {
+                aspect_ratio_x = x;
+                aspect_ratio_y = y;
+            }
+            rgb_crop.setVisibility(isChecked ? View.GONE : View.VISIBLE);
+            if (isChecked) {
+                cb_showCropFrame.setChecked(false);
+                cb_showCropGrid.setChecked(false);
+            } else {
+                cb_showCropFrame.setChecked(true);
+                cb_showCropGrid.setChecked(true);
+            }
         }
     }
 

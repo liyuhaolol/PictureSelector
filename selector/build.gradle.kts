@@ -1,17 +1,11 @@
-import java.io.FileInputStream
-import java.io.InputStreamReader
-import java.util.Properties
-import net.thebugmc.gradle.sonatypepublisher.PublishingType.AUTOMATIC
-
 plugins{
     id("com.android.library")
-    id("net.thebugmc.gradle.sonatype-central-portal-publisher") version "1.2.4"
 }
 
 android {
     namespace = "com.luck.picture.lib"
 
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
         minSdk = 19
@@ -20,8 +14,8 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_21
-        targetCompatibility = JavaVersion.VERSION_21
+        sourceCompatibility = JavaVersion.VERSION_25
+        targetCompatibility = JavaVersion.VERSION_25
     }
 
     buildFeatures {
@@ -48,7 +42,7 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
 }
 
-var signingKeyId = ""//签名的密钥后8位
+/*var signingKeyId = ""//签名的密钥后8位
 var signingPassword = ""//签名设置的密码
 var secretKeyRingFile = ""//生成的secring.gpg文件目录
 var ossrhUsername = ""//sonatype用户名
@@ -125,4 +119,4 @@ gradle.taskGraph.whenReady {
 
 signing {
     sign(publishing.publications)
-}
+}*/
