@@ -7,6 +7,9 @@
 
 ## 更新日志
 
+### 2026.10.13
+- camerax 升级到`v3.11.6`，升级Camera2的版本，整个项目使用Java25，AGP9重新编译，非必要不用升级，使用`v3.11.5`即可。
+
 ### 2025.08.31
 - chooser 发布到`1.0.6`，解除`ActivityForResult`对`Activity->onCreate()`的硬绑定关系，现在可以在任意位置初始化PicChooser
 - ucrop 升级到`v3.11.7`，解除`ActivityForResult`对`Activity->onCreate()`的硬绑定关系，现在可以在任意位置初始化PicChooser
